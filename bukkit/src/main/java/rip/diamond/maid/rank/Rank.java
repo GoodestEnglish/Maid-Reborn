@@ -1,12 +1,16 @@
 package rip.diamond.maid.rank;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.Getter;
+import lombok.Setter;
 import org.bson.Document;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.util.json.GsonProvider;
 
-import java.util.UUID;
+import java.util.*;
 
+@Getter
+@Setter
 public class Rank implements IRank {
 
     @SerializedName("_id")
@@ -14,6 +18,9 @@ public class Rank implements IRank {
     private String name, displayName;
     private String prefix, suffix = "";
     private boolean default_ = false;
+    private int priority = 0;
+    private final Set<String> permissions = new HashSet<>();
+    private final List<UUID> parents = new ArrayList<>();
 
     public Rank(String name) {
         this.uniqueID = UUID.randomUUID();
@@ -26,51 +33,6 @@ public class Rank implements IRank {
     }
 
     @Override
-    public UUID getUniqueID() {
-        return uniqueID;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getPrefix() {
-        return prefix;
-    }
-
-    @Override
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    @Override
-    public String getSuffix() {
-        return suffix;
-    }
-
-    @Override
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    @Override
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    @Override
     public boolean isDefault() {
         return default_;
     }
@@ -78,5 +40,25 @@ public class Rank implements IRank {
     @Override
     public void setDefault(boolean default_) {
         this.default_ = default_;
+    }
+
+    @Override
+    public void addPermission(String permission) {
+        this.permissions.add(permission);
+    }
+
+    @Override
+    public void removePermission(String permission) {
+        this.permissions.remove(permission);
+    }
+
+    @Override
+    public void addParent(UUID parent) {
+        this.parents.add(parent);
+    }
+
+    @Override
+    public void removeParent(UUID parent) {
+        this.parents.remove(parent);
     }
 }

@@ -1,6 +1,8 @@
 package rip.diamond.maid.grant;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.Getter;
+import lombok.Setter;
 import org.bson.Document;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IGrant;
@@ -12,6 +14,8 @@ import rip.diamond.maid.util.json.GsonProvider;
 
 import java.util.UUID;
 
+@Getter
+@Setter
 public class Grant implements IGrant {
     @SerializedName("_id")
     private final UUID uniqueID;
@@ -26,8 +30,8 @@ public class Grant implements IGrant {
     public Grant(IUser user, IRank rank, IUser issuer, String reason, long issuedAt, long duration) {
         this.uniqueID = UUID.randomUUID();
         this.rankId = rank.getUniqueID();
-        this.user = user.getUniqueId();
-        this.issuer = issuer.getUniqueId();
+        this.user = user.getUniqueID();
+        this.issuer = issuer.getUniqueID();
         this.issuerName = issuer.getRealName();
         this.reason = reason;
         this.issuedAt = issuedAt;
@@ -39,63 +43,8 @@ public class Grant implements IGrant {
     }
 
     @Override
-    public UUID getUniqueID() {
-        return uniqueID;
-    }
-
-    @Override
     public IRank getRank() {
         return Maid.INSTANCE.getRankManager().getRanks().get(rankId);
-    }
-
-    @Override
-    public UUID getUser() {
-        return user;
-    }
-
-    @Override
-    public UUID getIssuer() {
-        return issuer;
-    }
-
-    @Override
-    public String getIssuerName() {
-        return issuerName;
-    }
-
-    @Override
-    public String getReason() {
-        return reason;
-    }
-
-    @Override
-    public long getIssuedAt() {
-        return issuedAt;
-    }
-
-    @Override
-    public long getDuration() {
-        return duration;
-    }
-
-    @Override
-    public UUID getRevoker() {
-        return revoker;
-    }
-
-    @Override
-    public String getRevokerName() {
-        return revokerName;
-    }
-
-    @Override
-    public String getRevokedReason() {
-        return revokedReason;
-    }
-
-    @Override
-    public long getRevokedAt() {
-        return revokedAt;
     }
 
     @Override
@@ -107,7 +56,7 @@ public class Grant implements IGrant {
     }
 
     public void revoke(User revoker, String revokedReason) {
-        this.revoker = revoker.getUniqueId();
+        this.revoker = revoker.getUniqueID();
         this.revokerName = revoker.getRealName();
         this.revokedReason = revokedReason;
         this.revokedAt = System.currentTimeMillis();

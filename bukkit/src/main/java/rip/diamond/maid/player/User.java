@@ -1,6 +1,8 @@
 package rip.diamond.maid.player;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.Getter;
+import lombok.Setter;
 import org.bson.Document;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
@@ -11,6 +13,8 @@ import rip.diamond.maid.util.json.GsonProvider;
 
 import java.util.*;
 
+@Getter
+@Setter
 public class User implements IUser {
 
     public static User CONSOLE = new User(UUID.fromString("00000000-0000-0000-0000-000000000000"), "控制台", "*");
@@ -38,12 +42,6 @@ public class User implements IUser {
         return GsonProvider.GSON.fromJson(document.toJson(), User.class);
     }
 
-    @Override
-    public UUID getUniqueId() {
-        return uniqueID;
-    }
-
-    @Override
     public String getName() {
         return name;
     }
@@ -59,28 +57,12 @@ public class User implements IUser {
     }
 
     @Override
-    public long getFirstSeen() {
-        return firstSeen;
-    }
-
-    @Override
-    public long getLastSeen() {
-        return lastSeen;
-    }
-
-    @Override
     public void updateSeen() {
         if (this.firstSeen == -1) {
             this.firstSeen = System.currentTimeMillis();
         }
         this.lastSeen = System.currentTimeMillis();
     }
-
-    @Override
-    public String getLastServer() {
-        return lastServer;
-    }
-
     @Override
     public void updateLastServer() {
         this.lastServer = MaidAPI.INSTANCE.getPlatform().getServerID();
@@ -100,16 +82,6 @@ public class User implements IUser {
     @Override
     public Set<String> getIPHistory() {
         return ipHistory;
-    }
-
-    @Override
-    public Set<String> getPermissions() {
-        return permissions;
-    }
-
-    @Override
-    public List<? extends IGrant> getGrants() {
-        return grants;
     }
 
     @Override

@@ -14,7 +14,7 @@ public interface IUser {
      * @return The player's UUID
      */
     @SerializedName("_id")
-    UUID getUniqueId();
+    UUID getUniqueID();
 
     /**
      * Get the player's name.

@@ -29,8 +29,8 @@ public class ProfileUpdatePacket implements Packet {
         Preconditions.checkArgument(MaidAPI.INSTANCE.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
 
         UserManager manager = Maid.INSTANCE.getUserManager();
-        if (manager.getUsers().containsKey(user.getUniqueId())) {
-            manager.getUsers().replace(user.getUniqueId(), user);
+        if (manager.getUsers().containsKey(user.getUniqueID())) {
+            manager.getUsers().replace(user.getUniqueID(), user);
         }
     }
 }

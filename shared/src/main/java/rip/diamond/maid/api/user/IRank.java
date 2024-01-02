@@ -2,6 +2,7 @@ package rip.diamond.maid.api.user;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Set;
 import java.util.UUID;
 
 public interface IRank {
@@ -79,10 +80,59 @@ public interface IRank {
     boolean isDefault();
 
     /**
-     * Set the rank default state
+     * Set the rank default state.
      *
      * @param default_ The new default state
      */
     void setDefault(boolean default_);
+
+    /**
+     * Get the rank's priority.
+     *
+     * @return The rank's priority
+     */
+    int getPriority();
+
+    /**
+     * Set the rank's priority.
+     *
+     * @param priority The new rank's priority
+     */
+    void setPriority(int priority);
+
+    /**
+     * Get the rank's permissions.
+     *
+     * @return The rank's permissions
+     */
+    Set<String> getPermissions();
+
+    /**
+     * Add a new permission.
+     *
+     * @param permission The permission
+     */
+    void addPermission(String permission);
+
+    /**
+     * Remove an existing permission.
+     *
+     * @param permission The permission which needs to be removed
+     */
+    void removePermission(String permission);
+
+    /**
+     * Add a parent rank to the rank
+     *
+     * @param parent The rank unique ID
+     */
+    void addParent(UUID parent);
+
+    /**
+     * Remove a parent rank from the rank
+     *
+     * @param parent The rank unique ID
+     */
+    void removeParent(UUID parent);
 
 }
