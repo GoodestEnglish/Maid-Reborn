@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum AlertType {
 
     SERVER("maid.alert.server"),
+    UPDATE("maid.alert.update"),
     ;
 
     private final String permission;

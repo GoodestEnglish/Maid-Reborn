@@ -18,6 +18,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 
     implementation(project(":shared"))
+    implementation("org.mongodb:mongodb-driver-sync:4.9.0")
 
     //lombok
     compileOnly("org.projectlombok:lombok:1.18.26")

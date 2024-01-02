@@ -18,6 +18,9 @@ public enum Config {
     REDIS_PORT("redis.port", 6379),
     REDIS_AUTH("redis.auth", false),
     REDIS_PASSWORD("redis.password", "bar"),
+    /* MONGO */
+    MONGO_CONNECTION_STRING("mongo.connection-string", "mongodb://127.0.0.1:27017/MaidReborn"),
+    MONGO_DATABASE("mongo.database", "Maid"),
     ;
 
     @Getter private final String path;

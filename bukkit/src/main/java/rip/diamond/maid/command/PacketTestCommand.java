@@ -2,7 +2,7 @@ package rip.diamond.maid.command;
 
 import org.bukkit.entity.Player;
 import rip.diamond.maid.redis.messaging.PacketHandler;
-import rip.diamond.maid.redis.packets.PacketTestPacket;
+import rip.diamond.maid.redis.packets.bukkit.PacketTestPacket;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.command.annotation.Command;
 import rip.diamond.maid.util.command.annotation.Require;

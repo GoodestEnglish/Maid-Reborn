@@ -4,7 +4,7 @@ import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.server.AlertType;
 import rip.diamond.maid.redis.messaging.PacketHandler;
-import rip.diamond.maid.redis.packets.AlertPacket;
+import rip.diamond.maid.redis.packets.bukkit.AlertPacket;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.TaskTicker;
 

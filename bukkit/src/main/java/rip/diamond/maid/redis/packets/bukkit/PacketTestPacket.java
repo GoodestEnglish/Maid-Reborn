@@ -1,8 +1,10 @@
-package rip.diamond.maid.redis.packets;
+package rip.diamond.maid.redis.packets.bukkit;
 
 import lombok.RequiredArgsConstructor;
 import rip.diamond.maid.MaidAPI;
+import rip.diamond.maid.api.server.Platform;
 import rip.diamond.maid.redis.messaging.Packet;
+import rip.diamond.maid.util.Preconditions;
 
 import java.util.UUID;
 
@@ -23,6 +25,7 @@ public class PacketTestPacket implements Packet {
 
     @Override
     public void onReceive() {
+        Preconditions.checkArgument(MaidAPI.INSTANCE.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
         MaidAPI.INSTANCE.getPlatform().sendMessage(uuid, null, message);
     }
 }

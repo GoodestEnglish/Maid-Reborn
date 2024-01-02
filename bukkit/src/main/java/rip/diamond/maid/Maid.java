@@ -8,8 +8,10 @@ import rip.diamond.maid.command.ColorCommand;
 import rip.diamond.maid.command.PacketTestCommand;
 import rip.diamond.maid.command.TestCommand;
 import rip.diamond.maid.config.Config;
+import rip.diamond.maid.mongo.MongoManager;
 import rip.diamond.maid.platform.BukkitPlatform;
 import rip.diamond.maid.player.PlayerListener;
+import rip.diamond.maid.player.PlayerManager;
 import rip.diamond.maid.redis.RedisCredentials;
 import rip.diamond.maid.server.ServerListener;
 import rip.diamond.maid.server.ServerManager;
@@ -28,6 +30,8 @@ public class Maid extends JavaPlugin {
     public static Maid INSTANCE;
 
     private CommandService drink;
+    private MongoManager mongoManager;
+    private PlayerManager playerManager;
     private ServerManager serverManager;
 
     private BasicConfigFile configFile;
@@ -72,7 +76,9 @@ public class Maid extends JavaPlugin {
     }
 
     private void loadManagers() {
+        mongoManager = new MongoManager();
         serverManager = new ServerManager();
+        playerManager = new PlayerManager();
     }
 
     private void loadListeners() {
