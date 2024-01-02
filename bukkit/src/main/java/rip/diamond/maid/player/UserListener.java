@@ -8,9 +8,12 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.grant.Grant;
+import rip.diamond.maid.rank.Rank;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.Tasks;
+import rip.diamond.maid.util.TimeUtil;
 import rip.diamond.maid.util.extend.MaidListener;
 
 import java.util.UUID;
@@ -36,6 +39,11 @@ public class UserListener extends MaidListener {
         user.updateSeen();
         user.updateLastServer();
         user.setIP(event.getAddress().getHostAddress());
+
+        //Add a default grant for the user of there's no grants
+        if (user.getGrants().isEmpty()) {
+            user.addGrant(new Grant(user, plugin.getRankManager().getDefaultRank(), User.CONSOLE, "預設職階", System.currentTimeMillis(), TimeUtil.PERMANENT));
+        }
 
         plugin.getUserManager().saveUser(user);
     }

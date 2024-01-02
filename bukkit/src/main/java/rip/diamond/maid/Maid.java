@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 import rip.diamond.maid.command.ColorCommand;
+import rip.diamond.maid.command.GrantCommand;
 import rip.diamond.maid.command.PacketTestCommand;
 import rip.diamond.maid.command.TestCommand;
 import rip.diamond.maid.config.Config;
@@ -20,6 +21,7 @@ import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.command.CommandService;
 import rip.diamond.maid.util.command.Drink;
 import rip.diamond.maid.util.menu.MenuHandler;
+import rip.diamond.maid.util.procedure.Procedure;
 
 import java.util.Arrays;
 
@@ -70,6 +72,7 @@ public class Maid extends JavaPlugin {
     }
 
     private void loadAPI() {
+        Procedure.init(this);
         drink = Drink.get(this);
         new MenuHandler(this); //Register MenuAPI instance
         new MaidAPI(new RedisCredentials(Config.REDIS_HOST.toString(), Config.REDIS_PORT.toInteger(), Config.REDIS_AUTH.toBoolean(), Config.REDIS_PASSWORD.toString()), new BukkitPlatform());
@@ -91,6 +94,7 @@ public class Maid extends JavaPlugin {
 
     private void loadCommands() {
         drink.register(new ColorCommand(), "color");
+        drink.register(new GrantCommand(), "grant");
         drink.register(new PacketTestCommand(), "packettest");
         drink.register(new TestCommand(), "test");
         drink.registerCommands();

@@ -2,13 +2,18 @@ package rip.diamond.maid.player;
 
 import com.google.gson.annotations.SerializedName;
 import org.bson.Document;
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
+import rip.diamond.maid.api.user.IGrant;
 import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.grant.Grant;
 import rip.diamond.maid.util.json.GsonProvider;
 
 import java.util.*;
 
 public class User implements IUser {
+
+    public static User CONSOLE = new User(UUID.fromString("00000000-0000-0000-0000-000000000000"), "控制台", "*");
 
     @SerializedName("_id")
     private final UUID uniqueID;
@@ -16,9 +21,17 @@ public class User implements IUser {
     private long firstSeen, lastSeen = -1;
     private String lastServer, ip = "Not Recorded";
     private final Set<String> ipHistory = new HashSet<>();
+    private final Set<String> permissions = new HashSet<>();
+    private final List<Grant> grants = new ArrayList<>();
 
     public User(UUID uniqueID) {
         this.uniqueID = uniqueID;
+    }
+
+    private User(UUID uniqueID, String name, String... permissions) {
+        this.uniqueID = uniqueID;
+        this.name = name;
+        this.permissions.addAll(List.of(permissions));
     }
 
     public static User of(Document document) {
@@ -88,4 +101,21 @@ public class User implements IUser {
     public Set<String> getIPHistory() {
         return ipHistory;
     }
+
+    @Override
+    public Set<String> getPermissions() {
+        return permissions;
+    }
+
+    @Override
+    public List<? extends IGrant> getGrants() {
+        return grants;
+    }
+
+    @Override
+    public void addGrant(IGrant grant) {
+        grants.add((Grant) grant);
+        Maid.INSTANCE.getUserManager().saveUser(this);
+    }
+
 }

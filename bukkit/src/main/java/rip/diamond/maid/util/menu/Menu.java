@@ -55,8 +55,8 @@ public abstract class Menu {
      */
 
     public void updateMenu(Map<Integer, Button> buttonMap) {
-        if (Bukkit.isPrimaryThread()) {
-            throw new RuntimeException("Cannot update the menu async");
+        if (!Bukkit.isPrimaryThread()) {
+            throw new RuntimeException("Cannot create the menu async");
         }
 
         final Inventory inventory = getMenuType().createInventory(this);

@@ -12,6 +12,7 @@ import rip.diamond.maid.util.extend.MaidManager;
 import rip.diamond.maid.util.json.GsonProvider;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -53,6 +54,10 @@ public class RankManager extends MaidManager {
         plugin.getMongoManager().getRanks().deleteOne(Filters.eq("_id", rank.getUniqueID().toString()));
         ranks.remove(rank.getUniqueID());
         PacketHandler.send(new RankUpdatePacket((Rank) rank, true));
+    }
+
+    public IRank getDefaultRank() {
+        return ranks.values().stream().filter(IRank::isDefault).findFirst().orElseThrow(() -> new NoSuchElementException("Cannot find default rank in cache"));
     }
 
 }

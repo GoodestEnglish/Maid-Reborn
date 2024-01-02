@@ -2,6 +2,7 @@ package rip.diamond.maid.api.user;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -90,4 +91,26 @@ public interface IUser {
      * @return The player's all IP Address history
      */
     Set<String> getIPHistory();
+
+    /**
+     * Get the player's all permissions.
+     * Note: This will not include permissions for player's rank.
+     *
+     * @return The player's all permissions
+     */
+    Set<String> getPermissions();
+
+    /**
+     * Get the player's all grants.
+     *
+     * @return The player's all grants
+     */
+    List<? extends IGrant> getGrants();
+
+    /**
+     * Add a new grant to the user.
+     *
+     * @param grant The grant
+     */
+    void addGrant(IGrant grant);
 }
