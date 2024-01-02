@@ -59,21 +59,33 @@ public interface IUser {
     void updateSeen();
 
     /**
-     * Get the player's current/last seen IP Address
+     * Get the player's last server.
+     *
+     * @return The player's last server
+     */
+    String getLastServer();
+
+    /**
+     * Update the player's last server.
+     */
+    void updateLastServer();
+
+    /**
+     * Get the player's current/last seen IP Address.
      *
      * @return The last seen IP Address
      */
     String getIP();
 
     /**
-     * Set the player's current/last seen IP Address
+     * Set the player's current/last seen IP Address.
      *
      * @param ip The current player IP Address
      */
     void setIP(String ip);
 
     /**
-     * Get the player's IP Address history
+     * Get the player's IP Address history.
      *
      * @return The player's all IP Address history
      */

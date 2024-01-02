@@ -24,7 +24,7 @@ public final class PacketPubSub extends JedisPubSub {
         Platform platform = MaidAPI.INSTANCE.getPlatform().getPlatform();
         String toServerID = packet.getTo();
 
-        if ((platform == Platform.BUKKIT && toServerID.equals("server")) || (platform == Platform.PROXY && toServerID.equals("proxy")) || toServerID.equals("ALL") || toServerID.equals(serverID)) {
+        if ((platform == Platform.BUKKIT && toServerID.equalsIgnoreCase("server")) || (platform == Platform.PROXY && toServerID.equalsIgnoreCase("proxy")) || toServerID.equalsIgnoreCase("all") || toServerID.equals(serverID)) {
             CompletableFuture.runAsync(() -> {
                 try {
                     packet.onReceive();

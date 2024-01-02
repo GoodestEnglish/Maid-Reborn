@@ -3,19 +3,18 @@ package rip.diamond.maid;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.plugin.java.JavaPlugin;
-import rip.diamond.maid.api.server.Platform;
 import rip.diamond.maid.command.ColorCommand;
 import rip.diamond.maid.command.PacketTestCommand;
 import rip.diamond.maid.command.TestCommand;
 import rip.diamond.maid.config.Config;
 import rip.diamond.maid.mongo.MongoManager;
 import rip.diamond.maid.platform.BukkitPlatform;
-import rip.diamond.maid.player.PlayerListener;
-import rip.diamond.maid.player.PlayerManager;
+import rip.diamond.maid.player.UserListener;
+import rip.diamond.maid.player.UserManager;
+import rip.diamond.maid.rank.RankManager;
 import rip.diamond.maid.redis.RedisCredentials;
 import rip.diamond.maid.server.ServerListener;
 import rip.diamond.maid.server.ServerManager;
-import rip.diamond.maid.task.FinishStartupTask;
 import rip.diamond.maid.util.BasicConfigFile;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.command.CommandService;
@@ -31,7 +30,8 @@ public class Maid extends JavaPlugin {
 
     private CommandService drink;
     private MongoManager mongoManager;
-    private PlayerManager playerManager;
+    private UserManager userManager;
+    private RankManager rankManager;
     private ServerManager serverManager;
 
     private BasicConfigFile configFile;
@@ -77,13 +77,14 @@ public class Maid extends JavaPlugin {
 
     private void loadManagers() {
         mongoManager = new MongoManager();
+        userManager = new UserManager();
+        rankManager = new RankManager();
         serverManager = new ServerManager();
-        playerManager = new PlayerManager();
     }
 
     private void loadListeners() {
         Arrays.asList(
-                new PlayerListener(),
+                new UserListener(),
                 new ServerListener()
         ).forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));
     }

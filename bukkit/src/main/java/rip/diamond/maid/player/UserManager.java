@@ -14,7 +14,7 @@ import rip.diamond.maid.util.json.GsonProvider;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PlayerManager extends MaidManager {
+public class UserManager extends MaidManager {
 
     @Getter private final ConcurrentHashMap<UUID, IUser> users = new ConcurrentHashMap<>();
 

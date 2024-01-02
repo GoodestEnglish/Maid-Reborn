@@ -2,6 +2,7 @@ package rip.diamond.maid.player;
 
 import com.google.gson.annotations.SerializedName;
 import org.bson.Document;
+import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.util.json.GsonProvider;
 
@@ -12,12 +13,9 @@ public class User implements IUser {
     @SerializedName("_id")
     private final UUID uniqueID;
     private String name = "$undefined";
-
-    private long firstSeen = -1;
-    private long lastSeen = -1;
-
-    private String ip = "Not Recorded";
-    private Set<String> ipHistory = new HashSet<>();
+    private long firstSeen, lastSeen = -1;
+    private String lastServer, ip = "Not Recorded";
+    private final Set<String> ipHistory = new HashSet<>();
 
     public User(UUID uniqueID) {
         this.uniqueID = uniqueID;
@@ -63,6 +61,16 @@ public class User implements IUser {
             this.firstSeen = System.currentTimeMillis();
         }
         this.lastSeen = System.currentTimeMillis();
+    }
+
+    @Override
+    public String getLastServer() {
+        return lastServer;
+    }
+
+    @Override
+    public void updateLastServer() {
+        this.lastServer = MaidAPI.INSTANCE.getPlatform().getServerID();
     }
 
     @Override

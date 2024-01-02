@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.util.CC;
@@ -14,7 +15,7 @@ import rip.diamond.maid.util.extend.MaidListener;
 
 import java.util.UUID;
 
-public class PlayerListener extends MaidListener {
+public class UserListener extends MaidListener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPreLoginDoubleLogin(AsyncPlayerPreLoginEvent event) {
@@ -29,13 +30,14 @@ public class PlayerListener extends MaidListener {
     @EventHandler(priority = EventPriority.LOW)
     public void onPreLoginCreateUser(AsyncPlayerPreLoginEvent event) {
         UUID uniqueID = event.getUniqueId();
-        IUser user = plugin.getPlayerManager().getUser(uniqueID);
+        IUser user = plugin.getUserManager().getUser(uniqueID);
 
         user.setRealName(event.getName());
         user.updateSeen();
+        user.updateLastServer();
         user.setIP(event.getAddress().getHostAddress());
 
-        plugin.getPlayerManager().saveUser(user);
+        plugin.getUserManager().saveUser(user);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
