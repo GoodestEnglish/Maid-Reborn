@@ -20,7 +20,6 @@ import java.util.function.Consumer;
 @Setter
 public abstract class Menu {
 
-
     protected final Player player;
     protected final int size;
 

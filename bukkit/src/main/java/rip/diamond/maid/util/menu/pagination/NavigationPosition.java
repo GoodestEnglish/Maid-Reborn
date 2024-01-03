@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import rip.diamond.maid.util.menu.buttons.BackButton;
 import rip.diamond.maid.util.menu.buttons.Button;
 
 import java.util.HashMap;
@@ -62,6 +63,10 @@ public enum NavigationPosition {
                     return Sound.sound(org.bukkit.Sound.ITEM_BOOK_PAGE_TURN.getKey(), Sound.Source.MASTER, 1f, 1f);
                 }
             });
+
+            if (menu.getBackMenu() != null) {
+                map.put(menu.getSize() - 4, new BackButton(menu.getBackMenu()));
+            }
 
             return map;
         }

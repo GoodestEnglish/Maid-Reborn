@@ -1,6 +1,8 @@
 package rip.diamond.maid.api.user;
 
 import com.google.gson.annotations.SerializedName;
+import rip.diamond.maid.api.user.permission.Permission;
+import rip.diamond.maid.api.user.permission.RankPermission;
 
 import java.util.Set;
 import java.util.UUID;
@@ -14,6 +16,20 @@ public interface IRank {
      */
     @SerializedName("_id")
     UUID getUniqueID();
+
+    /**
+     * Get the rank's color.
+     *
+     * @return The rank's color
+     */
+    String getColor();
+
+    /**
+     * Set the rank's color.
+     *
+     * @param name The new color of the rank
+     */
+    void setColor(String name);
 
     /**
      * Get the rank's name.
@@ -105,7 +121,14 @@ public interface IRank {
      *
      * @return The rank's permissions
      */
-    Set<String> getPermissions();
+    Set<RankPermission> getPermissions();
+
+    /**
+     * Get the rank's permissions, including parent rank's permissions.
+     *
+     * @return The rank's permissions
+     */
+    Set<RankPermission> getAllPermissions();
 
     /**
      * Add a new permission.

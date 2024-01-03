@@ -18,26 +18,44 @@ public final class UUIDCache {
         USERNAME_UUID.put(username, uuid);
     }
 
-    public static UUID getUUID(String username) {
-        UUID uuid = USERNAME_UUID.get(username);
-        if (uuid != null) {
-            return uuid;
+    public static CompletableFuture<UUID> getUUID(String username) {
+        UUID cachedUUID = USERNAME_UUID.get(username);
+        if (cachedUUID != null) {
+            return CompletableFuture.completedFuture(cachedUUID);
         }
 
-        //UUID not found in the cache, fetch it asynchronously
+        // UUID not found in the cache, fetch it asynchronously
         CompletableFuture<OfflinePlayer> offlinePlayerFuture = getOfflinePlayer(username);
-        return offlinePlayerFuture.thenApplyAsync(OfflinePlayer::getUniqueId).join();
+
+        // Use thenCompose to chain CompletableFuture
+        return offlinePlayerFuture.thenComposeAsync(offlinePlayer -> {
+            UUID fetchedUuid = offlinePlayer.getUniqueId();
+
+            // Insert into the cache to ensure consistency
+            insert(fetchedUuid, offlinePlayer.getName());
+
+            return CompletableFuture.completedFuture(fetchedUuid);
+        });
     }
 
-    public static String getUsername(UUID uuid) {
-        String username = UUID_USERNAME.get(uuid);
-        if (username != null) {
-            return username;
+    public static CompletableFuture<String> getUsername(UUID uuid) {
+        String cachedUsername = UUID_USERNAME.get(uuid);
+        if (cachedUsername != null) {
+            return CompletableFuture.completedFuture(cachedUsername);
         }
 
-        //Username not found in the cache, fetch it asynchronously
+        // UUID not found in the cache, fetch it asynchronously
         CompletableFuture<OfflinePlayer> offlinePlayerFuture = getOfflinePlayer(uuid);
-        return offlinePlayerFuture.thenApplyAsync(OfflinePlayer::getName).join();
+
+        // Use thenCompose to chain CompletableFuture
+        return offlinePlayerFuture.thenComposeAsync(offlinePlayer -> {
+            String fetchedUsername = offlinePlayer.getName();
+
+            // Insert into the cache to ensure consistency
+            insert(offlinePlayer.getUniqueId(), fetchedUsername);
+
+            return CompletableFuture.completedFuture(fetchedUsername);
+        });
     }
 
     private static CompletableFuture<OfflinePlayer> getOfflinePlayer(String username) {

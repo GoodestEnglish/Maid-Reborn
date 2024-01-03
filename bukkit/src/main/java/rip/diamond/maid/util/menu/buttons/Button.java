@@ -14,7 +14,9 @@ public abstract class Button {
 
     public abstract ItemStack getButtonItem(Player player);
 
-    public abstract void clicked(InventoryClickEvent event, Player player, ClickType clickType);
+    public void clicked(InventoryClickEvent event, Player player, ClickType clickType) {
+
+    }
 
     public Sound sound() {
         return Sound.sound(org.bukkit.Sound.UI_BUTTON_CLICK.getKey(), Sound.Source.MASTER, 1f, 1f);

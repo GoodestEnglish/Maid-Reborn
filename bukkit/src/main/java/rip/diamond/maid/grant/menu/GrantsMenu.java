@@ -18,6 +18,7 @@ import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.ItemBuilder;
 import rip.diamond.maid.util.TimeUtil;
+import rip.diamond.maid.util.menu.Menu;
 import rip.diamond.maid.util.menu.MenuType;
 import rip.diamond.maid.util.menu.buttons.Button;
 import rip.diamond.maid.util.menu.pagination.PaginatedMenu;
@@ -31,6 +32,11 @@ public class GrantsMenu extends PaginatedMenu {
 
     public GrantsMenu(Player player, User target) {
         super(player, 27);
+        this.target = target;
+    }
+
+    public GrantsMenu(Player player, Menu backMenu, User target) {
+        super(player, 27, backMenu);
         this.target = target;
     }
 
@@ -65,11 +71,11 @@ public class GrantsMenu extends PaginatedMenu {
                         .name(CC.LIME_GREEN + "(有效) " + TimeUtil.formatDate(grant.getIssuedAt()))
                         .lore(
                                 " ",
-                                CC.WHITE + " " + "職階: " + CC.AQUA + grant.getRank().getDisplayName(),
-                                CC.WHITE + " " + "持續時間: " + CC.AQUA + TimeUtil.formatDuration(grant.getDuration()),
+                                CC.WHITE + " 職階: " + CC.AQUA + grant.getRank().getDisplayName(),
+                                CC.WHITE + " 持續時間: " + CC.AQUA + TimeUtil.formatDuration(grant.getDuration()),
                                 "",
-                                CC.WHITE + " " + "執行者: " + CC.AQUA + grant.getIssuerName(),
-                                CC.WHITE + " " + "執行原因: " + CC.AQUA + grant.getReason()
+                                CC.WHITE + " 執行者: " + CC.AQUA + grant.getIssuerName(),
+                                CC.WHITE + " 執行原因: " + CC.AQUA + grant.getReason()
                         );
                 if (!grant.getRank().isDefault()) {
                     builder.lore("", CC.YELLOW + "點擊移除本次升級紀錄!");
@@ -78,15 +84,15 @@ public class GrantsMenu extends PaginatedMenu {
                 builder = new ItemBuilder(Material.RED_WOOL)
                         .name(CC.LIME_GREEN + "(無效) " + TimeUtil.formatDate(grant.getIssuedAt()))
                         .lore(
-                                CC.WHITE + " " + "職階: " + CC.AQUA + grant.getRank().getDisplayName(),
-                                CC.WHITE + " " + "持續時間: " + CC.AQUA + TimeUtil.formatDuration(grant.getDuration()),
+                                CC.WHITE + " 職階: " + CC.AQUA + grant.getRank().getDisplayName(),
+                                CC.WHITE + " 持續時間: " + CC.AQUA + TimeUtil.formatDuration(grant.getDuration()),
                                 "",
-                                CC.WHITE + " " + "執行者: " + CC.AQUA + grant.getIssuer(),
-                                CC.WHITE + " " + "執行原因: " + CC.AQUA + grant.getReason(),
+                                CC.WHITE + " 執行者: " + CC.AQUA + grant.getIssuer(),
+                                CC.WHITE + " 執行原因: " + CC.AQUA + grant.getReason(),
                                 "",
-                                CC.WHITE + " " + "移除者: " + CC.AQUA + grant.getRevokerName(),
-                                CC.WHITE + " " + "移除原因: " + CC.AQUA + grant.getRevokedReason(),
-                                CC.WHITE + " " + "移除時間: " + CC.AQUA + grant.getRevokedAt()
+                                CC.WHITE + " 移除者: " + CC.AQUA + grant.getRevokerName(),
+                                CC.WHITE + " 移除原因: " + CC.AQUA + grant.getRevokedReason(),
+                                CC.WHITE + " 移除時間: " + CC.AQUA + grant.getRevokedAt()
                         );
             }
             return builder.build();
@@ -107,7 +113,7 @@ public class GrantsMenu extends PaginatedMenu {
 
             player.closeInventory();
             Procedure.buildProcedure(player, "請在聊天室輸入移除的原因", (reason) -> {
-                User user = (User) Maid.INSTANCE.getUserManager().getUser(player.getUniqueId());
+                User user = (User) Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join();
 
                 Grant g = (Grant) grant;
                 g.revoke(user, reason);

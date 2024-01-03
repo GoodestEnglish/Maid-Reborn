@@ -1,6 +1,8 @@
 package rip.diamond.maid.api.user;
 
 import com.google.gson.annotations.SerializedName;
+import rip.diamond.maid.api.user.permission.Permission;
+import rip.diamond.maid.api.user.permission.UserPermission;
 
 import java.util.List;
 import java.util.Set;
@@ -39,6 +41,15 @@ public interface IUser {
      * @param name The name to be set
      */
     void setRealName(String name);
+
+    /**
+     * Get the player's display name.
+     * If the player is disguised, this will return disguised display name.
+     * The display name contains rank prefix and suffix.
+     *
+     * @return The display name
+     */
+    String getDisplayName();
 
     /**
      * Get the player's first seen.
@@ -93,12 +104,33 @@ public interface IUser {
     Set<String> getIPHistory();
 
     /**
+     * Add a new permission.
+     *
+     * @param permission The permission
+     */
+    void addPermission(String permission);
+
+    /**
+     * Remove an existing permission.
+     *
+     * @param permission The permission
+     */
+    void removePermission(String permission);
+
+    /**
      * Get the player's all permissions.
      * Note: This will not include permissions for player's rank.
      *
      * @return The player's all permissions
      */
-    Set<String> getPermissions();
+    Set<UserPermission> getPermissions();
+
+    /**
+     * Get the player's all permissions, including player's rank
+     *
+     * @return The player's all permissions
+     */
+    Set<Permission> getAllPermissions();
 
     /**
      * Get the player's all grants.
@@ -108,9 +140,38 @@ public interface IUser {
     List<? extends IGrant> getGrants();
 
     /**
+     * Get the player's all active grants.
+     *
+     * @return The player's all active grants
+     */
+    List<? extends IGrant> getActiveGrants();
+
+    /**
      * Add a new grant to the user.
      *
      * @param grant The grant
      */
     void addGrant(IGrant grant);
+
+    /**
+     * Get all user owned ranks based on grants.
+     *
+     * @return All user owned ranks
+     */
+    Set<IRank> getRanks();
+
+    /**
+     * Get the highest priority rank based on grants.
+     * If the player is disguised, it will return the disguised rank.
+     *
+     * @return The highest priority rank
+     */
+    IRank getRank();
+
+    /**
+     * Get the highest priority rank based on grants.
+     *
+     * @return The highest priority rank
+     */
+    IRank getRealRank();
 }

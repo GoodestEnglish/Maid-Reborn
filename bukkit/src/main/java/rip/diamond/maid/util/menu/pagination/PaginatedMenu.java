@@ -33,14 +33,16 @@ public abstract class PaginatedMenu extends Menu {
     private int previousPage = 1;
     private PaginationAction paginationAction = PaginationAction.NEXT;
 
-    /**
-     * Constructor to make a new menu object
-     *
-     * @param player the player to create the menu for
-     * @param size   the size of the inventory
-     */
+    private final Menu backMenu;
+
     public PaginatedMenu(Player player, int size) {
         super(player, size);
+        this.backMenu = null;
+    }
+
+    public PaginatedMenu(Player player, int size, Menu backMenu) {
+        super(player, size);
+        this.backMenu = backMenu;
     }
 
     public abstract String getPaginatedTitle();

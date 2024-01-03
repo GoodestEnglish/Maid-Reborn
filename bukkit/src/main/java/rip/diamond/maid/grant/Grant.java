@@ -25,7 +25,7 @@ public class Grant implements IGrant {
 
     private UUID revoker;
     private String revokerName, revokedReason;
-    private long revokedAt;
+    private long revokedAt = 0;
 
     public Grant(IUser user, IRank rank, IUser issuer, String reason, long issuedAt, long duration) {
         this.uniqueID = UUID.randomUUID();
@@ -49,6 +49,9 @@ public class Grant implements IGrant {
 
     @Override
     public boolean isActive() {
+        if (revokedAt != 0) {
+            return false;
+        }
         if (duration == TimeUtil.PERMANENT) {
             return true;
         }

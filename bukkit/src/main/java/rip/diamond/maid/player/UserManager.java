@@ -12,25 +12,32 @@ import rip.diamond.maid.util.extend.MaidManager;
 import rip.diamond.maid.util.json.GsonProvider;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserManager extends MaidManager {
 
     @Getter private final ConcurrentHashMap<UUID, IUser> users = new ConcurrentHashMap<>();
 
-    public IUser getUser(UUID uniqueID) {
+    public CompletableFuture<Boolean> hasUser(UUID uniqueID) {
+        return CompletableFuture.supplyAsync(() -> plugin.getMongoManager().getUsers().find(Filters.eq("_id", uniqueID.toString())).first() != null);
+    }
+
+    public CompletableFuture<IUser> getUser(UUID uniqueID) {
         //If the user is found in the cache, simply get it from cache
         if (users.containsKey(uniqueID)) {
-            return users.get(uniqueID);
+            return CompletableFuture.completedFuture(users.get(uniqueID));
         }
 
         //Otherwise, load the player from database and return the user
-        Document document = plugin.getMongoManager().getUsers().find(Filters.eq("_id", uniqueID.toString())).first();
-        User user = document == null ? new User(uniqueID) : User.of(document);
+        return CompletableFuture.supplyAsync(() -> {
+            Document document = plugin.getMongoManager().getUsers().find(Filters.eq("_id", uniqueID.toString())).first();
+            User user = document == null ? new User(uniqueID) : User.of(document);
 
-        users.put(uniqueID, user);
+            users.put(uniqueID, user);
 
-        return user;
+            return user;
+        });
     }
 
     public void saveUser(IUser user) {

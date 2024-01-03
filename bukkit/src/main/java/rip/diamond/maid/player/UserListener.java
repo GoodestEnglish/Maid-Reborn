@@ -9,11 +9,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.grant.Grant;
-import rip.diamond.maid.rank.Rank;
-import rip.diamond.maid.util.CC;
-import rip.diamond.maid.util.Common;
-import rip.diamond.maid.util.Tasks;
-import rip.diamond.maid.util.TimeUtil;
+import rip.diamond.maid.util.*;
 import rip.diamond.maid.util.extend.MaidListener;
 
 import java.util.UUID;
@@ -33,7 +29,7 @@ public class UserListener extends MaidListener {
     @EventHandler(priority = EventPriority.LOW)
     public void onPreLoginCreateUser(AsyncPlayerPreLoginEvent event) {
         UUID uniqueID = event.getUniqueId();
-        IUser user = plugin.getUserManager().getUser(uniqueID);
+        IUser user = plugin.getUserManager().getUser(uniqueID).join();
 
         user.setRealName(event.getName());
         user.updateSeen();
@@ -53,5 +49,11 @@ public class UserListener extends MaidListener {
         if (!plugin.getServerManager().isAllowJoin()) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, Common.text(CC.RED + "伺服器暫時不允許玩家進入, 請稍後再試"));
         }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        UUIDCache.insert(player.getUniqueId(), player.getName());
     }
 }

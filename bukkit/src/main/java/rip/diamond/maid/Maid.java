@@ -3,10 +3,7 @@ package rip.diamond.maid;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.plugin.java.JavaPlugin;
-import rip.diamond.maid.command.ColorCommand;
-import rip.diamond.maid.command.GrantCommand;
-import rip.diamond.maid.command.PacketTestCommand;
-import rip.diamond.maid.command.TestCommand;
+import rip.diamond.maid.command.*;
 import rip.diamond.maid.config.Config;
 import rip.diamond.maid.mongo.MongoManager;
 import rip.diamond.maid.platform.BukkitPlatform;
@@ -97,6 +94,7 @@ public class Maid extends JavaPlugin {
         drink.register(new GrantCommand(), "grant");
         drink.register(new PacketTestCommand(), "packettest");
         drink.register(new TestCommand(), "test");
+        drink.register(new UserCommand(), "user");
         drink.registerCommands();
     }
 }

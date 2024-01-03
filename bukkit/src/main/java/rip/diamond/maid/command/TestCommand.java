@@ -15,9 +15,9 @@ public class TestCommand {
     @Command(name = "", desc = "測試")
     @Require("*")
     public void root(@Sender Player player, int h) {
-        User user = (User) Maid.INSTANCE.getUserManager().getUser(player.getUniqueId());
+        User user = (User) Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join();
         for (int i = 0; i < h; i++) {
-            user.addGrant(new Grant(user, Maid.INSTANCE.getRankManager().getDefaultRank(), User.CONSOLE, "預設職階", System.currentTimeMillis(), TimeUtil.PERMANENT));
+            user.addGrant(new Grant(user, Maid.INSTANCE.getRankManager().getDefaultRank(), user, "Custom", System.currentTimeMillis(), TimeUtil.PERMANENT));
         }
         Common.sendMessage(player, "<green>done");
     }

@@ -31,9 +31,9 @@ public class RankManager extends MaidManager {
         long defaultRanks = ranks.values().stream().filter(IRank::isDefault).count();
         if (defaultRanks == 0) {
             //If there's no default rank, create one and store into database and cache
-            Rank rank = new Rank("Default");
+            Rank rank = new Rank("<gray>", "Default");
             rank.setPrefix("<gray>");
-            rank.setDisplayName("預設");
+            rank.setDisplayName("預設職階");
             rank.setDefault(true);
 
             saveRank(rank);
