@@ -11,12 +11,13 @@ import rip.diamond.maid.redis.messaging.Packet;
 @Getter
 @RequiredArgsConstructor
 public class RankUpdatePacket implements Packet {
+    private final String from;
     private final Rank rank;
     private final boolean delete;
 
     @Override
     public String getFrom() {
-        return MaidAPI.INSTANCE.getPlatform().getServerID();
+        return from;
     }
 
     @Override
@@ -27,6 +28,10 @@ public class RankUpdatePacket implements Packet {
     @Override
     public void onReceive() {
         RankManager manager = Maid.INSTANCE.getRankManager();
+
+        if (MaidAPI.INSTANCE.getPlatform().getServerID().equals(getFrom())) {
+            return;
+        }
 
         if (delete) {
             manager.getRanks().remove(rank.getUniqueID());

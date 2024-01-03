@@ -8,7 +8,7 @@ public class HexColorUtil {
 
     public static boolean isHexColor(String input) {
         // Regular expression pattern for hex color
-        String hexColorPattern = "^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$";
+        String hexColorPattern = "^#([A-Fa-f0-9]{6})$";
 
         // Compile the pattern
         Pattern pattern = Pattern.compile(hexColorPattern);

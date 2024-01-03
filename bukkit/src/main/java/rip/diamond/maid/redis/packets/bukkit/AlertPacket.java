@@ -10,12 +10,13 @@ import rip.diamond.maid.util.Preconditions;
 @RequiredArgsConstructor
 public class AlertPacket implements Packet {
 
+    private final String from;
     private final String message;
     private final AlertType alertType;
 
     @Override
     public String getFrom() {
-        return MaidAPI.INSTANCE.getPlatform().getServerID();
+        return from;
     }
 
     @Override

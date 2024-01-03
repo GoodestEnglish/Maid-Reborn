@@ -10,17 +10,18 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 public class PacketTestPacket implements Packet {
+    private final String fromTo;
     private final UUID uuid;
     private final String message;
 
     @Override
     public String getFrom() {
-        return MaidAPI.INSTANCE.getPlatform().getServerID();
+        return fromTo;
     }
 
     @Override
     public String getTo() {
-        return MaidAPI.INSTANCE.getPlatform().getServerID();
+        return fromTo;
     }
 
     @Override

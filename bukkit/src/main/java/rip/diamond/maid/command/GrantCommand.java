@@ -2,16 +2,19 @@ package rip.diamond.maid.command;
 
 import org.bukkit.entity.Player;
 import rip.diamond.maid.Maid;
+import rip.diamond.maid.MaidPermission;
 import rip.diamond.maid.grant.menu.GrantsMenu;
 import rip.diamond.maid.player.User;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.UUIDCache;
 import rip.diamond.maid.util.command.annotation.Command;
+import rip.diamond.maid.util.command.annotation.Require;
 import rip.diamond.maid.util.command.annotation.Sender;
 
 import java.util.UUID;
 
+@Require(MaidPermission.GRANT)
 public class GrantCommand {
 
     @Command(name = "", desc = "查看/移除職階升級紀錄")

@@ -1,6 +1,5 @@
 # Maid
-A server core
+A server core, heavily forked from [Holiday](https://github.com/AndyReckt/Holiday)
 
 ## Credit
 * [Drink](https://github.com/jonahseguin/drink) - Command Library
-* [Holiday](https://github.com/AndyReckt/Holiday) - Inspiration, Code format, Redis Packet

@@ -19,7 +19,7 @@ public class Rank implements IRank {
     @SerializedName("_id")
     private final UUID uniqueID;
     private String color, name, displayName;
-    private String prefix = "", suffix = "";
+    private String prefix = "", suffix = "", chatColor = "#FFFFFF";
     private boolean default_ = false;
     private int priority = 0;
     private final Set<RankPermission> permissions = new HashSet<>();
@@ -44,8 +44,8 @@ public class Rank implements IRank {
     }
 
     @Override
-    public String getDisplayName() {
-        return "<" + color + ">" + displayName;
+    public String getDisplayName(boolean withColor) {
+        return (withColor ? "<" + color + ">" : "") + displayName;
     }
 
     @Override
@@ -69,6 +69,11 @@ public class Rank implements IRank {
     }
 
     @Override
+    public boolean containPermission(String permission) {
+        return this.permissions.stream().anyMatch(rankPermission -> rankPermission.get().equalsIgnoreCase(permission));
+    }
+
+    @Override
     public void addPermission(String permission) {
         this.permissions.add(new RankPermission(permission, this));
     }
@@ -76,6 +81,11 @@ public class Rank implements IRank {
     @Override
     public void removePermission(String permission) {
         this.permissions.removeIf(rankPermission -> rankPermission.get().equalsIgnoreCase(permission));
+    }
+
+    @Override
+    public boolean containParent(UUID parent) {
+        return this.parents.stream().anyMatch(uuid -> uuid.equals(parent));
     }
 
     @Override

@@ -10,10 +10,10 @@ import rip.diamond.maid.util.command.annotation.Command;
 import rip.diamond.maid.util.command.annotation.Require;
 import rip.diamond.maid.util.command.annotation.Sender;
 
+@Require("*")
 public class TestCommand {
 
     @Command(name = "", desc = "測試")
-    @Require("*")
     public void root(@Sender Player player, int h) {
         User user = (User) Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join();
         for (int i = 0; i < h; i++) {

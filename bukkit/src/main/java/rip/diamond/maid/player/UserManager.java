@@ -4,6 +4,8 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import lombok.Getter;
 import org.bson.Document;
+import rip.diamond.maid.Maid;
+import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.ProfileUpdatePacket;
@@ -43,7 +45,7 @@ public class UserManager extends MaidManager {
     public void saveUser(IUser user) {
         Tasks.runAsync(() -> {
             plugin.getMongoManager().getUsers().replaceOne(Filters.eq("_id", user.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(user)), new ReplaceOptions().upsert(true));
-            PacketHandler.send(new ProfileUpdatePacket((User) user));
+            PacketHandler.send(new ProfileUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), (User) user));
         });
     }
 }

@@ -8,10 +8,10 @@ import rip.diamond.maid.util.command.annotation.Command;
 import rip.diamond.maid.util.command.annotation.Require;
 import rip.diamond.maid.util.command.annotation.Sender;
 
+@Require(MaidPermission.COLOR)
 public class ColorCommand {
 
     @Command(name = "", desc = "查看可用的顏色")
-    @Require(MaidPermission.COLOR)
     public void root(@Sender Player sender) {
         for (CC cc : CC.values()) {
             Common.sendMessage(sender, cc + "我的顏色是 - " + cc.name() + " - " + cc.getColor());

@@ -2,13 +2,17 @@ package rip.diamond.maid;
 
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import rip.diamond.maid.chat.ChatListener;
+import rip.diamond.maid.chat.ChatManager;
 import rip.diamond.maid.command.*;
 import rip.diamond.maid.config.Config;
 import rip.diamond.maid.mongo.MongoManager;
 import rip.diamond.maid.platform.BukkitPlatform;
 import rip.diamond.maid.player.UserListener;
 import rip.diamond.maid.player.UserManager;
+import rip.diamond.maid.rank.Rank;
 import rip.diamond.maid.rank.RankManager;
 import rip.diamond.maid.redis.RedisCredentials;
 import rip.diamond.maid.server.ServerListener;
@@ -17,6 +21,8 @@ import rip.diamond.maid.util.BasicConfigFile;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.command.CommandService;
 import rip.diamond.maid.util.command.Drink;
+import rip.diamond.maid.util.command.provider.custom.RankProvider;
+import rip.diamond.maid.util.command.provider.spigot.PlayerProvider;
 import rip.diamond.maid.util.menu.MenuHandler;
 import rip.diamond.maid.util.procedure.Procedure;
 
@@ -32,6 +38,7 @@ public class Maid extends JavaPlugin {
     private UserManager userManager;
     private RankManager rankManager;
     private ServerManager serverManager;
+    private ChatManager chatManager;
 
     private BasicConfigFile configFile;
 
@@ -80,16 +87,20 @@ public class Maid extends JavaPlugin {
         userManager = new UserManager();
         rankManager = new RankManager();
         serverManager = new ServerManager();
+        chatManager = new ChatManager();
     }
 
     private void loadListeners() {
         Arrays.asList(
+                new ChatListener(),
                 new UserListener(),
                 new ServerListener()
         ).forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));
     }
 
     private void loadCommands() {
+        drink.bind(Rank.class).toProvider(new RankProvider());
+
         drink.register(new ColorCommand(), "color");
         drink.register(new GrantCommand(), "grant");
         drink.register(new PacketTestCommand(), "packettest");

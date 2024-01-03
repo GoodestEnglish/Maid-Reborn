@@ -13,37 +13,39 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
-public abstract class ToggleButton<T> extends Button {
+public abstract class NumberButton<T> extends Button {
 
-    private final String enabled;
-    private final String disabled;
     private final T target;
 
     public abstract String getName();
 
-    public abstract Function<T, Boolean> read();
+    public abstract Function<T, Integer> read();
 
-    public abstract BiConsumer<T, Boolean> write();
+    public abstract BiConsumer<T, Integer> write();
 
     @Override
     public ItemStack getButtonItem(Player player) {
-        return new ItemBuilder(isEnabled() ? Material.REDSTONE_TORCH : Material.LEVER)
-                .name(CC.AQUA + getName())
+        return new ItemBuilder(Material.GOLD_NUGGET)
+                .name(getName())
                 .lore(
                         "",
-                        CC.YELLOW + (isEnabled() ? " » " : "   ") + CC.GREEN + enabled,
-                        CC.YELLOW + (!isEnabled() ? " » " : "   ") + CC.RED + disabled,
-                        ""
+                        CC.WHITE + "現時數量: " + CC.AQUA + readAmount(),
+                        "",
+                        CC.YELLOW + "點擊左鍵提升數值",
+                        CC.YELLOW + "點擊右鍵降低數值"
                 )
                 .build();
     }
 
     @Override
     public void clicked(InventoryClickEvent event, Player player, ClickType clickType) {
-        write().accept(target, !isEnabled());
+        int current = readAmount();
+        int change = clickType.isShiftClick() ? 10 : 1;
+
+        write().accept(target, current + (clickType.isRightClick() ? -change : change));
     }
 
-    private boolean isEnabled() {
+    private int readAmount() {
         return read().apply(target);
     }
 }

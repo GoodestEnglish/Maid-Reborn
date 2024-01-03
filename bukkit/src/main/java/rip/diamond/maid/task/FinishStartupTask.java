@@ -21,7 +21,7 @@ public class FinishStartupTask extends TaskTicker {
         String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
 
         Maid.INSTANCE.getServerManager().setLoaded(true);
-        PacketHandler.send(new AlertPacket(CC.GRAY + "[" + CC.INDIAN_RED + "⚠" + CC.GRAY + "] " + CC.LIME_GREEN + serverID + CC.STEEL_BLUE + " 伺服器已啟動, 並可讓玩家進入!", AlertType.SERVER));
+        PacketHandler.send(new AlertPacket(MaidAPI.INSTANCE.getPlatform().getServerID(),CC.GRAY + "[" + CC.INDIAN_RED + "⚠" + CC.GRAY + "] " + CC.LIME_GREEN + serverID + CC.STEEL_BLUE + " 伺服器已啟動, 並可讓玩家進入!", AlertType.SERVER));
 
         cancel();
     }

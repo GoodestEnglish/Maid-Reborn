@@ -17,13 +17,12 @@ import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.persistence.PersistentDataType;
 import rip.diamond.maid.Maid;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class ItemBuilder implements Listener {
+public class ItemBuilder {
 
 	public static final NamespacedKey NAMESPACED_KEY_DATA = new NamespacedKey(Maid.INSTANCE, "data");
 	private final ItemStack is;

@@ -14,10 +14,10 @@ import rip.diamond.maid.util.command.annotation.Sender;
 
 import java.util.UUID;
 
+@Require(MaidPermission.USER)
 public class UserCommand {
 
     @Command(name = "", desc = "查看玩家資料")
-    @Require(MaidPermission.USER)
     public void root(@Sender Player sender, String targetName) {
         UUID uuid = UUIDCache.getUUID(targetName).join();
         if (!Maid.INSTANCE.getUserManager().hasUser(uuid).join()) {

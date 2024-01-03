@@ -1,17 +1,14 @@
 package rip.diamond.maid.grant.menu;
 
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.MaidPermission;
 import rip.diamond.maid.api.user.IGrant;
-import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.grant.Grant;
 import rip.diamond.maid.player.User;
 import rip.diamond.maid.util.CC;
@@ -71,7 +68,7 @@ public class GrantsMenu extends PaginatedMenu {
                         .name(CC.LIME_GREEN + "(有效) " + TimeUtil.formatDate(grant.getIssuedAt()))
                         .lore(
                                 " ",
-                                CC.WHITE + " 職階: " + CC.AQUA + grant.getRank().getDisplayName(),
+                                CC.WHITE + " 職階: " + CC.AQUA + grant.getRank().getDisplayName(true),
                                 CC.WHITE + " 持續時間: " + CC.AQUA + TimeUtil.formatDuration(grant.getDuration()),
                                 "",
                                 CC.WHITE + " 執行者: " + CC.AQUA + grant.getIssuerName(),
@@ -84,7 +81,7 @@ public class GrantsMenu extends PaginatedMenu {
                 builder = new ItemBuilder(Material.RED_WOOL)
                         .name(CC.LIME_GREEN + "(無效) " + TimeUtil.formatDate(grant.getIssuedAt()))
                         .lore(
-                                CC.WHITE + " 職階: " + CC.AQUA + grant.getRank().getDisplayName(),
+                                CC.WHITE + " 職階: " + CC.AQUA + grant.getRank().getDisplayName(true),
                                 CC.WHITE + " 持續時間: " + CC.AQUA + TimeUtil.formatDuration(grant.getDuration()),
                                 "",
                                 CC.WHITE + " 執行者: " + CC.AQUA + grant.getIssuer(),
@@ -103,7 +100,7 @@ public class GrantsMenu extends PaginatedMenu {
             if (!grant.isActive()) {
                 return;
             }
-            if (!player.hasPermission(MaidPermission.GRANTS)) {
+            if (!player.hasPermission(MaidPermission.GRANT)) {
                 return;
             }
             if (grant.getRank().isDefault()) {

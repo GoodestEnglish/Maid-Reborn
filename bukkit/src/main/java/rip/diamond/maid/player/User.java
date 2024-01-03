@@ -95,6 +95,11 @@ public class User implements IUser {
     }
 
     @Override
+    public boolean containPermission(String permission) {
+        return this.permissions.stream().anyMatch(userPermission -> userPermission.get().equalsIgnoreCase(permission));
+    }
+
+    @Override
     public void addPermission(String permission) {
         this.permissions.add(new UserPermission(permission));
     }

@@ -5,16 +5,17 @@ import com.mongodb.client.model.ReplaceOptions;
 import lombok.Getter;
 import org.bson.Document;
 import org.bukkit.Bukkit;
+import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.RankUpdatePacket;
 import rip.diamond.maid.util.extend.MaidManager;
 import rip.diamond.maid.util.json.GsonProvider;
 
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class RankManager extends MaidManager {
 
@@ -37,27 +38,31 @@ public class RankManager extends MaidManager {
             rank.setDefault(true);
 
             saveRank(rank);
-        } else if (defaultRanks >= 2) {
-            //If there's two or above, throw an error and stop the server
-            Bukkit.shutdown();
-            throw new RuntimeException("Cannot contain " + defaultRanks + " default ranks in database and cache");
         }
     }
 
     public void saveRank(IRank rank) {
         plugin.getMongoManager().getRanks().replaceOne(Filters.eq("_id", rank.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(rank)), new ReplaceOptions().upsert(true));
         ranks.put(rank.getUniqueID(), rank);
-        PacketHandler.send(new RankUpdatePacket((Rank) rank, false));
+        PacketHandler.send(new RankUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), (Rank) rank, false));
     }
 
     public void deleteRank(IRank rank) {
         plugin.getMongoManager().getRanks().deleteOne(Filters.eq("_id", rank.getUniqueID().toString()));
         ranks.remove(rank.getUniqueID());
-        PacketHandler.send(new RankUpdatePacket((Rank) rank, true));
+        PacketHandler.send(new RankUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), (Rank) rank, true));
     }
 
     public IRank getDefaultRank() {
         return ranks.values().stream().filter(IRank::isDefault).findFirst().orElseThrow(() -> new NoSuchElementException("Cannot find default rank in cache"));
+    }
+
+    public List<IRank> getRanksInOrder() {
+        return ranks.values().stream().sorted(Comparator.comparingInt(IRank::getPriority).reversed()).toList();
+    }
+
+    public @Nullable IRank getRank(String name) {
+        return ranks.values().stream().filter(rank -> rank.getName().equalsIgnoreCase(name)).findAny().orElse(null);
     }
 
 }

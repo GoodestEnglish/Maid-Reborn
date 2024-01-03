@@ -12,11 +12,12 @@ import rip.diamond.maid.util.Preconditions;
 @RequiredArgsConstructor
 public class ProfileUpdatePacket implements Packet {
 
+    private final String from;
     private final User user;
 
     @Override
     public String getFrom() {
-        return MaidAPI.INSTANCE.getPlatform().getServerID();
+        return from;
     }
 
     @Override
@@ -27,6 +28,10 @@ public class ProfileUpdatePacket implements Packet {
     @Override
     public void onReceive() {
         Preconditions.checkArgument(MaidAPI.INSTANCE.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
+
+        if (MaidAPI.INSTANCE.getPlatform().getServerID().equals(getFrom())) {
+            return;
+        }
 
         UserManager manager = Maid.INSTANCE.getUserManager();
         if (manager.getUsers().containsKey(user.getUniqueID())) {

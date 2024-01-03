@@ -73,11 +73,26 @@ public interface IRank {
     void setSuffix(String suffix);
 
     /**
+     * Get the rank's chat color.
+     *
+     * @return The rank's chat color
+     */
+    String getChatColor();
+
+    /**
+     * Set the rank's chat color.
+     * If the player is disguised, this will return the disguise's rank chat color.
+     *
+     * @param hexColor The new chat color of the rank
+     */
+    void setChatColor(String hexColor);
+
+    /**
      * Get the rank's display name.
      *
      * @return The rank's display name
      */
-    String getDisplayName();
+    String getDisplayName(boolean withColor);
 
     /**
      * Set the rank's display name.
@@ -130,6 +145,14 @@ public interface IRank {
     Set<RankPermission> getAllPermissions();
 
     /**
+     * Check if the rank contain the permission.
+     *
+     * @param permission The permission
+     * @return True if the rank has the permission
+     */
+    boolean containPermission(String permission);
+
+    /**
      * Add a new permission.
      *
      * @param permission The permission
@@ -149,6 +172,14 @@ public interface IRank {
      * @return All parents ranks
      */
     Set<UUID> getParents();
+
+    /**
+     * Check if the rank contain the parent.
+     *
+     * @param parent The parent
+     * @return True if the rank has the parent
+     */
+    boolean containParent(UUID parent);
 
     /**
      * Add a parent rank to the rank

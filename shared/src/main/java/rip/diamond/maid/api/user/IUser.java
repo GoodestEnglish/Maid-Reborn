@@ -104,6 +104,14 @@ public interface IUser {
     Set<String> getIPHistory();
 
     /**
+     * Check if the user contain the permission.
+     *
+     * @param permission The permission
+     * @return True if the user has the permission
+     */
+    boolean containPermission(String permission);
+
+    /**
      * Add a new permission.
      *
      * @param permission The permission
