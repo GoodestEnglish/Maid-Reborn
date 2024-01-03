@@ -14,11 +14,9 @@ import rip.diamond.maid.util.command.annotation.Sender;
 public class TestCommand {
 
     @Command(name = "", desc = "測試")
-    public void root(@Sender Player player, int h) {
+    public void root(@Sender Player player) {
         User user = (User) Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join();
-        for (int i = 0; i < h; i++) {
-            user.addGrant(new Grant(user, Maid.INSTANCE.getRankManager().getDefaultRank(), user, "Custom", System.currentTimeMillis(), TimeUtil.PERMANENT));
-        }
+        user.addGrant(new Grant(user, Maid.INSTANCE.getRankManager().getRanksInOrder().get(0), user, "Custom", System.currentTimeMillis(), TimeUtil.PERMANENT));
         Common.sendMessage(player, "<green>done");
     }
 

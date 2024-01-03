@@ -18,8 +18,15 @@ public abstract class ConversationButton extends Button {
 
     public abstract BiConsumer<ConversationContext, String> getAction();
 
+    public boolean isAllowClick() {
+        return true;
+    }
+
     @Override
     public void clicked(InventoryClickEvent event, Player player, ClickType clickType) {
+        if (!isAllowClick()) {
+            return;
+        }
         player.closeInventory();
         ConversationFactory factory = new ConversationFactory(Maid.INSTANCE).withModality(true).withPrefix(new NullConversationPrefix()).withFirstPrompt(new StringPrompt() {
             @Override

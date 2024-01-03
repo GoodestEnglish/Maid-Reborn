@@ -2,9 +2,8 @@ package rip.diamond.maid.grant.menu;
 
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
+import org.bukkit.conversations.ConversationContext;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidPermission;
@@ -18,11 +17,12 @@ import rip.diamond.maid.util.TimeUtil;
 import rip.diamond.maid.util.menu.Menu;
 import rip.diamond.maid.util.menu.MenuType;
 import rip.diamond.maid.util.menu.buttons.Button;
+import rip.diamond.maid.util.menu.buttons.ConversationButton;
 import rip.diamond.maid.util.menu.pagination.PaginatedMenu;
-import rip.diamond.maid.util.procedure.Procedure;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class GrantsMenu extends PaginatedMenu {
     private final User target;
@@ -57,8 +57,26 @@ public class GrantsMenu extends PaginatedMenu {
     }
 
     @RequiredArgsConstructor
-    class GrantButton extends Button {
+    class GrantButton extends ConversationButton {
         private final IGrant grant;
+
+        @Override
+        public String getInstruction() {
+            return "請在聊天室輸入移除的原因";
+        }
+
+        @Override
+        public BiConsumer<ConversationContext, String> getAction() {
+            return (cc, reason) -> {
+                User user = (User) Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join();
+
+                Grant g = (Grant) grant;
+                g.revoke(user, reason);
+                Maid.INSTANCE.getUserManager().saveUser(target);
+
+                updateMenu();
+            };
+        }
 
         @Override
         public ItemStack getButtonItem(Player player) {
@@ -79,12 +97,12 @@ public class GrantsMenu extends PaginatedMenu {
                 }
             } else {
                 builder = new ItemBuilder(Material.RED_WOOL)
-                        .name(CC.LIME_GREEN + "(無效) " + TimeUtil.formatDate(grant.getIssuedAt()))
+                        .name(CC.RED + "(無效) " + TimeUtil.formatDate(grant.getIssuedAt()))
                         .lore(
                                 CC.WHITE + " 職階: " + CC.AQUA + grant.getRank().getDisplayName(true),
                                 CC.WHITE + " 持續時間: " + CC.AQUA + TimeUtil.formatDuration(grant.getDuration()),
                                 "",
-                                CC.WHITE + " 執行者: " + CC.AQUA + grant.getIssuer(),
+                                CC.WHITE + " 執行者: " + CC.AQUA + grant.getIssuerName(),
                                 CC.WHITE + " 執行原因: " + CC.AQUA + grant.getReason(),
                                 "",
                                 CC.WHITE + " 移除者: " + CC.AQUA + grant.getRevokerName(),
@@ -96,28 +114,18 @@ public class GrantsMenu extends PaginatedMenu {
         }
 
         @Override
-        public void clicked(InventoryClickEvent event, Player player, ClickType clickType) {
+        public boolean isAllowClick() {
             if (!grant.isActive()) {
-                return;
+                return false;
             }
             if (!player.hasPermission(MaidPermission.GRANT)) {
-                return;
+                return false;
             }
             if (grant.getRank().isDefault()) {
                 Common.sendMessage(player, CC.RED + "無法移除預設的職階");
-                return;
+                return false;
             }
-
-            player.closeInventory();
-            Procedure.buildProcedure(player, "請在聊天室輸入移除的原因", (reason) -> {
-                User user = (User) Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join();
-
-                Grant g = (Grant) grant;
-                g.revoke(user, reason);
-                Maid.INSTANCE.getUserManager().saveUser(target);
-
-                updateMenu();
-            });
+            return super.isAllowClick();
         }
     }
 }

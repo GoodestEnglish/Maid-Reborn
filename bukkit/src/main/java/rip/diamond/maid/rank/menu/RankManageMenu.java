@@ -185,7 +185,7 @@ public class RankManageMenu extends Menu {
             public ItemStack getButtonItem(Player player) {
                 return new ItemBuilder(Material.PAINTING)
                         .name(CC.AQUA + "更改前綴")
-                        .lore("", CC.WHITE + " 現時前綴: " + CC.GRAY + "'" + CC.AQUA + rank.getPrefix() + CC.RESET + CC.GRAY + "'", "", CC.YELLOW + "點擊更改")
+                        .lore("", CC.WHITE + " 現時前綴: " + CC.GRAY + "'" + CC.AQUA + rank.getPrefix() + CC.RESET + "<!italic>" + CC.GRAY + "'", "", CC.YELLOW + "點擊更改")
                         .build();
             }
         });
@@ -211,7 +211,7 @@ public class RankManageMenu extends Menu {
             public ItemStack getButtonItem(Player player) {
                 return new ItemBuilder(Material.PAINTING)
                         .name(CC.AQUA + "更改後綴")
-                        .lore("", CC.WHITE + " 現時後綴: " + CC.GRAY + "'" + CC.AQUA + rank.getSuffix() + CC.RESET + CC.GRAY + "'", "", CC.YELLOW + "點擊更改")
+                        .lore("", CC.WHITE + " 現時前綴: " + CC.GRAY + "'" + CC.AQUA + rank.getSuffix() + CC.RESET + "<!italic>" + CC.GRAY + "'", "", CC.YELLOW + "點擊更改")
                         .build();
             }
         });
