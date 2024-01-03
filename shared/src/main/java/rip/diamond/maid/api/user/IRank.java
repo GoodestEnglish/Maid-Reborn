@@ -1,7 +1,6 @@
 package rip.diamond.maid.api.user;
 
 import com.google.gson.annotations.SerializedName;
-import rip.diamond.maid.api.user.permission.Permission;
 import rip.diamond.maid.api.user.permission.RankPermission;
 
 import java.util.Set;
@@ -18,7 +17,7 @@ public interface IRank {
     UUID getUniqueID();
 
     /**
-     * Get the rank's color.
+     * Get the rank's color, in hex color (Ex: #FF5733)
      *
      * @return The rank's color
      */
@@ -143,6 +142,13 @@ public interface IRank {
      * @param permission The permission which needs to be removed
      */
     void removePermission(String permission);
+
+    /**
+     * Get all parent ranks in this rank, in UUID.
+     *
+     * @return All parents ranks
+     */
+    Set<UUID> getParents();
 
     /**
      * Add a parent rank to the rank

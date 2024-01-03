@@ -7,6 +7,7 @@ import org.bson.Document;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.permission.RankPermission;
+import rip.diamond.maid.util.HexColorUtil;
 import rip.diamond.maid.util.json.GsonProvider;
 
 import java.util.*;
@@ -22,7 +23,7 @@ public class Rank implements IRank {
     private boolean default_ = false;
     private int priority = 0;
     private final Set<RankPermission> permissions = new HashSet<>();
-    private final List<UUID> parents = new ArrayList<>();
+    private final Set<UUID> parents = new HashSet<>();
 
     public Rank(String color, String name) {
         this.uniqueID = UUID.randomUUID();
@@ -35,9 +36,16 @@ public class Rank implements IRank {
         return GsonProvider.GSON.fromJson(document.toJson(), Rank.class);
     }
 
+    public void setColor(String color) {
+        if (!HexColorUtil.isHexColor(color)) {
+            throw new IllegalArgumentException("The provided string '" + color + "' isn't a hex color");
+        }
+        this.color = color;
+    }
+
     @Override
     public String getDisplayName() {
-        return color + displayName;
+        return "<" + color + ">" + displayName;
     }
 
     @Override

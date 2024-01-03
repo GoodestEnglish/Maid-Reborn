@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import rip.diamond.maid.util.CC;
+import rip.diamond.maid.util.HeadUtil;
 import rip.diamond.maid.util.ItemBuilder;
 import rip.diamond.maid.util.menu.Menu;
 import rip.diamond.maid.util.menu.buttons.Button;
@@ -20,11 +21,13 @@ public abstract class PaginatedMenu extends Menu {
 
     private NavigationPosition navigationPosition = NavigationPosition.BOTTOM;
 
-    private ItemStack previousPageItem = new ItemBuilder(Material.ARROW)
+    private ItemStack previousPageItem = new ItemBuilder(Material.PLAYER_HEAD)
+            .texture(HeadUtil.PREVIOUS_PAGE.get())
             .name(CC.LIME_GREEN + "上一頁")
             .lore(CC.GRAY + "點擊這裏跳轉到上一頁")
             .build();
-    private ItemStack nextPageItem = new ItemBuilder(Material.ARROW)
+    private ItemStack nextPageItem = new ItemBuilder(Material.PLAYER_HEAD)
+            .texture(HeadUtil.NEXT_PAGE.get())
             .name(CC.LIME_GREEN + "下一頁")
             .lore(CC.GRAY + "點擊這裏跳轉到下一頁")
             .build();

@@ -47,7 +47,7 @@ public class UserMenu extends Menu {
                         .skull(target.getRealName())
                         .lore(
                                 "",
-                                CC.WHITE + "職階: " + CC.AQUA + target.getRealRank().getDisplayName(),
+                                CC.WHITE + " 職階: " + CC.AQUA + target.getRealRank().getDisplayName(),
                                 "",
                                 CC.WHITE + " 首次進入: " + CC.AQUA + TimeUtil.formatDate(target.getFirstSeen()),
                                 CC.WHITE + " 最後進入: " + CC.AQUA + TimeUtil.formatDate(target.getLastSeen()),

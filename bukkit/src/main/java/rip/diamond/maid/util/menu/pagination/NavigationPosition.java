@@ -65,7 +65,7 @@ public enum NavigationPosition {
             });
 
             if (menu.getBackMenu() != null) {
-                map.put(menu.getSize() - 4, new BackButton(menu.getBackMenu()));
+                map.put(menu.getSize() - 6, new BackButton(menu.getBackMenu()));
             }
 
             return map;

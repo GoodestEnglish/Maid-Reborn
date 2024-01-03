@@ -1,7 +1,10 @@
 package rip.diamond.maid.util;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -244,6 +247,19 @@ public class ItemBuilder implements Listener {
 		try {
 			SkullMeta im = (SkullMeta) is.getItemMeta();
 			im.setOwner(owner);
+			is.setItemMeta(im);
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+		}
+		return this;
+	}
+
+	public ItemBuilder texture(String hash) {
+		try {
+			SkullMeta im = (SkullMeta) is.getItemMeta();
+			PlayerProfile profile = Bukkit.createProfileExact(new UUID(hash.hashCode(), hash.hashCode()), "Maid-HeadTexture");
+			profile.getProperties().add(new ProfileProperty("textures", hash));
+			im.setPlayerProfile(profile);
 			is.setItemMeta(im);
 		} catch (ClassCastException e) {
 			e.printStackTrace();
