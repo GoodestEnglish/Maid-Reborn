@@ -2,12 +2,14 @@ package rip.diamond.maid.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class TimeUtil {
 
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
     public static final long PERMANENT = -1;
+    public static final List<String> TIME_OPTIONS = List.of("15m", "30m", "1h", "6h", "12h", "1d", "3d", "7d", "14d", "30d", "90d", "1y", "永久");
 
     public static String formatDate(long value) {
         return FORMAT.format(new Date(value));
@@ -52,5 +54,42 @@ public class TimeUtil {
         }
 
         return formattedDuration.toString().trim();
+    }
+
+    public static long getDuration(String input) {
+        input = input.toLowerCase();
+
+        if (input.equals(Long.toString(PERMANENT))) {
+            return PERMANENT;
+        }
+
+        long result = 0L;
+        StringBuilder number = new StringBuilder();
+
+        for (int i = 0; i < input.length(); ++i) {
+            char c = input.charAt(i);
+
+            if (Character.isDigit(c)) {
+                number.append(c);
+            } else if (Character.isLetter(c)) {
+                result += convert(Integer.parseInt(number.toString()), c);
+                number.setLength(0);
+            }
+        }
+
+        return result;
+    }
+
+    public static long convert(int value, char charType) {
+        return switch (charType) {
+            case 'y' -> TimeUnit.DAYS.toMillis(365L) * value;
+            case 'M' -> TimeUnit.DAYS.toMillis(30L) * value;
+            case 'w' -> TimeUnit.DAYS.toMillis(7L) * value;
+            case 'd' -> TimeUnit.DAYS.toMillis(1L) * value;
+            case 'h' -> TimeUnit.HOURS.toMillis(1L) * value;
+            case 'm' -> TimeUnit.MINUTES.toMillis(1L) * value;
+            case 's' -> TimeUnit.SECONDS.toMillis(1L) * value;
+            default -> -1L;
+        };
     }
 }

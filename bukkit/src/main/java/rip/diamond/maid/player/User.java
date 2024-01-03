@@ -25,7 +25,7 @@ public class User implements IUser {
 
     @SerializedName("_id")
     private final UUID uniqueID;
-    private String name = "$undefined";
+    private String name = "$undefined", texture = "";
     private long firstSeen = -1, lastSeen = -1;
     private String lastServer, ip = "Not Recorded";
     private final Set<String> ipHistory = new HashSet<>();
@@ -131,7 +131,9 @@ public class User implements IUser {
 
     @Override
     public Set<IRank> getRanks() {
-        return getActiveGrants().stream().map(IGrant::getRank).collect(Collectors.toSet());
+        Set<IRank> ranks = getActiveGrants().stream().map(IGrant::getRank).collect(Collectors.toSet());
+        ranks.add(Maid.INSTANCE.getRankManager().getDefaultRank());
+        return ranks;
     }
 
     @Override

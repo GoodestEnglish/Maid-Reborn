@@ -1,5 +1,6 @@
 package rip.diamond.maid.player;
 
+import com.destroystokyo.paper.profile.ProfileProperty;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,11 +37,6 @@ public class UserListener extends MaidListener {
         user.updateLastServer();
         user.setIP(event.getAddress().getHostAddress());
 
-        //Add a default grant for the user of there's no grants
-        if (user.getGrants().isEmpty()) {
-            user.addGrant(new Grant(user, plugin.getRankManager().getDefaultRank(), User.CONSOLE, "預設職階", System.currentTimeMillis(), TimeUtil.PERMANENT));
-        }
-
         plugin.getUserManager().saveUser(user);
     }
 
@@ -52,8 +48,21 @@ public class UserListener extends MaidListener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onJoin(PlayerJoinEvent event) {
+    public void onJoinCacheUUID(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         UUIDCache.insert(player.getUniqueId(), player.getName());
     }
+    @EventHandler(priority = EventPriority.LOW)
+    public void onJoinCacheTexture(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
+
+        ProfileProperty property = player.getPlayerProfile().getProperties().stream().filter(profileProperty -> profileProperty.getName().equals("textures")).findAny().orElse(null);
+        if (property == null) {
+            Common.log("Warning: Cannot find textures property for player '" + user.getRealName() + "'");
+            return;
+        }
+        user.setTexture(property.getValue());
+    }
+
 }

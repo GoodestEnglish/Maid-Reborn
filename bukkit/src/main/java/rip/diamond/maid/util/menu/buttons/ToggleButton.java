@@ -31,9 +31,10 @@ public abstract class ToggleButton<T> extends Button {
                 .name(CC.AQUA + getName())
                 .lore(
                         "",
-                        CC.YELLOW + (isEnabled() ? " » " : "   ") + CC.GREEN + enabled,
-                        CC.YELLOW + (!isEnabled() ? " » " : "   ") + CC.RED + disabled,
-                        ""
+                        (isEnabled() ? CC.GREEN + " » " : CC.GRAY + "   ") + enabled,
+                        (!isEnabled() ? CC.GREEN + " » " : CC.GRAY + "   ") + disabled,
+                        "",
+                        CC.YELLOW + "點擊循環選項"
                 )
                 .build();
     }

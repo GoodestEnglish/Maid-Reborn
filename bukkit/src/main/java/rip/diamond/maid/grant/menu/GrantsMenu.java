@@ -4,16 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidPermission;
 import rip.diamond.maid.api.user.IGrant;
 import rip.diamond.maid.grant.Grant;
 import rip.diamond.maid.player.User;
-import rip.diamond.maid.util.CC;
-import rip.diamond.maid.util.Common;
-import rip.diamond.maid.util.ItemBuilder;
-import rip.diamond.maid.util.TimeUtil;
+import rip.diamond.maid.util.*;
 import rip.diamond.maid.util.menu.Menu;
 import rip.diamond.maid.util.menu.MenuType;
 import rip.diamond.maid.util.menu.buttons.Button;
@@ -48,6 +47,33 @@ public class GrantsMenu extends PaginatedMenu {
         for (IGrant grant : target.getGrants()) {
             buttons.put(buttons.size(), new GrantButton(grant));
         }
+        return buttons;
+    }
+
+    @Override
+    public Map<Integer, Button> getNavigationBar() {
+        Map<Integer, Button> buttons = super.getNavigationBar();
+        buttons.put(getSize() - 5, new Button() {
+            @Override
+            public ItemStack getButtonItem(Player player) {
+                return new ItemBuilder(Material.PLAYER_HEAD)
+                        .texture(HeadUtil.LIME_PLUS.get())
+                        .name(CC.AQUA + "新增升級紀錄")
+                        .lore(
+                                "",
+                                CC.WHITE + " 有效升級紀錄: " + CC.GREEN + target.getActiveGrants().size(),
+                                CC.WHITE + " 無效升級紀錄: " + CC.RED + (target.getGrants().size() - target.getActiveGrants().size()),
+                                "",
+                                CC.YELLOW + "點擊新增權限"
+                        )
+                        .build();
+            }
+
+            @Override
+            public void clicked(InventoryClickEvent event, Player player, ClickType clickType) {
+                new GrantMenu(player, target).updateMenu();
+            }
+        });
         return buttons;
     }
 
@@ -87,14 +113,13 @@ public class GrantsMenu extends PaginatedMenu {
                         .lore(
                                 " ",
                                 CC.WHITE + " 職階: " + CC.AQUA + grant.getRank().getDisplayName(true),
-                                CC.WHITE + " 持續時間: " + CC.AQUA + TimeUtil.formatDuration(grant.getDuration()),
+                                CC.WHITE + " 持續時間: " + CC.AQUA + TimeUtil.formatDuration(grant.getDuration()) + (grant.getDuration() != TimeUtil.PERMANENT ? CC.GRAY + " (剩餘" + TimeUtil.formatDuration(grant.getIssuedAt() + grant.getDuration() - System.currentTimeMillis()) + ")" : ""),
                                 "",
                                 CC.WHITE + " 執行者: " + CC.AQUA + grant.getIssuerName(),
-                                CC.WHITE + " 執行原因: " + CC.AQUA + grant.getReason()
+                                CC.WHITE + " 執行原因: " + CC.AQUA + grant.getReason(),
+                                "",
+                                CC.YELLOW + "點擊移除本次升級紀錄!"
                         );
-                if (!grant.getRank().isDefault()) {
-                    builder.lore("", CC.YELLOW + "點擊移除本次升級紀錄!");
-                }
             } else {
                 builder = new ItemBuilder(Material.RED_WOOL)
                         .name(CC.RED + "(無效) " + TimeUtil.formatDate(grant.getIssuedAt()))
@@ -119,10 +144,6 @@ public class GrantsMenu extends PaginatedMenu {
                 return false;
             }
             if (!player.hasPermission(MaidPermission.GRANT)) {
-                return false;
-            }
-            if (grant.getRank().isDefault()) {
-                Common.sendMessage(player, CC.RED + "無法移除預設的職階");
                 return false;
             }
             return super.isAllowClick();

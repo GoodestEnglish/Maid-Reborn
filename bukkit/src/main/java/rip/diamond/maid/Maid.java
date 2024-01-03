@@ -103,6 +103,7 @@ public class Maid extends JavaPlugin {
 
         drink.register(new ColorCommand(), "color");
         drink.register(new GrantCommand(), "grant");
+        drink.register(new GrantsCommand(), "grants");
         drink.register(new PacketTestCommand(), "packettest");
         drink.register(new RankCommand(), "rank");
         drink.register(new TestCommand(), "test");

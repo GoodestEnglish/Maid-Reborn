@@ -97,8 +97,8 @@ public class UserMenu extends Menu {
                         .name(CC.AQUA + "職階升級紀錄")
                         .lore(
                                 "",
-                                CC.WHITE + " 已啟用的升級紀錄: " + CC.GREEN + target.getActiveGrants().size(),
-                                CC.WHITE + " 已取消的升級紀錄: " + CC.RED + (target.getGrants().size() - target.getActiveGrants().size()),
+                                CC.WHITE + " 有效升級紀錄: " + CC.GREEN + target.getActiveGrants().size(),
+                                CC.WHITE + " 無效升級紀錄: " + CC.RED + (target.getGrants().size() - target.getActiveGrants().size()),
                                 "",
                                 CC.YELLOW + "點擊查看所有升級紀錄"
                         )

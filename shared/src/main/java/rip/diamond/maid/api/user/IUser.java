@@ -52,6 +52,20 @@ public interface IUser {
     String getDisplayName();
 
     /**
+     * Get the player's texture.
+     *
+     * @return The texture
+     */
+    String getTexture();
+
+    /**
+     * Set the player's texture.
+     *
+     * @param texture The texture to be set
+     */
+    void setTexture(String texture);
+
+    /**
      * Get the player's first seen.
      *
      * @return The player's first seen
