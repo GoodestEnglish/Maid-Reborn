@@ -10,6 +10,8 @@ import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.permission.RankPermission;
 import rip.diamond.maid.rank.Rank;
+import rip.diamond.maid.redis.messaging.PacketHandler;
+import rip.diamond.maid.redis.packets.bukkit.PermissionUpdatePacket;
 import rip.diamond.maid.util.*;
 import rip.diamond.maid.util.menu.Menu;
 import rip.diamond.maid.util.menu.MenuType;
@@ -65,11 +67,13 @@ public class RankPermissionsMenu extends PaginatedMenu {
                     if (associatedRank == rank) {
                         if (clickType.isLeftClick()) {
                             rank.removePermission(permission.get());
-                            updateMenu();
                         } else if (clickType.isRightClick()) {
                             Maid.INSTANCE.getPermissionManager().setEnabled(permission, !permission.isEnabled());
-                            updateMenu();
                         }
+                        Maid.INSTANCE.getRankManager().saveRank(rank);
+                        PacketHandler.send(new PermissionUpdatePacket());
+
+                        updateMenu();
                     }
                 }
             });
@@ -95,6 +99,7 @@ public class RankPermissionsMenu extends PaginatedMenu {
                     }
                     rank.addPermission(permission);
                     Maid.INSTANCE.getRankManager().saveRank(rank);
+                    PacketHandler.send(new PermissionUpdatePacket());
 
                     Common.sendMessage(player, CC.GREEN + "成功新增權限 " + CC.AQUA + permission);
                     updateMenu();

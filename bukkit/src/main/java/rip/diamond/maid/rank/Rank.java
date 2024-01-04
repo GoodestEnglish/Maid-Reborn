@@ -13,6 +13,7 @@ import rip.diamond.maid.util.HexColorUtil;
 import rip.diamond.maid.util.json.GsonProvider;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -62,12 +63,20 @@ public class Rank implements IRank {
 
     @Override
     public Set<RankPermission> getAllPermissions() {
-        Set<RankPermission> permissions = new HashSet<>(getPermissions());
+        LinkedHashSet<RankPermission> permissions = new LinkedHashSet<>(getPermissions());
         for (UUID parentUUID : parents) {
             IRank rank = Maid.INSTANCE.getRankManager().getRanks().get(parentUUID);
             permissions.addAll(rank.getAllPermissions());
         }
-        return permissions;
+
+        return permissions.stream().sorted(new Comparator<>() {
+            @Override
+            public int compare(RankPermission o1, RankPermission o2) {
+                IRank r1 = Maid.INSTANCE.getRankManager().getRanks().get(o1.getAssociatedRankUUID());
+                IRank r2 = Maid.INSTANCE.getRankManager().getRanks().get(o2.getAssociatedRankUUID());
+                return Integer.compare(r2.getPriority(), r1.getPriority());
+            }
+        }).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override
@@ -78,13 +87,11 @@ public class Rank implements IRank {
     @Override
     public void addPermission(String permission) {
         this.permissions.add(new RankPermission(permission, this));
-        PacketHandler.send(new PermissionUpdatePacket());
     }
 
     @Override
     public void removePermission(String permission) {
         this.permissions.removeIf(rankPermission -> rankPermission.get().equalsIgnoreCase(permission));
-        PacketHandler.send(new PermissionUpdatePacket());
     }
 
     @Override
@@ -95,12 +102,10 @@ public class Rank implements IRank {
     @Override
     public void addParent(UUID parent) {
         this.parents.add(parent);
-        PacketHandler.send(new PermissionUpdatePacket());
     }
 
     @Override
     public void removeParent(UUID parent) {
         this.parents.remove(parent);
-        PacketHandler.send(new PermissionUpdatePacket());
     }
 }

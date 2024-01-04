@@ -20,12 +20,12 @@ public class PermissionManager {
      * <p>
      * This field is where the permissible is stored on a HumanEntity.
      */
-    private static final Field HUMAN_ENTITY_PERMISSIBLE_FIELD;
+    public static final Field HUMAN_ENTITY_PERMISSIBLE_FIELD;
 
     /**
      * The field where attachments are stored on a permissible base.
      */
-    private static final Field PERMISSIBLE_BASE_ATTACHMENTS_FIELD;
+    public static final Field PERMISSIBLE_BASE_ATTACHMENTS_FIELD;
 
 
     static {

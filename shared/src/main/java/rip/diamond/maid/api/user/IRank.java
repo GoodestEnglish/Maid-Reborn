@@ -139,6 +139,7 @@ public interface IRank {
 
     /**
      * Get the rank's permissions, including parent rank's permissions.
+     * The permission is ordered by the priority of the permission.
      *
      * @return The rank's permissions
      */

@@ -12,6 +12,8 @@ import rip.diamond.maid.MaidPermission;
 import rip.diamond.maid.api.user.IGrant;
 import rip.diamond.maid.grant.Grant;
 import rip.diamond.maid.player.User;
+import rip.diamond.maid.redis.messaging.PacketHandler;
+import rip.diamond.maid.redis.packets.bukkit.PermissionUpdatePacket;
 import rip.diamond.maid.util.*;
 import rip.diamond.maid.util.menu.Menu;
 import rip.diamond.maid.util.menu.MenuType;
@@ -99,6 +101,7 @@ public class GrantsMenu extends PaginatedMenu {
                 Grant g = (Grant) grant;
                 g.revoke(user, reason);
                 Maid.INSTANCE.getUserManager().saveUser(target);
+                PacketHandler.send(new PermissionUpdatePacket(target.getUniqueID()));
 
                 updateMenu();
             };

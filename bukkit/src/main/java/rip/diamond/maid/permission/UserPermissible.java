@@ -1,51 +1,33 @@
 package rip.diamond.maid.permission;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.*;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.util.Common;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
-// TODO: 4/1/2024 Recode this, to make this class structure better
-// TODO: 4/1/2024 Support * permission
-// TODO: 4/1/2024 Support - permission
 public class UserPermissible extends PermissibleBase {
-
-    private static final Field ATTACHMENTS_FIELD;
-
-    static {
-        try {
-            ATTACHMENTS_FIELD = PermissibleBase.class.getDeclaredField("attachments");
-            ATTACHMENTS_FIELD.setAccessible(true);
-        } catch (NoSuchFieldException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-    }
 
     private final Player player;
     private final Maid plugin;
-    private final List<PermissionAttachment> attachments;
-    private final Map<String, PermissionAttachmentInfo> permissions;
+    @Getter private final LinkedHashSet<String> allowPermissions;
+    @Getter private final LinkedHashSet<String> denyPermissions;
 
-    public UserPermissible(Player opable) {
-        super(opable);
-        this.player = opable;
-        this.permissions = new HashMap<>();
+    public UserPermissible(Player player) {
+        super(player);
+        this.player = player;
         this.plugin = Maid.INSTANCE;
-        this.attachments = new ArrayList<>();
-        try {
-            ATTACHMENTS_FIELD.set(this, this.attachments);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        this.allowPermissions = new LinkedHashSet<>();
+        this.denyPermissions = new LinkedHashSet<>();
 
-        this.recalculatePermissions();
+        recalculatePermissions();
     }
 
     @Override
@@ -63,201 +45,201 @@ public class UserPermissible extends PermissibleBase {
         String permission = name.toLowerCase();
 
         IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
-        if (user.containPermission(name)) {
+
+        //Check if the user is null or not
+        if (user == null) {
+            //Should not happen because IUser is created during login and UserPermissible is injected during join, but just in case
+            throw new NullPointerException("Cannot check permission because user is null");
+        }
+
+        if (denyPermissions.contains("*")) {
+            return false;
+        }
+        if (allowPermissions.contains("*")) {
             return true;
         }
 
-        if (this.permissions.containsKey(permission)) {
-            return this.permissions.get(permission).getValue();
+        // TODO: 4/1/2024 Cannot disable minecraft default command for some reason
+        //Check the permissions map and see if the permission is set
+        for (String denyPermission : denyPermissions) {
+            //Check for basic permission
+            if (denyPermission.equals(permission)) {
+                return false;
+            }
+            //Check for * permission
+            if (!denyPermission.contains(".")) {
+                continue;
+            }
+            int index = denyPermission.lastIndexOf(".");
+            String head = denyPermission.substring(0, index);
+            String tail = denyPermission.substring(index);
+            if (permission.startsWith(head) && tail.equals(".*")) {
+                return false;
+            }
+        }
+        for (String allowPermission : allowPermissions) {
+            //Check for basic permission
+            if (allowPermission.equals(permission)) {
+                return true;
+            }
+            //Check for * permission
+            if (!allowPermission.contains(".")) {
+                continue;
+            }
+            int index = allowPermission.lastIndexOf(".");
+            String head = allowPermission.substring(0, index);
+            String tail = allowPermission.substring(index);
+            if (permission.startsWith(head) && tail.equals(".*")) {
+                return true;
+            }
         }
 
-        if (this.isOp()) {
+        //Check if the player is an operator
+        if (isOp()) {
             return true;
         }
 
-        Permission perm = plugin.getServer().getPluginManager().getPermission(name);
-
-        if (perm != null) {
-            return perm.getDefault().getValue(isOp());
-        } else {
-            return Permission.DEFAULT_PERMISSION.getValue(this.isOp());
-        }
+        //No overrides found. The permission will be false
+        return false;
     }
 
     @Override
     public boolean isPermissionSet(@NotNull Permission perm) {
-        return this.isPermissionSet(perm.getName());
+        return isPermissionSet(perm.getName());
     }
 
     @Override
     public boolean hasPermission(@NotNull String inName) {
-        return isPermissionSet(inName);
+        boolean found = isPermissionSet(inName);
+
+        //Check if the permission is found from overrides
+        if (found) {
+            return true;
+        }
+
+        //Otherwise, return the default value of the permission
+        Permission permission = plugin.getServer().getPluginManager().getPermission(inName);
+        if (permission != null) {
+            return permission.getDefault().getValue(isOp());
+        } else {
+            return Permission.DEFAULT_PERMISSION.getValue(isOp());
+        }
     }
 
     @Override
-    public boolean hasPermission(@NotNull Permission perm) {
-        return this.hasPermission(perm.getName());
+    public boolean hasPermission(@NotNull Permission permission) {
+        boolean found = isPermissionSet(permission);
+
+        //Check if the permission is found from overrides
+        if (found) {
+            return true;
+        }
+
+        //Otherwise, return the default value of the permission
+        return permission.getDefault().getValue(isOp());
     }
 
     @Override
-    public @NotNull PermissionAttachment addAttachment(@NotNull Plugin plugin) {
+    @NotNull
+    public synchronized PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String name, boolean value) {
         if (!plugin.isEnabled()) {
             throw new IllegalArgumentException("Plugin " + plugin.getDescription().getName() + " is not enabled yet");
         }
 
-        PermissionAttachment permissionAttachment = new PermissionAttachment(plugin, this.player);
-        this.attachments.add(permissionAttachment);
-        this.recalculatePermissions();
-        return permissionAttachment;
-    }
+        Common.log(
+                "Warning: Some plugin called the function addAttachment(Plugin, String, boolean), but this function shouldn't be used because Permissible is a custom Permissible.",
+                "This function will still work because it is marked as @NotNull"
+        );
 
-    @Override
-    public @NotNull PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String name, boolean value) {
-        if (!plugin.isEnabled()) {
-            throw new IllegalArgumentException("Plugin " + plugin.getDescription().getName() + " is not enabled yet");
-        }
-
-        PermissionAttachment permissionAttachment = new PermissionAttachment(plugin, this.player);
+        PermissionAttachment permissionAttachment = new PermissionAttachment(plugin, player);
         permissionAttachment.setPermission(name, value);
-        this.attachments.add(permissionAttachment);
-        this.recalculatePermissions();
+
         return permissionAttachment;
     }
 
     @Override
-    public PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String name, boolean value, int ticks) {
+    @NotNull
+    public synchronized PermissionAttachment addAttachment(@NotNull Plugin plugin) {
         if (!plugin.isEnabled()) {
-            throw new IllegalArgumentException("Plugin " + plugin.getDescription().getName() + " is disabled");
+            throw new IllegalArgumentException("Plugin " + plugin.getDescription().getName() + " is not enabled yet");
         }
 
-        PermissionAttachment result = this.addAttachment(plugin, ticks);
+        Common.log(
+                "Warning: Some plugin called the function addAttachment(Plugin), but this function shouldn't be used because Permissible is a custom Permissible.",
+                "This function will still work because it is marked as @NotNull"
+        );
 
-        if (result != null) {
-            result.setPermission(name, value);
-        }
-
-        return result;
+        return new PermissionAttachment(plugin, player);
     }
 
     @Override
-    public PermissionAttachment addAttachment(@NotNull Plugin plugin, int ticks) {
-        if (!plugin.isEnabled()) {
-            throw new IllegalArgumentException("Plugin " + plugin.getDescription().getName() + " is disabled");
-        }
-
-        PermissionAttachment result = this.addAttachment(plugin);
-        if (Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new RemoveAttachmentRunnable(result), ticks) == -1) {
-            Common.log("Error: Could not add PermissionAttachment to " + this.player + " for plugin " + plugin.getDescription().getName() + ": Scheduler returned -1");
-            result.remove();
-            return null;
-        }
-
-        return result;
+    @Nullable
+    public synchronized PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String name, boolean value, int ticks) {
+        Common.log("Warning: Some plugin called the function addAttachment(Plugin, String, boolean, int), but this function is no longer be used because Permissible is a custom Permissible.");
+        return null;
     }
 
     @Override
-    public void removeAttachment(@NotNull PermissionAttachment attachment) {
-        if (!this.attachments.contains(attachment)) {
-            throw new IllegalArgumentException("Given attachment is not part of Permissible object " + this.player.getName());
-        }
+    public synchronized PermissionAttachment addAttachment(@NotNull Plugin plugin, int ticks) {
+        Common.log("Warning: Some plugin called the function addAttachment(Plugin, int), but this function is no longer be used because Permissible is a custom Permissible.");
+        return null;
+    }
 
-        this.attachments.remove(attachment);
-        PermissionRemovedExecutor ex = attachment.getRemovalCallback();
-
-        if (ex != null) {
-            ex.attachmentRemoved(attachment);
-        }
-
-        this.recalculatePermissions();
+    @Override
+    public synchronized void removeAttachment(@NotNull PermissionAttachment attachment) {
+        Common.log("Warning: Some plugin called the function removeAttachment(PermissionAttachment), but this function is no longer be used because Permissible is a custom Permissible.");
     }
 
     @Override
     public void recalculatePermissions() {
-        if (this.permissions == null) return;
-
-        this.clearPermissions();
-
-        Set<Permission> defaults = Bukkit.getServer().getPluginManager().getDefaultPermissions(this.isOp());
-        Bukkit.getServer().getPluginManager().subscribeToDefaultPerms(this.isOp(), this.player);
-
-        for (Permission perm : defaults) {
-            String name = perm.getName().toLowerCase();
-            this.permissions.put(name, new PermissionAttachmentInfo(this.player, name, null, true));
-            Bukkit.getServer().getPluginManager().subscribeToPermission(name, this.player);
-            this.calculateChildPermissions(perm.getChildren(), false, null);
+        //All variable will be null when running the default constructor of bukkit's PermissibleBase
+        //We will just don't do anything if those are null, and call this function afterward in our own constructor
+        if (player == null || plugin == null || allowPermissions == null || denyPermissions == null) {
+            return;
         }
 
-        for (PermissionAttachment attachment : this.attachments) {
-            for (Map.Entry<String, Boolean> entry : attachment.getPermissions().entrySet()) {
-                this.permissions.put(
-                        entry.getKey().toLowerCase(),
-                        new PermissionAttachmentInfo(this.player, entry.getKey().toLowerCase(), attachment, entry.getValue())
-                );
-                plugin.getServer().getPluginManager().subscribeToPermission(entry.getKey().toLowerCase(), this.player);
-                this.calculateChildPermissions(attachment.getPermissions(), entry.getValue(), attachment);
+        clearPermissions();
+
+        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).getNow(null);
+        if (user == null) {
+            throw new NullPointerException("Cannot get user for player '" + player.getName() + "' instantly");
+        }
+
+        user.getAllPermissions().forEach(perm -> {
+            String permission = perm.get().toLowerCase();
+            if (perm.isEnabled()) {
+                allowPermissions.add(permission);
+            } else {
+                denyPermissions.add(permission);
             }
-        }
-
-        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
-        for (rip.diamond.maid.api.user.permission.Permission permission : user.getAllPermissions()) {
-            String perm = permission.get();
-            if (this.permissions.containsKey(perm.toLowerCase())) {
-                continue;
-            }
-            this.permissions.put(perm.toLowerCase(), new PermissionAttachmentInfo(this.player, perm, null, true));
-            plugin.getServer().getPluginManager().subscribeToPermission(perm.toLowerCase(), this.player);
-        }
+        });
     }
 
     @Override
     public synchronized void clearPermissions() {
-        Set<String> permissions = this.permissions.keySet();
+        Set<String> permissions = getPermissions();
 
         for (String permission : permissions) {
             Bukkit.getServer().getPluginManager().unsubscribeFromPermission(permission, this.player);
         }
 
-        for (PermissionAttachment attachment : this.attachments) {
-            for (String permission : attachment.getPermissions().keySet()) {
-                Bukkit.getServer().getPluginManager().unsubscribeFromPermission(permission.toLowerCase(), this.player);
-            }
-        }
-
+        // TODO: 4/1/2024 Check what 7 this do
         Bukkit.getServer().getPluginManager().unsubscribeFromDefaultPerms(false, this.player);
         Bukkit.getServer().getPluginManager().unsubscribeFromDefaultPerms(true, this.player);
 
-        this.permissions.clear();
+        this.allowPermissions.clear();
+        this.denyPermissions.clear();
     }
 
     @Override
     public @NotNull Set<PermissionAttachmentInfo> getEffectivePermissions() {
-        return new HashSet<>(this.permissions.values());
+        throw new IllegalArgumentException("getEffectivePermissions() is no longer used");
     }
 
-    private void calculateChildPermissions(Map<String, Boolean> children, boolean invert, PermissionAttachment attachment) {
-        Set<String> keys = children.keySet();
-        for (String name : keys) {
-            Permission perm = Bukkit.getServer().getPluginManager().getPermission(name);
-            boolean value = children.get(name) ^ invert;
-            String lname = name.toLowerCase();
-            this.permissions.put(lname, new PermissionAttachmentInfo(this.player, lname, attachment, value));
-            Bukkit.getServer().getPluginManager().subscribeToPermission(name, this.player);
-            if (perm != null) {
-                this.calculateChildPermissions(perm.getChildren(), !value, attachment);
-            }
-        }
+    public Set<String> getPermissions() {
+        Set<String> permissions = new TreeSet<>(allowPermissions);
+        permissions.addAll(denyPermissions);
 
-    }
-
-    private static class RemoveAttachmentRunnable implements Runnable {
-        private final PermissionAttachment attachment;
-
-        public RemoveAttachmentRunnable(PermissionAttachment attachment) {
-            this.attachment = attachment;
-        }
-
-        public void run() {
-            this.attachment.remove();
-        }
+        return permissions;
     }
 }

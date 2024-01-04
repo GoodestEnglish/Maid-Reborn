@@ -31,6 +31,7 @@ public enum CC {
     UNDERLINE("underlined"),
     ITALIC("italic"),
     RESET("reset"),
+    NEW_LINE("newline"),
 
     //Custom color using hex code
     ORANGE_RED("#FF4500"),

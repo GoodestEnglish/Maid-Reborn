@@ -12,6 +12,8 @@ import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.grant.Grant;
 import rip.diamond.maid.player.User;
+import rip.diamond.maid.redis.messaging.PacketHandler;
+import rip.diamond.maid.redis.packets.bukkit.PermissionUpdatePacket;
 import rip.diamond.maid.util.*;
 import rip.diamond.maid.util.menu.Menu;
 import rip.diamond.maid.util.menu.MenuType;
@@ -180,7 +182,11 @@ public class GrantMenu extends Menu {
             public void clicked(InventoryClickEvent event, Player player, ClickType clickType) {
                 player.closeInventory();
                 IUser user = Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join();
+
                 target.addGrant(new Grant(target, rank, user, reason, System.currentTimeMillis(), TimeUtil.getDuration(duration)));
+                Maid.INSTANCE.getUserManager().saveUser(target);
+                PacketHandler.send(new PermissionUpdatePacket(target.getUniqueID()));
+
                 Common.sendMessage(player, CC.GREEN + "成功替 " + user.getRealName() + " 升級到 " + rank.getName());
             }
         });

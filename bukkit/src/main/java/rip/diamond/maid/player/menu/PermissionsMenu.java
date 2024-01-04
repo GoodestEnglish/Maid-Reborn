@@ -13,6 +13,8 @@ import rip.diamond.maid.api.user.permission.RankPermission;
 import rip.diamond.maid.api.user.permission.UserPermission;
 import rip.diamond.maid.player.User;
 import rip.diamond.maid.rank.Rank;
+import rip.diamond.maid.redis.messaging.PacketHandler;
+import rip.diamond.maid.redis.packets.bukkit.PermissionUpdatePacket;
 import rip.diamond.maid.util.*;
 import rip.diamond.maid.util.menu.Menu;
 import rip.diamond.maid.util.menu.MenuType;
@@ -61,11 +63,12 @@ public class PermissionsMenu extends PaginatedMenu {
                     public void clicked(InventoryClickEvent event, Player player, ClickType clickType) {
                         if (clickType.isLeftClick()) {
                             target.removePermission(permission.get());
-                            updateMenu();
                         } else if (clickType.isRightClick()) {
                             Maid.INSTANCE.getPermissionManager().setEnabled(permission, !permission.isEnabled());
-                            updateMenu();
                         }
+                        Maid.INSTANCE.getUserManager().saveUser(target);
+                        PacketHandler.send(new PermissionUpdatePacket(target.getUniqueID()));
+                        updateMenu();
                     }
                 });
             } else if (permission instanceof RankPermission rankPermission) {
@@ -103,12 +106,13 @@ public class PermissionsMenu extends PaginatedMenu {
             @Override
             public BiConsumer<ConversationContext, String> getAction() {
                 return ((cc, permission) -> {
-                    if (target.containPermission(permission)) {
+                    if (target.containPermission(permission, false)) {
                         Common.sendMessage(player, CC.RED + "錯誤: 權限已存在");
                         return;
                     }
                     target.addPermission(permission);
                     Maid.INSTANCE.getUserManager().saveUser(target);
+                    PacketHandler.send(new PermissionUpdatePacket(target.getUniqueID()));
 
                     Common.sendMessage(player, CC.GREEN + "成功新增權限 " + CC.AQUA + permission);
                     updateMenu();

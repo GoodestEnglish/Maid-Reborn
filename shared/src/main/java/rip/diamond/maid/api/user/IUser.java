@@ -6,6 +6,7 @@ import rip.diamond.maid.api.user.permission.UserPermission;
 
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 public interface IUser {
@@ -121,9 +122,10 @@ public interface IUser {
      * Check if the user contain the permission.
      *
      * @param permission The permission
+     * @param includeRank Should the function calculate rank permission also
      * @return True if the user has the permission
      */
-    boolean containPermission(String permission);
+    boolean containPermission(String permission, boolean includeRank);
 
     /**
      * Add a new permission.
@@ -148,7 +150,8 @@ public interface IUser {
     Set<UserPermission> getPermissions();
 
     /**
-     * Get the player's all permissions, including player's rank
+     * Get the player's all permissions, including player's rank.
+     * The permission is ordered by the priority of the permission.
      *
      * @return The player's all permissions
      */
@@ -177,6 +180,7 @@ public interface IUser {
 
     /**
      * Get all user owned ranks based on grants.
+     * The ranks are ordered by the priority of the rank.
      *
      * @return All user owned ranks
      */

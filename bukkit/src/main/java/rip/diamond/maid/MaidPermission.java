@@ -8,6 +8,7 @@ public class MaidPermission {
             GRANT = "maid.command.grant",
             GRANTS = "maid.command.grants",
             PACKET_TEST = "maid.command.packettest",
+            PERMISSION_GUI = "maid.command.permission.gui",
             RANK = "maid.command.rank",
             USER = "maid.command.user";
 }
