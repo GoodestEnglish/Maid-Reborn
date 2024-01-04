@@ -3,7 +3,10 @@ package rip.diamond.maid.permission;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.*;
+import org.bukkit.permissions.PermissibleBase;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +14,9 @@ import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.util.Common;
 
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class UserPermissible extends PermissibleBase {
 
@@ -40,8 +45,7 @@ public class UserPermissible extends PermissibleBase {
         player.setOp(value);
     }
 
-    @Override
-    public boolean isPermissionSet(@NotNull String name) {
+    public PermissionState checkPermission(@NotNull String name) {
         String permission = name.toLowerCase();
 
         IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
@@ -53,18 +57,17 @@ public class UserPermissible extends PermissibleBase {
         }
 
         if (denyPermissions.contains("*")) {
-            return false;
+            return PermissionState.FALSE;
         }
         if (allowPermissions.contains("*")) {
-            return true;
+            return PermissionState.TRUE;
         }
 
-        // TODO: 4/1/2024 Cannot disable minecraft default command for some reason
         //Check the permissions map and see if the permission is set
         for (String denyPermission : denyPermissions) {
             //Check for basic permission
             if (denyPermission.equals(permission)) {
-                return false;
+                return PermissionState.FALSE;
             }
             //Check for * permission
             if (!denyPermission.contains(".")) {
@@ -74,13 +77,13 @@ public class UserPermissible extends PermissibleBase {
             String head = denyPermission.substring(0, index);
             String tail = denyPermission.substring(index);
             if (permission.startsWith(head) && tail.equals(".*")) {
-                return false;
+                return PermissionState.FALSE;
             }
         }
         for (String allowPermission : allowPermissions) {
             //Check for basic permission
             if (allowPermission.equals(permission)) {
-                return true;
+                return PermissionState.TRUE;
             }
             //Check for * permission
             if (!allowPermission.contains(".")) {
@@ -90,17 +93,22 @@ public class UserPermissible extends PermissibleBase {
             String head = allowPermission.substring(0, index);
             String tail = allowPermission.substring(index);
             if (permission.startsWith(head) && tail.equals(".*")) {
-                return true;
+                return PermissionState.TRUE;
             }
         }
 
         //Check if the player is an operator
         if (isOp()) {
-            return true;
+            return PermissionState.TRUE;
         }
 
-        //No overrides found. The permission will be false
-        return false;
+        //No overrides found.
+        return PermissionState.NOT_FOUND;
+    }
+
+    @Override
+    public boolean isPermissionSet(@NotNull String name) {
+        return checkPermission(name) == PermissionState.TRUE;
     }
 
     @Override
@@ -110,11 +118,11 @@ public class UserPermissible extends PermissibleBase {
 
     @Override
     public boolean hasPermission(@NotNull String inName) {
-        boolean found = isPermissionSet(inName);
+        PermissionState state = checkPermission(inName);
 
         //Check if the permission is found from overrides
-        if (found) {
-            return true;
+        if (state != PermissionState.NOT_FOUND) {
+            return state.getValue();
         }
 
         //Otherwise, return the default value of the permission
@@ -128,11 +136,11 @@ public class UserPermissible extends PermissibleBase {
 
     @Override
     public boolean hasPermission(@NotNull Permission permission) {
-        boolean found = isPermissionSet(permission);
+        PermissionState state = checkPermission(permission.getName());
 
         //Check if the permission is found from overrides
-        if (found) {
-            return true;
+        if (state != PermissionState.NOT_FOUND) {
+            return state.getValue();
         }
 
         //Otherwise, return the default value of the permission
@@ -241,5 +249,23 @@ public class UserPermissible extends PermissibleBase {
         permissions.addAll(denyPermissions);
 
         return permissions;
+    }
+
+    enum PermissionState {
+        TRUE,
+        FALSE,
+        NOT_FOUND;
+
+        public boolean getValue() {
+            switch (this) {
+                case TRUE -> {
+                    return true;
+                }
+                case FALSE -> {
+                    return false;
+                }
+                default -> throw new RuntimeException();
+            }
+        }
     }
 }
