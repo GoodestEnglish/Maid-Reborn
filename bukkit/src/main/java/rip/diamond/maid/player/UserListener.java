@@ -8,6 +8,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.grant.Grant;
 import rip.diamond.maid.util.*;
@@ -52,6 +53,7 @@ public class UserListener extends MaidListener {
         Player player = event.getPlayer();
         UUIDCache.insert(player.getUniqueId(), player.getName());
     }
+
     @EventHandler(priority = EventPriority.LOW)
     public void onJoinCacheTexture(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -65,4 +67,21 @@ public class UserListener extends MaidListener {
         user.setTexture(property.getValue());
     }
 
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onJoinDisguise(PlayerJoinEvent event) {
+        // TODO: 3/1/2024
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onJoinPermission(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
+
+        try {
+            Maid.INSTANCE.getPermissionManager().initPlayer(player);
+        } catch (IllegalAccessException e) {
+            Common.log("Error: Failed to inject UserPermissible to player '" + user.getRealName() + "'");
+            throw new RuntimeException(e);
+        }
+    }
 }

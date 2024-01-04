@@ -12,6 +12,8 @@ import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.permission.Permission;
 import rip.diamond.maid.api.user.permission.UserPermission;
 import rip.diamond.maid.grant.Grant;
+import rip.diamond.maid.redis.messaging.PacketHandler;
+import rip.diamond.maid.redis.packets.bukkit.PermissionUpdatePacket;
 import rip.diamond.maid.util.json.GsonProvider;
 
 import java.util.*;
@@ -102,11 +104,13 @@ public class User implements IUser {
     @Override
     public void addPermission(String permission) {
         this.permissions.add(new UserPermission(permission));
+        PacketHandler.send(new PermissionUpdatePacket(uniqueID));
     }
 
     @Override
     public void removePermission(String permission) {
         this.permissions.removeIf(userPermission -> userPermission.get().equalsIgnoreCase(permission));
+        PacketHandler.send(new PermissionUpdatePacket(uniqueID));
     }
 
     @Override
@@ -127,6 +131,7 @@ public class User implements IUser {
     public void addGrant(IGrant grant) {
         grants.add((Grant) grant);
         Maid.INSTANCE.getUserManager().saveUser(this);
+        PacketHandler.send(new PermissionUpdatePacket(uniqueID));
     }
 
     @Override

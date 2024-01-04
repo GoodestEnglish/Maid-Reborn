@@ -29,6 +29,7 @@ public class ProfileUpdatePacket implements Packet {
     public void onReceive() {
         Preconditions.checkArgument(MaidAPI.INSTANCE.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
 
+        //Exclude from the server which sent this packet. Because profile is already updated in local.
         if (MaidAPI.INSTANCE.getPlatform().getServerID().equals(getFrom())) {
             return;
         }

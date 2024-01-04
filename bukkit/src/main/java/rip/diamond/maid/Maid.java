@@ -9,6 +9,7 @@ import rip.diamond.maid.chat.ChatManager;
 import rip.diamond.maid.command.*;
 import rip.diamond.maid.config.Config;
 import rip.diamond.maid.mongo.MongoManager;
+import rip.diamond.maid.permission.PermissionManager;
 import rip.diamond.maid.platform.BukkitPlatform;
 import rip.diamond.maid.player.UserListener;
 import rip.diamond.maid.player.UserManager;
@@ -39,6 +40,7 @@ public class Maid extends JavaPlugin {
     private RankManager rankManager;
     private ServerManager serverManager;
     private ChatManager chatManager;
+    private PermissionManager permissionManager;
 
     private BasicConfigFile configFile;
 
@@ -88,6 +90,7 @@ public class Maid extends JavaPlugin {
         rankManager = new RankManager();
         serverManager = new ServerManager();
         chatManager = new ChatManager();
+        permissionManager = new PermissionManager();
     }
 
     private void loadListeners() {

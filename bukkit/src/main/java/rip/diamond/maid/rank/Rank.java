@@ -7,6 +7,8 @@ import org.bson.Document;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.permission.RankPermission;
+import rip.diamond.maid.redis.messaging.PacketHandler;
+import rip.diamond.maid.redis.packets.bukkit.PermissionUpdatePacket;
 import rip.diamond.maid.util.HexColorUtil;
 import rip.diamond.maid.util.json.GsonProvider;
 
@@ -76,11 +78,13 @@ public class Rank implements IRank {
     @Override
     public void addPermission(String permission) {
         this.permissions.add(new RankPermission(permission, this));
+        PacketHandler.send(new PermissionUpdatePacket());
     }
 
     @Override
     public void removePermission(String permission) {
         this.permissions.removeIf(rankPermission -> rankPermission.get().equalsIgnoreCase(permission));
+        PacketHandler.send(new PermissionUpdatePacket());
     }
 
     @Override
@@ -91,10 +95,12 @@ public class Rank implements IRank {
     @Override
     public void addParent(UUID parent) {
         this.parents.add(parent);
+        PacketHandler.send(new PermissionUpdatePacket());
     }
 
     @Override
     public void removeParent(UUID parent) {
         this.parents.remove(parent);
+        PacketHandler.send(new PermissionUpdatePacket());
     }
 }

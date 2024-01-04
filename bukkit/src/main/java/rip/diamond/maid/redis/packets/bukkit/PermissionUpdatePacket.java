@@ -1,21 +1,33 @@
 package rip.diamond.maid.redis.packets.bukkit;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import rip.diamond.maid.Maid;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.server.Platform;
-import rip.diamond.maid.rank.Rank;
-import rip.diamond.maid.rank.RankManager;
 import rip.diamond.maid.redis.messaging.Packet;
 import rip.diamond.maid.util.Preconditions;
 
+import java.util.UUID;
+
 @Getter
 @RequiredArgsConstructor
-public class RankUpdatePacket implements Packet {
+@AllArgsConstructor
+public class PermissionUpdatePacket implements Packet {
+
     private final String from;
-    private final Rank rank;
-    private final boolean delete;
+    private UUID uuid;
+
+    public PermissionUpdatePacket() {
+        this.from = MaidAPI.INSTANCE.getPlatform().getServerID();
+    }
+
+    public PermissionUpdatePacket(UUID uuid) {
+        this.from = MaidAPI.INSTANCE.getPlatform().getServerID();
+        this.uuid = uuid;
+    }
 
     @Override
     public String getFrom() {
@@ -31,17 +43,14 @@ public class RankUpdatePacket implements Packet {
     public void onReceive() {
         Preconditions.checkArgument(MaidAPI.INSTANCE.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
 
-        RankManager manager = Maid.INSTANCE.getRankManager();
-
-        //Exclude from the server which sent this packet. Because rank is already updated in local.
-        if (MaidAPI.INSTANCE.getPlatform().getServerID().equals(getFrom())) {
+        if (uuid == null) {
+            Bukkit.getOnlinePlayers().forEach(Player::recalculatePermissions);
             return;
         }
 
-        if (delete) {
-            manager.getRanks().remove(rank.getUniqueID());
-        } else {
-            manager.getRanks().put(rank.getUniqueID(), rank);
+        Player player = Bukkit.getPlayer(uuid);
+        if (player != null) {
+            player.recalculatePermissions();
         }
     }
 }

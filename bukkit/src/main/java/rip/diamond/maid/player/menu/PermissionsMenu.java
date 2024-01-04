@@ -63,7 +63,7 @@ public class PermissionsMenu extends PaginatedMenu {
                             target.removePermission(permission.get());
                             updateMenu();
                         } else if (clickType.isRightClick()) {
-                            permission.setEnabled(!permission.isEnabled());
+                            Maid.INSTANCE.getPermissionManager().setEnabled(permission, !permission.isEnabled());
                             updateMenu();
                         }
                     }
