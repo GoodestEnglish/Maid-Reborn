@@ -217,8 +217,10 @@ public class UserPermissible extends PermissibleBase {
             String permission = perm.get().toLowerCase();
             if (perm.isEnabled()) {
                 allowPermissions.add(permission);
+                Bukkit.getServer().getPluginManager().subscribeToPermission(permission, player);
             } else {
                 denyPermissions.add(permission);
+                Bukkit.getServer().getPluginManager().unsubscribeFromPermission(permission, player);
             }
         });
     }
@@ -228,12 +230,11 @@ public class UserPermissible extends PermissibleBase {
         Set<String> permissions = getPermissions();
 
         for (String permission : permissions) {
-            Bukkit.getServer().getPluginManager().unsubscribeFromPermission(permission, this.player);
+            Bukkit.getServer().getPluginManager().unsubscribeFromPermission(permission, player);
         }
 
-        // TODO: 4/1/2024 Check what 7 this do
-        Bukkit.getServer().getPluginManager().unsubscribeFromDefaultPerms(false, this.player);
-        Bukkit.getServer().getPluginManager().unsubscribeFromDefaultPerms(true, this.player);
+        Bukkit.getServer().getPluginManager().unsubscribeFromDefaultPerms(false, player);
+        Bukkit.getServer().getPluginManager().unsubscribeFromDefaultPerms(true, player);
 
         this.allowPermissions.clear();
         this.denyPermissions.clear();

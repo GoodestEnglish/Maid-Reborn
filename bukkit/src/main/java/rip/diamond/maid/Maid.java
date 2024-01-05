@@ -2,7 +2,6 @@ package rip.diamond.maid;
 
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import rip.diamond.maid.chat.ChatListener;
 import rip.diamond.maid.chat.ChatManager;
@@ -23,7 +22,6 @@ import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.command.CommandService;
 import rip.diamond.maid.util.command.Drink;
 import rip.diamond.maid.util.command.provider.custom.RankProvider;
-import rip.diamond.maid.util.command.provider.spigot.PlayerProvider;
 import rip.diamond.maid.util.menu.MenuHandler;
 import rip.diamond.maid.util.procedure.Procedure;
 

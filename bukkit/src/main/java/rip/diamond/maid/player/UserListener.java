@@ -48,6 +48,25 @@ public class UserListener extends MaidListener {
         }
     }
 
+    @EventHandler(priority = EventPriority.LOW)
+    public void onLoginInjectPermission(PlayerLoginEvent event) {
+        //Deny injection when player isn't allow to login
+        if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
+            return;
+        }
+
+        //At this point, user data should be present and loaded
+        Player player = event.getPlayer();
+        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
+
+        try {
+            Maid.INSTANCE.getPermissionManager().initPlayer(player);
+        } catch (IllegalAccessException e) {
+            Common.log("Error: Failed to inject UserPermissible to player '" + user.getRealName() + "'");
+            throw new RuntimeException(e);
+        }
+    }
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoinCacheUUID(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -70,18 +89,5 @@ public class UserListener extends MaidListener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onJoinDisguise(PlayerJoinEvent event) {
         // TODO: 3/1/2024
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onJoinPermission(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
-
-        try {
-            Maid.INSTANCE.getPermissionManager().initPlayer(player);
-        } catch (IllegalAccessException e) {
-            Common.log("Error: Failed to inject UserPermissible to player '" + user.getRealName() + "'");
-            throw new RuntimeException(e);
-        }
     }
 }
