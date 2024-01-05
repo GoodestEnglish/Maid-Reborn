@@ -1,6 +1,5 @@
 package rip.diamond.maid.grant.menu;
 
-import com.google.common.collect.ImmutableList;
 import org.bukkit.Material;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.entity.Player;
@@ -20,6 +19,7 @@ import rip.diamond.maid.util.menu.MenuType;
 import rip.diamond.maid.util.menu.buttons.Button;
 import rip.diamond.maid.util.menu.buttons.ChooseButton;
 import rip.diamond.maid.util.menu.buttons.ConversationButton;
+import rip.diamond.maid.util.recorder.RankChangesRecorder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -135,6 +135,11 @@ public class GrantMenu extends Menu {
             public List<String> getOptions() {
                 return TimeUtil.TIME_OPTIONS;
             }
+
+            @Override
+            public void clicked(InventoryClickEvent event, Player player, ClickType clickType) {
+                super.clicked(event, player, clickType);
+            }
         });
         buttons.put(14, new ConversationButton() {
             @Override
@@ -183,11 +188,16 @@ public class GrantMenu extends Menu {
                 player.closeInventory();
                 IUser user = Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join();
 
+                RankChangesRecorder recorder = new RankChangesRecorder(target.getRealRank());
+
                 target.addGrant(new Grant(target, rank, user, reason, System.currentTimeMillis(), TimeUtil.getDuration(duration)));
                 Maid.INSTANCE.getUserManager().saveUser(target);
                 PacketHandler.send(new PermissionUpdatePacket(target.getUniqueID()));
 
                 Common.sendMessage(player, CC.GREEN + "成功替 " + target.getRealName() + " 升級到 " + rank.getName());
+
+                recorder.recordNewRank(target.getRealRank());
+                recorder.outputChanges(target.getUniqueID());
             }
         });
         return buttons;

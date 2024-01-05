@@ -1,26 +1,29 @@
 package rip.diamond.maid.redis.packets.bukkit;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.server.Platform;
 import rip.diamond.maid.redis.messaging.Packet;
-import rip.diamond.maid.util.Alert;
+import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.Preconditions;
 
+import java.util.List;
+import java.util.UUID;
+
 /**
- * A packet which send an alert to all bukkit servers.
- * <p>
- * If the player has the alert permission, they will be able to view it.
+ * A packet which send a message to a player across all bukkit servers.
  */
-public class AlertPacket implements Packet {
+public class MessagePacket implements Packet {
 
     private final String from;
-    private final Alert alert;
-    private final String message;
+    private final UUID playerUUID;
+    private final List<String> message;
 
-    public AlertPacket(String from, Alert alert, String... args) {
+    public MessagePacket(String from, UUID playerUUID, List<String> message) {
         this.from = from;
-        this.alert = alert;
-        this.message = alert.get(args);
+        this.playerUUID = playerUUID;
+        this.message = message;
     }
 
     @Override
@@ -36,6 +39,10 @@ public class AlertPacket implements Packet {
     @Override
     public void onReceive() {
         Preconditions.checkArgument(MaidAPI.INSTANCE.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
-        MaidAPI.INSTANCE.getPlatform().broadcastMessage(alert.getType().getPermission(), message);
+
+        Player player = Bukkit.getPlayer(playerUUID);
+        if (player != null && player.isOnline()) {
+            Common.sendMessage(player, message);
+        }
     }
 }

@@ -43,7 +43,7 @@ public abstract class ConversationButton extends Button {
                 getAction().accept(cc, s);
                 return Prompt.END_OF_CONVERSATION;
             }
-        }).withLocalEcho(false).withEscapeSequence("/no").withTimeout(60).thatExcludesNonPlayersWithMessage("你是如何去到這裏的???");
+        }).withLocalEcho(false).withTimeout(60).thatExcludesNonPlayersWithMessage("你是如何去到這裏的???");
         player.beginConversation(factory.buildConversation(player));
     }
 }

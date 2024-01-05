@@ -1,5 +1,6 @@
 package rip.diamond.maid.util.recorder;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import rip.diamond.maid.util.*;
@@ -7,6 +8,7 @@ import rip.diamond.maid.util.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@RequiredArgsConstructor
 public class PermissionChangesRecorder {
 
     private final Set<String> oldAllowPermissions;
@@ -14,11 +16,6 @@ public class PermissionChangesRecorder {
 
     private Set<String> newAllowPermissions;
     private Set<String> newDenyPermissions;
-
-    public PermissionChangesRecorder(Set<String> oldAllowPermissions, Set<String> oldDenyPermissions) {
-        this.oldAllowPermissions = oldAllowPermissions;
-        this.oldDenyPermissions = oldDenyPermissions;
-    }
 
     public void recordNewPermissions(Set<String> newAllowPermissions, Set<String> newDenyPermissions) {
         this.newAllowPermissions = newAllowPermissions;

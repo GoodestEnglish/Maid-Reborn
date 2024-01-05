@@ -9,7 +9,7 @@ public class TimeUtil {
 
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
     public static final long PERMANENT = -1;
-    public static final List<String> TIME_OPTIONS = List.of("15m", "30m", "1h", "6h", "12h", "1d", "3d", "7d", "14d", "30d", "90d", "1y", "永久");
+    public static final List<String> TIME_OPTIONS = List.of("5s", "30m", "1h", "6h", "12h", "1d", "3d", "7d", "14d", "30d", "90d", "1y", "永久");
 
     public static String formatDate(long value) {
         return FORMAT.format(new Date(value));

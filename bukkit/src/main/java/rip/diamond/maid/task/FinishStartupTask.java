@@ -1,11 +1,11 @@
 package rip.diamond.maid.task;
 
+import com.google.common.collect.ImmutableList;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.redis.messaging.PacketHandler;
-import rip.diamond.maid.redis.packets.bukkit.AlertPacket;
+import rip.diamond.maid.redis.packets.bukkit.BroadcastPacket;
 import rip.diamond.maid.util.Alert;
-import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.TaskTicker;
 
 /**
@@ -21,7 +21,10 @@ public class FinishStartupTask extends TaskTicker {
         String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
 
         Maid.INSTANCE.getServerManager().setLoaded(true);
-        PacketHandler.send(new AlertPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), Alert.SERVER_STARTED, serverID));
+
+        Alert alert = Alert.SERVER_STARTED;
+        String message = alert.get(serverID);
+        PacketHandler.send(new BroadcastPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), alert.getType().getPermission(), ImmutableList.of(message)));
 
         cancel();
     }
