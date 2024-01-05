@@ -1,8 +1,5 @@
 package rip.diamond.maid;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ListenerPriority;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -107,12 +104,14 @@ public class Maid extends JavaPlugin {
         drink.bind(Rank.class).toProvider(new RankProvider());
 
         drink.register(new ColorCommand(), "color");
+        drink.register(new DisguiseCommand(), "disguise", "nick");
         drink.register(new GrantCommand(), "grant");
         drink.register(new GrantsCommand(), "grants");
         drink.register(new PacketTestCommand(), "packettest");
         drink.register(new PermissionCommand(), "permission", "perms");
         drink.register(new RankCommand(), "rank");
         drink.register(new TestCommand(), "test");
+        drink.register(new UndisguiseCommand(), "undisguise", "unnick");
         drink.register(new UserCommand(), "user");
         drink.registerCommands();
     }

@@ -12,18 +12,11 @@ public interface IDisguise {
     String getName();
 
     /**
-     * Get the skin texture value
+     * Get the skin texture owner's name
      *
-     * @return The skin texture value
+     * @return The skin texture owner's name
      */
-    String getSkinValue();
-
-    /**
-     * Get the skin texture signature
-     *
-     * @return The skin texture signature
-     */
-    String getSkinSignature();
+    String getSkinName();
 
     /**
      * Get the disguised rank UUID

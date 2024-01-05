@@ -10,7 +10,6 @@ import java.util.UUID;
 public class Disguise implements IDisguise {
 
     private final String name;
-    private final String skinValue;
-    private final String skinSignature;
+    private final String skinName;
     private final UUID disguiseRankUUID;
 }

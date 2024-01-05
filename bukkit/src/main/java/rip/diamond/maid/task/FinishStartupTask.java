@@ -24,7 +24,7 @@ public class FinishStartupTask extends TaskTicker {
 
         Alert alert = Alert.SERVER_STARTED;
         String message = alert.get(serverID);
-        PacketHandler.send(new BroadcastPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), alert.getType().getPermission(), ImmutableList.of(message)));
+        PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(message)));
 
         cancel();
     }

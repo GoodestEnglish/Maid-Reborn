@@ -13,14 +13,16 @@ import java.util.List;
 @AllArgsConstructor
 public enum Config {
     SERVER_ID("server-id", "unset"),
-    /* REDIS */
+    /* Redis */
     REDIS_HOST("redis.host", "localhost"),
     REDIS_PORT("redis.port", 6379),
     REDIS_AUTH("redis.auth", false),
     REDIS_PASSWORD("redis.password", "bar"),
-    /* MONGO */
+    /* Mongo */
     MONGO_CONNECTION_STRING("mongo.connection-string", "mongodb://127.0.0.1:27017/MaidReborn"),
     MONGO_DATABASE("mongo.database", "Maid"),
+    /* Disguises */
+    DISGUISE_SKIN("disguise.skin", ImmutableList.of("XiaoNiu_TW"))
     ;
 
     @Getter private final String path;

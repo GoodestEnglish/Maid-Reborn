@@ -9,6 +9,7 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import rip.diamond.maid.Maid;
+import rip.diamond.maid.api.user.IDisguise;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.grant.Grant;
 import rip.diamond.maid.util.*;
@@ -88,6 +89,11 @@ public class UserListener extends MaidListener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onJoinDisguise(PlayerJoinEvent event) {
-        // TODO: 3/1/2024
+        Player player = event.getPlayer();
+        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
+        IDisguise disguise = user.getDisguise();
+        if (disguise != null) {
+            Maid.INSTANCE.getDisguiseManager().disguise(player, disguise, true);
+        }
     }
 }

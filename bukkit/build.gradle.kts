@@ -10,7 +10,6 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.dmulloy2.net/repository/public/")
 }
 
 dependencies {
@@ -21,8 +20,6 @@ dependencies {
 
     implementation(project(":shared"))
     implementation("org.mongodb:mongodb-driver-sync:4.11.1")
-
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
 
     //lombok
     compileOnly("org.projectlombok:lombok:1.18.26")
