@@ -187,7 +187,7 @@ public class GrantMenu extends Menu {
                 Maid.INSTANCE.getUserManager().saveUser(target);
                 PacketHandler.send(new PermissionUpdatePacket(target.getUniqueID()));
 
-                Common.sendMessage(player, CC.GREEN + "成功替 " + user.getRealName() + " 升級到 " + rank.getName());
+                Common.sendMessage(player, CC.GREEN + "成功替 " + target.getRealName() + " 升級到 " + rank.getName());
             }
         });
         return buttons;

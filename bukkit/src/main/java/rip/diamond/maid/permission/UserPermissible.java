@@ -33,7 +33,7 @@ public class UserPermissible extends PermissibleBase {
         this.allowPermissions = new LinkedHashSet<>();
         this.denyPermissions = new LinkedHashSet<>();
 
-        recalculatePermissions();
+        recalculatePermissions(false);
     }
 
     @Override
@@ -199,8 +199,12 @@ public class UserPermissible extends PermissibleBase {
         Common.log("Warning: Some plugin called the function removeAttachment(PermissionAttachment), but this function is no longer be used because Permissible is a custom Permissible.");
     }
 
-    @Override
-    public void recalculatePermissions() {
+    /**
+     * Recalculate player's permission by reset the permissions set and reassign them.
+     *
+     * @param record True if player permission should be recorded for logging purpose
+     */
+    public void recalculatePermissions(boolean record) {
         //All variable will be null when running the default constructor of bukkit's PermissibleBase
         //We will just don't do anything if those are null, and call this function afterward in our own constructor
         if (player == null || plugin == null || allowPermissions == null || denyPermissions == null) {
@@ -208,7 +212,7 @@ public class UserPermissible extends PermissibleBase {
         }
 
         //Record all the old permissions, for logging purposes
-        PermissionChangesRecorder recorder = new PermissionChangesRecorder(Set.copyOf(allowPermissions), Set.copyOf(denyPermissions));
+        PermissionChangesRecorder recorder = record ? new PermissionChangesRecorder(Set.copyOf(allowPermissions), Set.copyOf(denyPermissions)) : null;
 
         //Clear all the old permissions
         clearPermissions();
@@ -230,8 +234,15 @@ public class UserPermissible extends PermissibleBase {
         });
 
         //Collect all the changed permissions, for logging purposes
-        recorder.recordNewPermissions(Set.copyOf(allowPermissions), Set.copyOf(denyPermissions));
-        recorder.outputChanges(player);
+        if (record) {
+            recorder.recordNewPermissions(Set.copyOf(allowPermissions), Set.copyOf(denyPermissions));
+            recorder.outputChanges(player);
+        }
+    }
+
+    @Override
+    public void recalculatePermissions() {
+        recalculatePermissions(true);
     }
 
     @Override
