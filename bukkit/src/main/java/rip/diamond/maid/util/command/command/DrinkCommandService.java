@@ -77,7 +77,7 @@ public class DrinkCommandService implements CommandService {
         bind(int.class).toProvider(IntegerProvider.INSTANCE);
         bind(Long.class).toProvider(LongProvider.INSTANCE);
         bind(long.class).toProvider(LongProvider.INSTANCE);
-        bind(String.class).toProvider(StringProvider.INSTANCE);
+        bind(String.class).toProvider(new StringProvider(plugin));
         bind(String.class).annotatedWith(Text.class).toProvider(TextProvider.INSTANCE);
         bind(Date.class).toProvider(DateProvider.INSTANCE);
         bind(Date.class).annotatedWith(Duration.class).toProvider(DurationProvider.INSTANCE);
