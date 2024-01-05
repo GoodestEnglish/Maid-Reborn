@@ -35,6 +35,17 @@ public class Common {
         }
     }
 
+    public static void broadcastPermissionMessage(String permission, String... str) {
+        for (String message : str) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.hasPermission(permission)) {
+                    sendMessage(player, str);
+                }
+            }
+            Bukkit.getConsoleSender().sendMessage(Common.text(message));
+        }
+    }
+
     public static void broadcastSound(Sound sound) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getLocation(), sound, 10, 1);

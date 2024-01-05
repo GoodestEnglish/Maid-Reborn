@@ -58,9 +58,4 @@ public class PermissionManager {
         }
     }
 
-    public void setEnabled(Permission permission, boolean enabled) {
-        permission.setEnabled(enabled);
-        PacketHandler.send(new PermissionUpdatePacket());
-    }
-
 }

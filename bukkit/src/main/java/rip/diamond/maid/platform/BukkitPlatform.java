@@ -80,12 +80,7 @@ public class BukkitPlatform implements IPlatform {
         if (messages.length == 0) {
             throw new RuntimeException("Message length is 0 (Forgot to set a permission?)");
         }
-        for (String message : messages) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                sendMessage(player.getUniqueId(), permission, messages);
-            }
-            Bukkit.getConsoleSender().sendMessage(Common.text(message));
-        }
+        Common.broadcastPermissionMessage(permission, messages);
     }
 
     @Override

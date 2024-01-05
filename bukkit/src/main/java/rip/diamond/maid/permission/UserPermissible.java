@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.util.Common;
+import rip.diamond.maid.util.recorder.PermissionChangesRecorder;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -56,6 +57,11 @@ public class UserPermissible extends PermissibleBase {
             throw new NullPointerException("Cannot check permission because user is null");
         }
 
+        //Check if the player is an operator
+        if (isOp()) {
+            return PermissionState.TRUE;
+        }
+
         if (denyPermissions.contains("*")) {
             return PermissionState.FALSE;
         }
@@ -95,11 +101,6 @@ public class UserPermissible extends PermissibleBase {
             if (permission.startsWith(head) && tail.equals(".*")) {
                 return PermissionState.TRUE;
             }
-        }
-
-        //Check if the player is an operator
-        if (isOp()) {
-            return PermissionState.TRUE;
         }
 
         //No overrides found.
@@ -206,6 +207,10 @@ public class UserPermissible extends PermissibleBase {
             return;
         }
 
+        //Record all the old permissions, for logging purposes
+        PermissionChangesRecorder recorder = new PermissionChangesRecorder(Set.copyOf(allowPermissions), Set.copyOf(denyPermissions));
+
+        //Clear all the old permissions
         clearPermissions();
 
         IUser user = plugin.getUserManager().getUser(player.getUniqueId()).getNow(null);
@@ -223,6 +228,10 @@ public class UserPermissible extends PermissibleBase {
                 Bukkit.getServer().getPluginManager().unsubscribeFromPermission(permission, player);
             }
         });
+
+        //Collect all the changed permissions, for logging purposes
+        recorder.recordNewPermissions(Set.copyOf(allowPermissions), Set.copyOf(denyPermissions));
+        recorder.outputChanges(player);
     }
 
     @Override

@@ -68,7 +68,7 @@ public class RankPermissionsMenu extends PaginatedMenu {
                         if (clickType.isLeftClick()) {
                             rank.removePermission(permission.get());
                         } else if (clickType.isRightClick()) {
-                            Maid.INSTANCE.getPermissionManager().setEnabled(permission, !permission.isEnabled());
+                            permission.setEnabled(!permission.isEnabled());
                         }
                         Maid.INSTANCE.getRankManager().saveRank(rank);
                         PacketHandler.send(new PermissionUpdatePacket());
