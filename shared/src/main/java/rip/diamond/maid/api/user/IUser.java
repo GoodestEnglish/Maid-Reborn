@@ -200,4 +200,19 @@ public interface IUser {
      * @return The highest priority rank
      */
     IRank getRealRank();
+
+    /**
+     * Get the current disguise.
+     * If there's no disguise currently. This will return null.
+     *
+     * @return The current disguise
+     */
+    IDisguise getDisguise();
+
+    /**
+     * Set the current disguise.
+     *
+     * @param disguise The disguise
+     */
+    void setDisguise(IDisguise disguise);
 }

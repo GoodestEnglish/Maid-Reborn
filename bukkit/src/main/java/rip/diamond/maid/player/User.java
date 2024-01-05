@@ -6,11 +6,13 @@ import lombok.Setter;
 import org.bson.Document;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
+import rip.diamond.maid.api.user.IDisguise;
 import rip.diamond.maid.api.user.IGrant;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.permission.Permission;
 import rip.diamond.maid.api.user.permission.UserPermission;
+import rip.diamond.maid.disguise.Disguise;
 import rip.diamond.maid.grant.Grant;
 import rip.diamond.maid.util.json.GsonProvider;
 
@@ -31,6 +33,7 @@ public class User implements IUser {
     private final Set<String> ipHistory = new HashSet<>();
     private final Set<UserPermission> permissions = new HashSet<>();
     private final List<Grant> grants = new ArrayList<>();
+    private Disguise disguise;
 
     public User(UUID uniqueID) {
         this.uniqueID = uniqueID;
@@ -147,6 +150,11 @@ public class User implements IUser {
     @Override
     public IRank getRealRank() {
         return getRanks().stream().max(Comparator.comparingInt(IRank::getPriority)).orElseThrow(() -> new NoSuchElementException("Cannot find the highest priority rank based on grants"));
+    }
+
+    @Override
+    public void setDisguise(IDisguise disguise) {
+        this.disguise = (Disguise) disguise;
     }
 
 }

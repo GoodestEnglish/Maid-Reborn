@@ -4,3 +4,4 @@ version: "${version}"
 authors: ["GoodestEnglish"]
 api-version: 1.20
 website: "https://github.com/GoodestEnglish/Maid-Reborn"
+depend: [ ProtocolLib ]

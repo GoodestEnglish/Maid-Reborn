@@ -196,7 +196,7 @@ public class UserPermissible extends PermissibleBase {
 
     @Override
     public synchronized void removeAttachment(@NotNull PermissionAttachment attachment) {
-        Common.log("Warning: Some plugin called the function removeAttachment(PermissionAttachment), but this function is no longer be used because Permissible is a custom Permissible.");
+        Common.log("Warning: Some plugin called the function removeAttachment(PermissionAttachment), but this function is no longer be used because Permissible is a custom Permissible. (" + attachment.getPermissions().keySet() + ")");
     }
 
     /**
