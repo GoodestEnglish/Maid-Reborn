@@ -135,7 +135,7 @@ public class GrantsMenu extends PaginatedMenu {
                                 "",
                                 CC.WHITE + " 移除者: " + CC.AQUA + grant.getRevokerName(),
                                 CC.WHITE + " 移除原因: " + CC.AQUA + grant.getRevokedReason(),
-                                CC.WHITE + " 移除時間: " + CC.AQUA + TimeUtil.formatDuration(grant.getRevokedAt())
+                                CC.WHITE + " 移除時間: " + CC.AQUA + TimeUtil.formatDate(grant.getRevokedAt())
                         );
             }
             return builder.build();
