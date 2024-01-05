@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public final class CraftBukkitImplementation {
     private CraftBukkitImplementation() {}
 
-    private static final String SERVER_PACKAGE_VERSION;
+    public static final String SERVER_PACKAGE_VERSION;
 
     static {
         Class<?> server = Bukkit.getServer().getClass();

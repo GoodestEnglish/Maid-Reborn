@@ -45,12 +45,12 @@ public interface IUser {
 
     /**
      * Get the player's display name.
-     * If the player is disguised, this will return disguised display name.
      * The display name contains rank prefix and suffix.
      *
+     * @param disguise Should system return disguised display name instead of real display name
      * @return The display name
      */
-    String getDisplayName();
+    String getDisplayName(boolean disguise);
 
     /**
      * Get the player's texture.

@@ -1,6 +1,5 @@
 package rip.diamond.maid;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -12,7 +11,6 @@ import rip.diamond.maid.chat.ChatManager;
 import rip.diamond.maid.command.*;
 import rip.diamond.maid.config.Config;
 import rip.diamond.maid.disguise.DisguiseManager;
-import rip.diamond.maid.disguise.DisguisePacketAdapter;
 import rip.diamond.maid.mongo.MongoManager;
 import rip.diamond.maid.permission.PermissionManager;
 import rip.diamond.maid.platform.BukkitPlatform;
@@ -38,7 +36,6 @@ public class Maid extends JavaPlugin {
     public static Maid INSTANCE;
 
     private CommandService drink;
-    private ProtocolManager protocolManager;
     private MongoManager mongoManager;
     private UserManager userManager;
     private RankManager rankManager;
@@ -89,7 +86,6 @@ public class Maid extends JavaPlugin {
     }
 
     private void loadManagers() {
-        protocolManager = ProtocolLibrary.getProtocolManager();
         mongoManager = new MongoManager();
         userManager = new UserManager();
         rankManager = new RankManager();
@@ -97,9 +93,6 @@ public class Maid extends JavaPlugin {
         chatManager = new ChatManager();
         permissionManager = new PermissionManager();
         disguiseManager = new DisguiseManager();
-
-        //Add PacketAdapter to ProtocolManager
-        protocolManager.addPacketListener(new DisguisePacketAdapter(this, ListenerPriority.NORMAL));
     }
 
     private void loadListeners() {

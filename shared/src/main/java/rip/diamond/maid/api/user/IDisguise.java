@@ -12,13 +12,6 @@ public interface IDisguise {
     String getName();
 
     /**
-     * Get the disguised UUID
-     *
-     * @return The disguised UUID
-     */
-    UUID getUniqueID();
-
-    /**
      * Get the skin texture value
      *
      * @return The skin texture value

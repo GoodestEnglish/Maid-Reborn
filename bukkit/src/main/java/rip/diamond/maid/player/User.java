@@ -50,6 +50,9 @@ public class User implements IUser {
     }
 
     public String getName() {
+        if (disguise != null) {
+            return disguise.getName();
+        }
         return name;
     }
 
@@ -64,9 +67,14 @@ public class User implements IUser {
     }
 
     @Override
-    public String getDisplayName() {
-        IRank rank = getRealRank();
-        return rank.getPrefix() + getRealName() + rank.getSuffix();
+    public String getDisplayName(boolean disguise) {
+        if (disguise) {
+            IRank rank = getRank();
+            return rank.getPrefix() + getName() + rank.getSuffix();
+        } else {
+            IRank rank = getRealRank();
+            return rank.getPrefix() + getRealName() + rank.getSuffix();
+        }
     }
 
     @Override
@@ -144,6 +152,9 @@ public class User implements IUser {
 
     @Override
     public IRank getRank() {
+        if (disguise != null) {
+            return Maid.INSTANCE.getRankManager().getRanks().get(disguise.getDisguiseRankUUID());
+        }
         return getRealRank();
     }
 

@@ -43,7 +43,7 @@ public class UserMenu extends Menu {
             @Override
             public ItemStack getButtonItem(Player player) {
                 return new ItemBuilder(Material.PLAYER_HEAD)
-                        .name(CC.WHITE + target.getDisplayName())
+                        .name(CC.WHITE + target.getDisplayName(false))
                         .skull(target.getRealName())
                         .lore(
                                 "",

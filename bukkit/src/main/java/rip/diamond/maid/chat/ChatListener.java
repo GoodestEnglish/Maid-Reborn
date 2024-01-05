@@ -5,6 +5,7 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -26,7 +27,7 @@ public class ChatListener extends MaidListener {
         ChatRenderer renderer = new ChatRenderer() {
             @Override
             public @NotNull Component render(@NotNull Player source, @NotNull Component sourceDisplayName, @NotNull Component message, @NotNull Audience viewer) {
-                return Common.text(user.getDisplayName() + CC.GRAY + ":" + CC.RESET + " ").append(message.color(TextColor.fromHexString(rank.getChatColor())));
+                return Common.text((viewer instanceof Player ? "" : "(真實名稱為 " + user.getRealName() + ")") + user.getDisplayName(true) + CC.GRAY + ":" + CC.RESET + " ").append(message.color(TextColor.fromHexString(rank.getChatColor())));
             }
         };
         event.renderer(renderer);
