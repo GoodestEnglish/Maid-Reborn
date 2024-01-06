@@ -44,7 +44,11 @@ public class UserListener extends MaidListener {
         user.setIP(event.getAddress().getHostAddress());
 
         for (Document document : plugin.getMongoManager().getUsers().find(Filters.eq("ip", user.getIP()))) {
-            user.getAlts().add(UUID.fromString(document.getString("_id")));
+            UUID uuid = UUID.fromString(document.getString("_id"));
+            //Only add alts if the uuid is not the same
+            if (!uniqueID.equals(uuid)) {
+                user.getAlts().add(uuid);
+            }
         }
 
         plugin.getUserManager().saveUser(user);

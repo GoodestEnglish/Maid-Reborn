@@ -4,6 +4,7 @@ public class MaidPermission {
 
     public static final String
             //Command Permissions
+            ALTS = "maid.command.alts",
             BAN = "maid.command.ban",
             COLOR = "maid.command.color",
             DISGUISE = "maid.command.disguise",

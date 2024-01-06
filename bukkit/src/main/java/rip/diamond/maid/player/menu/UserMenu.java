@@ -76,6 +76,25 @@ public class UserMenu extends Menu {
         buttons.put(3, new Button() {
             @Override
             public ItemStack getButtonItem(Player player) {
+                return new ItemBuilder(Material.ARMOR_STAND)
+                        .name(CC.AQUA + "小號紀錄")
+                        .lore(
+                                "",
+                                CC.WHITE + " 小號: " + CC.AQUA + target.getAlts().size(),
+                                "",
+                                CC.YELLOW + "點擊查看所有小號"
+                        )
+                        .build();
+            }
+
+            @Override
+            public void clicked(InventoryClickEvent event, Player player, ClickType clickType) {
+                new AltsMenu(player, UserMenu.this, target).updateMenu();
+            }
+        });
+        buttons.put(4, new Button() {
+            @Override
+            public ItemStack getButtonItem(Player player) {
                 return new ItemBuilder(Material.CLOCK)
                         .name(CC.AQUA + "權限")
                         .lore(
@@ -93,7 +112,7 @@ public class UserMenu extends Menu {
                 new PermissionsMenu(player, UserMenu.this, target).updateMenu();
             }
         });
-        buttons.put(4, new Button() {
+        buttons.put(5, new Button() {
             @Override
             public ItemStack getButtonItem(Player player) {
                 return new ItemBuilder(Material.FEATHER)
@@ -113,7 +132,7 @@ public class UserMenu extends Menu {
                 new GrantsMenu(player, UserMenu.this, target).updateMenu();
             }
         });
-        buttons.put(5, new Button() {
+        buttons.put(6, new Button() {
             @Override
             public ItemStack getButtonItem(Player player) {
                 return new ItemBuilder(Material.BARRIER)
