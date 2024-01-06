@@ -7,6 +7,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import rip.diamond.maid.Maid;
+import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.rank.Rank;
 import rip.diamond.maid.redis.messaging.PacketHandler;
@@ -61,7 +62,7 @@ public class RankParentsMenu extends PaginatedMenu {
                 public void clicked(InventoryClickEvent event, Player player, ClickType clickType) {
                     rank.removeParent(parent.getUniqueID());
                     Maid.INSTANCE.getRankManager().saveRank(rank);
-                    PacketHandler.send(new PermissionUpdatePacket());
+                    PacketHandler.send(new PermissionUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID()));
 
                     updateMenu();
                 }
@@ -101,7 +102,7 @@ public class RankParentsMenu extends PaginatedMenu {
                     }
                     rank.addParent(parent.getUniqueID());
                     Maid.INSTANCE.getRankManager().saveRank(rank);
-                    PacketHandler.send(new PermissionUpdatePacket());
+                    PacketHandler.send(new PermissionUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID()));
 
                     Common.sendMessage(player, CC.GREEN + "成功新增父職階 " + CC.AQUA + parent.getName());
                     updateMenu();

@@ -11,7 +11,9 @@ public class MaidPermission {
             GRANTS = "maid.command.grants",
             PACKET_TEST = "maid.command.packettest",
             PERMISSION_GUI = "maid.command.permission.gui",
+            PUNISHMENT = "maid.command.punishment",
             RANK = "maid.command.rank",
+            UNBAN = "maid.command.unban",
             UNDISGUISE = "maid.command.undisguise",
             USER = "maid.command.user";
 }

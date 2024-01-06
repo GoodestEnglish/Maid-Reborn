@@ -12,6 +12,9 @@ public class TimeUtil {
     public static final List<String> TIME_OPTIONS = List.of("5s", "30m", "1h", "6h", "12h", "1d", "3d", "7d", "14d", "30d", "90d", "1y", "永久");
 
     public static String formatDate(long value) {
+        if (value == 0) {
+            return "---";
+        }
         return FORMAT.format(new Date(value));
     }
 

@@ -48,14 +48,13 @@ public class Grant implements IGrant {
     }
 
     @Override
-    public boolean isActive() {
-        if (revokedAt != 0) {
-            return false;
-        }
-        if (duration == TimeUtil.PERMANENT) {
-            return true;
-        }
-        return (issuedAt + duration) > System.currentTimeMillis();
+    public String getRevokerName() {
+        return (issuedAt + duration) > System.currentTimeMillis() ? revokerName : "---";
+    }
+
+    @Override
+    public String getRevokedReason() {
+        return (issuedAt + duration) > System.currentTimeMillis() ? revokedReason : "---";
     }
 
     @Override
@@ -64,5 +63,16 @@ public class Grant implements IGrant {
         this.revokerName = revoker.getRealName();
         this.revokedReason = revokedReason;
         this.revokedAt = System.currentTimeMillis();
+    }
+
+    @Override
+    public boolean isActive() {
+        if (revokedAt != 0) {
+            return false;
+        }
+        if (duration == TimeUtil.PERMANENT) {
+            return true;
+        }
+        return (issuedAt + duration) > System.currentTimeMillis();
     }
 }

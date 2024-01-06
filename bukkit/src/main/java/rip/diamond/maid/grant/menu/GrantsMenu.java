@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import rip.diamond.maid.Maid;
+import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.MaidPermission;
 import rip.diamond.maid.api.user.IGrant;
 import rip.diamond.maid.grant.Grant;
@@ -100,7 +101,7 @@ public class GrantsMenu extends PaginatedMenu {
 
                 grant.revoke(user, reason);
                 Maid.INSTANCE.getUserManager().saveUser(target);
-                PacketHandler.send(new PermissionUpdatePacket(target.getUniqueID()));
+                PacketHandler.send(new PermissionUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), target.getUniqueID()));
 
                 updateMenu();
             };

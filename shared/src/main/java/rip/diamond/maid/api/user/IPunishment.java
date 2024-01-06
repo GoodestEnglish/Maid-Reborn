@@ -1,6 +1,8 @@
 package rip.diamond.maid.api.user;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 
@@ -106,7 +108,15 @@ public interface IPunishment {
      */
     boolean isActive();
 
+    @Getter
+    @RequiredArgsConstructor
     enum PunishmentType {
-        WARN, KICK, MUTE, BAN, IP_BAN;
+        WARN("警告"),
+        KICK("踢除"),
+        MUTE("禁言"),
+        BAN("封鎖"),
+        IP_BAN("IP封鎖");
+
+        private final String name;
     }
 }

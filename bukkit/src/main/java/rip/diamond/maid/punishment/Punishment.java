@@ -42,6 +42,24 @@ public class Punishment implements IPunishment {
     }
 
     @Override
+    public String getRevokerName() {
+        return (issuedAt + duration) > System.currentTimeMillis() ? revokerName : "---";
+    }
+
+    @Override
+    public String getRevokedReason() {
+        return (issuedAt + duration) > System.currentTimeMillis() ? revokedReason : "---";
+    }
+
+    @Override
+    public void revoke(IUser revoker, String revokedReason) {
+        this.revoker = revoker.getUniqueID();
+        this.revokerName = revoker.getRealName();
+        this.revokedReason = revokedReason;
+        this.revokedAt = System.currentTimeMillis();
+    }
+
+    @Override
     public boolean isActive() {
         if (revokedAt != 0) {
             return false;
@@ -52,11 +70,4 @@ public class Punishment implements IPunishment {
         return (issuedAt + duration) > System.currentTimeMillis();
     }
 
-    @Override
-    public void revoke(IUser revoker, String revokedReason) {
-        this.revoker = revoker.getUniqueID();
-        this.revokerName = revoker.getRealName();
-        this.revokedReason = revokedReason;
-        this.revokedAt = System.currentTimeMillis();
-    }
 }

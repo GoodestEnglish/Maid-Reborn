@@ -1,12 +1,15 @@
 package rip.diamond.maid.player.menu;
 
+import com.google.common.collect.ImmutableList;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import rip.diamond.maid.api.user.IPunishment;
 import rip.diamond.maid.grant.menu.GrantsMenu;
 import rip.diamond.maid.player.User;
+import rip.diamond.maid.punishment.menu.PunishmentsMenu;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.ItemBuilder;
 import rip.diamond.maid.util.TimeUtil;
@@ -44,7 +47,7 @@ public class UserMenu extends Menu {
             public ItemStack getButtonItem(Player player) {
                 return new ItemBuilder(Material.PLAYER_HEAD)
                         .name(CC.WHITE + target.getDisplayName(false))
-                        .skull(target.getRealName())
+                        .texture(target.getTexture())
                         .lore(
                                 "",
                                 CC.WHITE + " 職階: " + CC.AQUA + target.getRealRank().getDisplayName(true),
@@ -73,7 +76,7 @@ public class UserMenu extends Menu {
         buttons.put(3, new Button() {
             @Override
             public ItemStack getButtonItem(Player player) {
-                return new ItemBuilder(Material.BARRIER)
+                return new ItemBuilder(Material.CLOCK)
                         .name(CC.AQUA + "權限")
                         .lore(
                                 "",
@@ -108,6 +111,29 @@ public class UserMenu extends Menu {
             @Override
             public void clicked(InventoryClickEvent event, Player player, ClickType clickType) {
                 new GrantsMenu(player, UserMenu.this, target).updateMenu();
+            }
+        });
+        buttons.put(5, new Button() {
+            @Override
+            public ItemStack getButtonItem(Player player) {
+                return new ItemBuilder(Material.BARRIER)
+                        .name(CC.AQUA + "懲罰紀錄")
+                        .lore(
+                                "",
+                                CC.WHITE + " 警告次數: " + CC.AQUA + target.getPunishments(ImmutableList.of(IPunishment.PunishmentType.WARN)).size(),
+                                CC.WHITE + " 踢除次數: " + CC.AQUA + target.getPunishments(ImmutableList.of(IPunishment.PunishmentType.KICK)).size(),
+                                CC.WHITE + " 禁言次數: " + CC.AQUA + target.getPunishments(ImmutableList.of(IPunishment.PunishmentType.MUTE)).size(),
+                                CC.WHITE + " 封鎖次數: " + CC.AQUA + target.getPunishments(ImmutableList.of(IPunishment.PunishmentType.BAN)).size(),
+                                CC.WHITE + " IP封鎖次數: " + CC.AQUA + target.getPunishments(ImmutableList.of(IPunishment.PunishmentType.IP_BAN)).size(),
+                                "",
+                                CC.YELLOW + "點擊查看所有懲罰紀錄"
+                        )
+                        .build();
+            }
+
+            @Override
+            public void clicked(InventoryClickEvent event, Player player, ClickType clickType) {
+                new PunishmentsMenu(player, UserMenu.this, target).updateMenu();
             }
         });
         return buttons;

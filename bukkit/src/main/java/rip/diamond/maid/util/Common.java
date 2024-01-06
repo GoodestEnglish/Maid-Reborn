@@ -1,5 +1,6 @@
 package rip.diamond.maid.util;
 
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -69,51 +70,39 @@ public class Common {
         }
     }
 
-    public static void sendMessage(CommandSender sender, String... str) {
-        if (sender == null) {
+    public static void sendMessage(Audience audience, String... str) {
+        if (audience == null) {
             return;
         }
         for (String s : str) {
             if (s == null) {
                 continue;
             }
-            sender.sendMessage(Common.text(s));
+            audience.sendMessage(Common.text(s));
         }
     }
 
-    public static void sendMessage(Player player, String... str) {
-        if (player == null) {
-            return;
-        }
-        for (String s : str) {
-            if (s == null) {
-                continue;
-            }
-            player.sendMessage(Common.text(s));
-        }
-    }
-
-    public static void sendMessage(Player player, Component... components) {
-        if (player == null) {
+    public static void sendMessage(Audience audience, Component... components) {
+        if (audience == null) {
             return;
         }
         for (Component component : components) {
             if (component == null) {
                 continue;
             }
-            player.sendMessage(component);
+            audience.sendMessage(component);
         }
     }
 
-    public static void sendMessage(Player player, List<String> str) {
-        if (player == null) {
+    public static void sendMessage(Audience audience, List<String> str) {
+        if (audience == null) {
             return;
         }
         for (String s : str) {
             if (s == null) {
                 continue;
             }
-            player.sendMessage(Common.text(s));
+            audience.sendMessage(Common.text(s));
         }
     }
 

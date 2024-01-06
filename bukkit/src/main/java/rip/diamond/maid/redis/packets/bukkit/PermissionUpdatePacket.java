@@ -1,8 +1,6 @@
 package rip.diamond.maid.redis.packets.bukkit;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import rip.diamond.maid.MaidAPI;
@@ -13,19 +11,17 @@ import rip.diamond.maid.util.Preconditions;
 import java.util.UUID;
 
 @Getter
-@RequiredArgsConstructor
-@AllArgsConstructor
 public class PermissionUpdatePacket implements Packet {
 
     private final String from;
     private UUID uuid;
 
-    public PermissionUpdatePacket() {
-        this.from = MaidAPI.INSTANCE.getPlatform().getServerID();
+    public PermissionUpdatePacket(String serverID) {
+        this.from = serverID;
     }
 
-    public PermissionUpdatePacket(UUID uuid) {
-        this.from = MaidAPI.INSTANCE.getPlatform().getServerID();
+    public PermissionUpdatePacket(String serverID, UUID uuid) {
+        this.from = serverID;
         this.uuid = uuid;
     }
 
