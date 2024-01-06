@@ -2,6 +2,7 @@ package rip.diamond.maid.punishment;
 
 import com.google.common.collect.ImmutableList;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,7 +38,8 @@ public class PunishmentListener extends MaidListener {
         event.disallow(PlayerLoginEvent.Result.KICK_BANNED, Common.text(message));
 
         String durationReadable = punishment.getDuration() == -1 ? "永久" : TimeUtil.formatDuration(punishment.getIssuedAt() + punishment.getDuration() - System.currentTimeMillis());
-        PacketHandler.send(new BroadcastPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), Alert.LOGIN_FAILED_BANNED.getType().getPermission(), ImmutableList.of(Alert.LOGIN_FAILED_BANNED.get(user.getSimpleDisplayName(false), "(" + durationReadable + ")"))));
+        Alert alert = Alert.LOGIN_FAILED_BANNED;
+        PacketHandler.send(new BroadcastPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), "(" + durationReadable + ")"))));
     }
 
     @EventHandler
@@ -56,8 +58,8 @@ public class PunishmentListener extends MaidListener {
         event.setCancelled(true);
         Common.sendMessage(player, messages);
 
-        String durationReadable = punishment.getDuration() == -1 ? "永久" : TimeUtil.formatDuration(punishment.getIssuedAt() + punishment.getDuration() - System.currentTimeMillis());
-        PacketHandler.send(new BroadcastPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), Alert.CHAT_FAILED_MUTED.getType().getPermission(), ImmutableList.of(Alert.LOGIN_FAILED_BANNED.get(user.getSimpleDisplayName(false), "(" + durationReadable + ")"))));
+        Alert alert = Alert.CHAT_FAILED_MUTED;
+        PacketHandler.send(new BroadcastPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), "(" + GsonComponentSerializer.gson().serialize(event.message()) + ")"))));
     }
 
 }

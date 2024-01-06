@@ -14,10 +14,10 @@ import rip.diamond.maid.util.extend.MaidCommand;
 
 import java.util.UUID;
 
-@Require(MaidPermission.UNBAN)
-public class UnbanCommand extends MaidCommand {
+@Require(MaidPermission.UNMUTE)
+public class UnmuteCommand extends MaidCommand {
 
-    @Command(name = "", desc = "解除封鎖一位玩家")
+    @Command(name = "", desc = "解除禁言一位玩家")
     public void root(@Sender CommandSender sender, String targetName, @Text String reason) {
         UUID targetUUID = UUIDCache.getUUID(targetName).join();
 
@@ -26,7 +26,7 @@ public class UnbanCommand extends MaidCommand {
             return;
         }
 
-        plugin.getPunishmentManager().unpunish(sender, targetUUID, IPunishment.PunishmentType.BAN, reason);
+        plugin.getPunishmentManager().unpunish(sender, targetUUID, IPunishment.PunishmentType.MUTE, reason);
     }
 
 }

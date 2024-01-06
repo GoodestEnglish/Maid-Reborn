@@ -96,62 +96,63 @@ public class PunishmentManager extends MaidManager {
     }
 
     /**
-     * Ban the player
+     * Punish the player
      *
      * @param executor The player who executed the command
-     * @param targetUUID The UUID of the target who is getting ban
+     * @param targetUUID The UUID of the target who is getting punished
      * @param duration The duration of this punishment
      * @param reason The reason why this punishment is created
      */
-    public void ban(Audience executor, UUID targetUUID, String duration, String reason) {
+    public void punish(Audience executor, UUID targetUUID, IPunishment.PunishmentType type, String duration, String reason) {
         IUser user = executor instanceof Player player ? plugin.getUserManager().getUser(player.getUniqueId()).join() : User.CONSOLE;
         IUser target = plugin.getUserManager().getUser(targetUUID).join();
         String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
         long duration_ = TimeUtil.getDuration(duration);
 
         //Build the punishment and save it to the database
-        Punishment punishment = new Punishment(target, IPunishment.PunishmentType.BAN, user, reason, System.currentTimeMillis(), duration_);
+        Punishment punishment = new Punishment(target, type, user, reason, System.currentTimeMillis(), duration_);
         updatePunishment(punishment);
         PacketHandler.send(new PunishmentExecutePacket(serverID, punishment));
 
         //Broadcast to all staff members
-        Alert alert = Alert.BAN;
+        Alert alert = Alert.valueOf(type.name());
         String durationReadable = duration_ == -1 ? "永久" : TimeUtil.formatDuration(punishment.getIssuedAt() + punishment.getDuration() - System.currentTimeMillis());
         PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(target.getSimpleDisplayName(false), user.getSimpleDisplayName(false), "(" + durationReadable + ")"))));
-        Common.sendMessage(executor, CC.GREEN + "成功封鎖玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
+        Common.sendMessage(executor, CC.GREEN + "成功" + type.getName() + "玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
     }
 
     /**
-     * Unmute the player
+     * Un-punish the player
      *
      * @param executor The player who executed the command
-     * @param targetUUID The UUID of the target who is getting unmute
+     * @param targetUUID The UUID of the target who is getting revoked
      * @param reason The reason why this punishment is revoked
      */
-    public void unmute(Audience executor, UUID targetUUID, String reason) {
+    public void unpunish(Audience executor, UUID targetUUID, IPunishment.PunishmentType type, String reason) {
         IUser user = executor instanceof Player player ? plugin.getUserManager().getUser(player.getUniqueId()).join() : User.CONSOLE;
         IUser target = plugin.getUserManager().getUser(targetUUID).join();
         String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
 
-        List<IPunishment> punishments = target.getActivePunishments(ImmutableList.of(IPunishment.PunishmentType.MUTE));
+        //If the PunishmentType is BAN or IP_BAN, we will get both BAN and IP_BAN data because they are all "bans"
+        List<IPunishment> punishments = type == IPunishment.PunishmentType.BAN || type == IPunishment.PunishmentType.IP_BAN ? target.getActivePunishments(ImmutableList.of(IPunishment.PunishmentType.BAN, IPunishment.PunishmentType.IP_BAN)) : target.getActivePunishments(ImmutableList.of(type));
         punishments.forEach(punishment -> {
             punishment.revoke(user, reason);
             updatePunishment(punishment);
         });
 
-        Alert alert = Alert.UNMUTE;
+        Alert alert = Alert.valueOf(type.name());
         PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), target.getSimpleDisplayName(false)))));
-        Common.sendMessage(executor, CC.GREEN + "成功解除禁言玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
+        Common.sendMessage(executor, CC.GREEN + "成功解除" + type.getName() + "玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
     }
 
     /**
-     * Unban the player, with selected punishment provided
+     * Un-punish the player, with selected punishment provided
      *
      * @param executor The player who executed the command
      * @param punishment The punishment to revoke
      * @param reason The reason why this punishment is revoked
      */
-    public void unmute(Audience executor, IPunishment punishment, String reason) {
+    public void unpunish(Audience executor, IPunishment punishment, String reason) {
         IUser user = executor instanceof Player player ? plugin.getUserManager().getUser(player.getUniqueId()).join() : User.CONSOLE;
         IUser target = plugin.getUserManager().getUser(punishment.getUser()).join();
         String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
@@ -159,52 +160,9 @@ public class PunishmentManager extends MaidManager {
         punishment.revoke(user, reason);
         updatePunishment(punishment);
 
-        Alert alert = Alert.UNMUTE;
+        Alert alert = Alert.valueOf(punishment.getType().name());
         PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), target.getSimpleDisplayName(false)))));
-        Common.sendMessage(executor, CC.GREEN + "成功解除禁言玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
-    }
-
-    /**
-     * Unban the player
-     *
-     * @param executor The player who executed the command
-     * @param targetUUID The UUID of the target who is getting unban
-     * @param reason The reason why this punishment is revoked
-     */
-    public void unban(Audience executor, UUID targetUUID, String reason) {
-        IUser user = executor instanceof Player player ? plugin.getUserManager().getUser(player.getUniqueId()).join() : User.CONSOLE;
-        IUser target = plugin.getUserManager().getUser(targetUUID).join();
-        String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
-
-        List<IPunishment> punishments = target.getActivePunishments(ImmutableList.of(IPunishment.PunishmentType.BAN, IPunishment.PunishmentType.IP_BAN));
-        punishments.forEach(punishment -> {
-            punishment.revoke(user, reason);
-            updatePunishment(punishment);
-        });
-
-        Alert alert = Alert.UNBAN;
-        PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), target.getSimpleDisplayName(false)))));
-        Common.sendMessage(executor, CC.GREEN + "成功解除封鎖玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
-    }
-
-    /**
-     * Unban the player, with selected punishment provided
-     *
-     * @param executor The player who executed the command
-     * @param punishment The punishment to revoke
-     * @param reason The reason why this punishment is revoked
-     */
-    public void unban(Audience executor, IPunishment punishment, String reason) {
-        IUser user = executor instanceof Player player ? plugin.getUserManager().getUser(player.getUniqueId()).join() : User.CONSOLE;
-        IUser target = plugin.getUserManager().getUser(punishment.getUser()).join();
-        String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
-
-        punishment.revoke(user, reason);
-        updatePunishment(punishment);
-
-        Alert alert = Alert.UNBAN;
-        PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), target.getSimpleDisplayName(false)))));
-        Common.sendMessage(executor, CC.GREEN + "成功解除封鎖玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
+        Common.sendMessage(executor, CC.GREEN + "成功解除" + punishment.getType().getName() + "玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
     }
 
 }

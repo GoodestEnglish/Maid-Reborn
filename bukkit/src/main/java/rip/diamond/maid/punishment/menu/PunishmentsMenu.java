@@ -92,9 +92,8 @@ public class PunishmentsMenu extends PaginatedMenu {
         public BiConsumer<ConversationContext, String> getAction() {
             return (cc, reason) -> {
                 switch (punishment.getType()) {
-                    case MUTE -> Maid.INSTANCE.getPunishmentManager().unmute(player, punishment, reason);
-                    case BAN, IP_BAN -> Maid.INSTANCE.getPunishmentManager().unban(player, punishment, reason);
-                    default -> throw new NullPointerException("Cannot find punishment type " + punishment.getType().name());
+                    case MUTE, BAN, IP_BAN -> Maid.INSTANCE.getPunishmentManager().unpunish(player, punishment, reason);
+                    default -> throw new NullPointerException("Cannot unpunish " + target.getRealName() + " with punishment type " + punishment.getType().name());
                 }
                 updateMenu();
             };

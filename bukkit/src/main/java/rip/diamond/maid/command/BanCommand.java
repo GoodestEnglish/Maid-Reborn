@@ -2,6 +2,7 @@ package rip.diamond.maid.command;
 
 import org.bukkit.command.CommandSender;
 import rip.diamond.maid.MaidPermission;
+import rip.diamond.maid.api.user.IPunishment;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.UUIDCache;
@@ -17,7 +18,7 @@ import java.util.UUID;
 public class BanCommand extends MaidCommand {
 
     @Command(name = "", desc = "封鎖一位玩家")
-    public void root(@Sender CommandSender sender, String targetName, String duration_, @Text String reason) {
+    public void root(@Sender CommandSender sender, String targetName, String duration, @Text String reason) {
         UUID targetUUID = UUIDCache.getUUID(targetName).join();
 
         if (!plugin.getUserManager().hasUser(targetUUID).join()) {
@@ -25,7 +26,7 @@ public class BanCommand extends MaidCommand {
             return;
         }
 
-        plugin.getPunishmentManager().ban(sender, targetUUID, duration_, reason);
+        plugin.getPunishmentManager().punish(sender, targetUUID, IPunishment.PunishmentType.BAN, duration, reason);
     }
 
 }

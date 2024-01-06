@@ -113,6 +113,9 @@ public class Maid extends JavaPlugin {
         drink.register(new DisguiseCommand(), "disguise", "nick");
         drink.register(new GrantCommand(), "grant");
         drink.register(new GrantsCommand(), "grants");
+        drink.register(new IPBanCommand(), "ipban");
+        drink.register(new KickCommand(), "kick");
+        drink.register(new MuteCommand(), "mute");
         drink.register(new PacketTestCommand(), "packettest");
         drink.register(new PermissionCommand(), "permission", "perms");
         drink.register(new PunishmentCommand(), "punishment");
@@ -120,7 +123,9 @@ public class Maid extends JavaPlugin {
         drink.register(new TestCommand(), "test");
         drink.register(new UnbanCommand(), "unban");
         drink.register(new UndisguiseCommand(), "undisguise", "unnick");
+        drink.register(new UnmuteCommand(), "unmute");
         drink.register(new UserCommand(), "user");
+        drink.register(new WarnCommand(), "warn");
         drink.registerCommands();
     }
 }
