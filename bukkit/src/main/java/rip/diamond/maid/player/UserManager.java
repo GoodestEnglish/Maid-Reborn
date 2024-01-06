@@ -22,7 +22,14 @@ public class UserManager extends MaidManager {
     @Getter private final ConcurrentHashMap<UUID, IUser> users = new ConcurrentHashMap<>();
 
     public CompletableFuture<Boolean> hasUser(UUID uniqueID) {
-        return CompletableFuture.supplyAsync(() -> plugin.getMongoManager().getUsers().find(Filters.eq("_id", uniqueID.toString())).first() != null);
+        return CompletableFuture.supplyAsync(() -> {
+            Document document = plugin.getMongoManager().getUsers().find(Filters.eq("_id", uniqueID.toString())).first();
+            if (document == null) {
+                return false;
+            }
+            users.put(uniqueID, User.of(document));
+            return true;
+        });
     }
 
     public CompletableFuture<IUser> getUser(UUID uniqueID) {

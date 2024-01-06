@@ -57,27 +57,31 @@ public class TimeUtil {
     }
 
     public static long getDuration(String input) {
-        input = input.toLowerCase();
+        try {
+            input = input.toLowerCase();
 
-        if (input.equals(Long.toString(PERMANENT))) {
-            return PERMANENT;
-        }
-
-        long result = 0L;
-        StringBuilder number = new StringBuilder();
-
-        for (int i = 0; i < input.length(); ++i) {
-            char c = input.charAt(i);
-
-            if (Character.isDigit(c)) {
-                number.append(c);
-            } else if (Character.isLetter(c)) {
-                result += convert(Integer.parseInt(number.toString()), c);
-                number.setLength(0);
+            if (input.equals(Long.toString(PERMANENT))) {
+                return PERMANENT;
             }
-        }
 
-        return result;
+            long result = 0L;
+            StringBuilder number = new StringBuilder();
+
+            for (int i = 0; i < input.length(); ++i) {
+                char c = input.charAt(i);
+
+                if (Character.isDigit(c)) {
+                    number.append(c);
+                } else if (Character.isLetter(c)) {
+                    result += convert(Integer.parseInt(number.toString()), c);
+                    number.setLength(0);
+                }
+            }
+
+            return result;
+        } catch (NumberFormatException e) {
+            return -1L;
+        }
     }
 
     public static long convert(int value, char charType) {

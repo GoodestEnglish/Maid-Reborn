@@ -65,6 +65,17 @@ public class User implements IUser {
     }
 
     @Override
+    public String getSimpleDisplayName(boolean disguise) {
+        if (disguise) {
+            IRank rank = getRank();
+            return "<" + rank.getColor() + ">" + getName();
+        } else {
+            IRank rank = getRealRank();
+            return "<" + rank.getColor() + ">" + getRealName();
+        }
+    }
+
+    @Override
     public String getDisplayName(boolean disguise) {
         if (disguise) {
             IRank rank = getRank();

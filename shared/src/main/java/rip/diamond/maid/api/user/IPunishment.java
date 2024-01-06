@@ -107,6 +107,6 @@ public interface IPunishment {
     boolean isActive();
 
     enum PunishmentType {
-        WARN, MUTE, BAN, IP_BAN;
+        WARN, KICK, MUTE, BAN, IP_BAN;
     }
 }

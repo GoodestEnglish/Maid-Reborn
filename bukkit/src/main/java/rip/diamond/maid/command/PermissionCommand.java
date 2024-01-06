@@ -10,8 +10,9 @@ import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.command.annotation.Command;
 import rip.diamond.maid.util.command.annotation.Require;
 import rip.diamond.maid.util.command.annotation.Sender;
+import rip.diamond.maid.util.extend.MaidCommand;
 
-public class PermissionCommand {
+public class PermissionCommand extends MaidCommand {
 
     @Command(name = "menu", desc = "查看現時 UserPermissible 擁有的權限")
     @Require(MaidPermission.PERMISSION_GUI)

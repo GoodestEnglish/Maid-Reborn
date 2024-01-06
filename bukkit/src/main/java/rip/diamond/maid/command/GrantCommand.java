@@ -11,21 +11,22 @@ import rip.diamond.maid.util.UUIDCache;
 import rip.diamond.maid.util.command.annotation.Command;
 import rip.diamond.maid.util.command.annotation.Require;
 import rip.diamond.maid.util.command.annotation.Sender;
+import rip.diamond.maid.util.extend.MaidCommand;
 
 import java.util.UUID;
 
 @Require(MaidPermission.GRANT)
-public class GrantCommand {
+public class GrantCommand extends MaidCommand {
 
     @Command(name = "", desc = "升級職階")
     public void root(@Sender Player sender, String targetName) {
         UUID uuid = UUIDCache.getUUID(targetName).join();
-        if (!Maid.INSTANCE.getUserManager().hasUser(uuid).join()) {
+        if (!plugin.getUserManager().hasUser(uuid).join()) {
             Common.sendMessage(sender, CC.RED + "未能找到玩家 '" + targetName + "' 的資料");
             return;
         }
 
-        User targetUser = (User) Maid.INSTANCE.getUserManager().getUser(uuid).join();
+        User targetUser = (User) plugin.getUserManager().getUser(uuid).join();
         new GrantMenu(sender, targetUser).updateMenu();
     }
 

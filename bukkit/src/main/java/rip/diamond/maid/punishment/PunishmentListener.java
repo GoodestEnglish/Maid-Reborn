@@ -29,14 +29,7 @@ public class PunishmentListener extends MaidListener {
         }
 
         IPunishment punishment = punishments.get(0);
-        String message = StringUtils.join(List.of(
-                "",
-                CC.RED + "你的帳號已被封鎖!",
-                "",
-                CC.DARK_GRAY + "原因: " + CC.WHITE + punishment.getReason(),
-                CC.DARK_GRAY + "解封時間: " + CC.WHITE + TimeUtil.formatDuration(punishment.getIssuedAt() + punishment.getDuration() - System.currentTimeMillis()),
-                ""
-        ), "\n");
+        String message = StringUtils.join(plugin.getPunishmentManager().getPunishmentMessage(punishment), "\n");
         event.disallow(PlayerLoginEvent.Result.KICK_BANNED, Common.text(message));
     }
 
@@ -51,14 +44,7 @@ public class PunishmentListener extends MaidListener {
         }
 
         IPunishment punishment = punishments.get(0);
-        List<String> messages = ImmutableList.of(
-                "",
-                CC.RED + "你的帳號已被禁言!",
-                "",
-                CC.DARK_GRAY + "原因: " + CC.WHITE + punishment.getReason(),
-                CC.DARK_GRAY + "解除時間: " + CC.WHITE + TimeUtil.formatDuration(punishment.getIssuedAt() + punishment.getDuration() - System.currentTimeMillis()),
-                ""
-        );
+        List<String> messages = plugin.getPunishmentManager().getPunishmentMessage(punishment);
 
         event.setCancelled(true);
         Common.sendMessage(player, messages);

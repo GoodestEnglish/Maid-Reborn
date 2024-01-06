@@ -56,7 +56,7 @@ public class GrantMenu extends Menu {
             @Override
             public ItemStack getButtonItem(Player player) {
                 return new ItemBuilder(Material.PLAYER_HEAD)
-                        .name("<" + target.getRealRank().getColor() + ">" + target.getRealName())
+                        .name(target.getSimpleDisplayName(false))
                         .texture(target.getTexture())
                         .lore("", CC.GRAY + CC.ITALIC.toString() + "你正在替" + target.getRealName() + "升級職階", "")
                         .build();

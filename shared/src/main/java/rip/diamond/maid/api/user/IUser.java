@@ -44,6 +44,15 @@ public interface IUser {
     void setRealName(String name);
 
     /**
+     * Get the player's display name, as simple form
+     * The display name doesn't contain rank prefix and suffix, but contain the color of the rank
+     *
+     * @param disguise Should system return disguised display name instead of real display name
+     * @return The display name
+     */
+    String getSimpleDisplayName(boolean disguise);
+
+    /**
      * Get the player's display name.
      * The display name contains rank prefix and suffix.
      *

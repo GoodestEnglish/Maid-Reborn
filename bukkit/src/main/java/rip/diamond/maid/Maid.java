@@ -108,6 +108,7 @@ public class Maid extends JavaPlugin {
     private void loadCommands() {
         drink.bind(Rank.class).toProvider(new RankProvider());
 
+        drink.register(new BanCommand(), "ban");
         drink.register(new ColorCommand(), "color");
         drink.register(new DisguiseCommand(), "disguise", "nick");
         drink.register(new GrantCommand(), "grant");

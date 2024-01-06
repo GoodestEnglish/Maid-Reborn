@@ -9,9 +9,10 @@ import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.command.annotation.Command;
 import rip.diamond.maid.util.command.annotation.Require;
 import rip.diamond.maid.util.command.annotation.Sender;
+import rip.diamond.maid.util.extend.MaidCommand;
 
 @Require(MaidPermission.PACKET_TEST)
-public class PacketTestCommand {
+public class PacketTestCommand extends MaidCommand {
 
     @Command(name = "", desc = "測試封包API是否正常運作")
     public void root(@Sender Player player) {
