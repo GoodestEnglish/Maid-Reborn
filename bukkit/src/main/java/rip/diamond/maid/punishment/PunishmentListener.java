@@ -7,8 +7,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerLoginEvent;
+import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IPunishment;
 import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.redis.messaging.PacketHandler;
+import rip.diamond.maid.redis.packets.bukkit.BroadcastPacket;
+import rip.diamond.maid.util.Alert;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.TimeUtil;
@@ -31,6 +35,9 @@ public class PunishmentListener extends MaidListener {
         IPunishment punishment = punishments.get(0);
         String message = StringUtils.join(plugin.getPunishmentManager().getPunishmentMessage(punishment), "\n");
         event.disallow(PlayerLoginEvent.Result.KICK_BANNED, Common.text(message));
+
+        String durationReadable = punishment.getDuration() == -1 ? "永久" : TimeUtil.formatDuration(punishment.getIssuedAt() + punishment.getDuration() - System.currentTimeMillis());
+        PacketHandler.send(new BroadcastPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), Alert.LOGIN_FAILED_BANNED.getType().getPermission(), ImmutableList.of(Alert.LOGIN_FAILED_BANNED.get(user.getSimpleDisplayName(false), "(" + durationReadable + ")"))));
     }
 
     @EventHandler
@@ -48,6 +55,9 @@ public class PunishmentListener extends MaidListener {
 
         event.setCancelled(true);
         Common.sendMessage(player, messages);
+
+        String durationReadable = punishment.getDuration() == -1 ? "永久" : TimeUtil.formatDuration(punishment.getIssuedAt() + punishment.getDuration() - System.currentTimeMillis());
+        PacketHandler.send(new BroadcastPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), Alert.CHAT_FAILED_MUTED.getType().getPermission(), ImmutableList.of(Alert.LOGIN_FAILED_BANNED.get(user.getSimpleDisplayName(false), "(" + durationReadable + ")"))));
     }
 
 }
