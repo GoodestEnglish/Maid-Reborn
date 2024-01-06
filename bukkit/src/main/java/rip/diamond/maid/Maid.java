@@ -13,6 +13,7 @@ import rip.diamond.maid.permission.PermissionManager;
 import rip.diamond.maid.platform.BukkitPlatform;
 import rip.diamond.maid.player.UserListener;
 import rip.diamond.maid.player.UserManager;
+import rip.diamond.maid.punishment.PunishmentListener;
 import rip.diamond.maid.punishment.PunishmentManager;
 import rip.diamond.maid.rank.Rank;
 import rip.diamond.maid.rank.RankManager;
@@ -99,6 +100,7 @@ public class Maid extends JavaPlugin {
         Arrays.asList(
                 new ChatListener(),
                 new UserListener(),
+                new PunishmentListener(),
                 new ServerListener()
         ).forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));
     }

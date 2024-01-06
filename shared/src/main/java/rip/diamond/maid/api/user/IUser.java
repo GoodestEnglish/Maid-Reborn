@@ -234,10 +234,10 @@ public interface IUser {
     /**
      * Get all the punishments associated with this user.
      *
-     * @param type The type of punishment to filter
+     * @param types The types of punishment to filter
      * @return List of punishments
      */
-    List<IPunishment> getPunishments(IPunishment.PunishmentType type);
+    List<IPunishment> getPunishments(List<IPunishment.PunishmentType> types);
 
     /**
      * Get all the active punishments associated with this user.
@@ -249,8 +249,8 @@ public interface IUser {
     /**
      * Get all the active punishments associated with this user.
      *
-     * @param type The type of punishment to filter
+     * @param types The types of punishment to filter
      * @return List of punishments
      */
-    List<IPunishment> getActivePunishments(IPunishment.PunishmentType type);
+    List<IPunishment> getActivePunishments(List<IPunishment.PunishmentType> types);
 }

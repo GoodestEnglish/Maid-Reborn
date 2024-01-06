@@ -59,11 +59,6 @@ public class UserListener extends MaidListener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onLoginInjectPermission(PlayerLoginEvent event) {
-        //Deny injection when player isn't allow to login
-        if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
-            return;
-        }
-
         //At this point, user data should be present and loaded
         Player player = event.getPlayer();
         IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
@@ -72,21 +67,20 @@ public class UserListener extends MaidListener {
             Maid.INSTANCE.getPermissionManager().initPlayer(player);
         } catch (IllegalAccessException e) {
             Common.log("Error: Failed to inject UserPermissible to player '" + user.getRealName() + "'");
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, Common.text(CC.RED + "錯誤: 無法注入 UserPermissible"));
             throw new RuntimeException(e);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onJoinCacheUUID(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        UUIDCache.insert(player.getUniqueId(), player.getName());
-    }
-
-    @EventHandler(priority = EventPriority.LOW)
-    public void onJoinCacheTexture(PlayerJoinEvent event) {
+    public void onJoinCache(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
 
+        //Cache UUID and username
+        UUIDCache.insert(player.getUniqueId(), player.getName());
+
+        //Cache skin
         ProfileProperty property = player.getPlayerProfile().getProperties().stream().filter(profileProperty -> profileProperty.getName().equals("textures")).findAny().orElse(null);
         if (property == null) {
             Common.log("Warning: Cannot find textures property for player '" + user.getRealName() + "'");
@@ -95,7 +89,7 @@ public class UserListener extends MaidListener {
         user.setTexture(property.getValue());
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.LOW)
     public void onJoinDisguise(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();

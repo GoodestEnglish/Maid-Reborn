@@ -185,8 +185,8 @@ public class User implements IUser {
     }
 
     @Override
-    public List<IPunishment> getPunishments(IPunishment.PunishmentType type) {
-        return getPunishments().stream().filter(punishment -> punishment.getType() == type).toList();
+    public List<IPunishment> getPunishments(List<IPunishment.PunishmentType> types) {
+        return getPunishments().stream().filter(punishment -> types.contains(punishment.getType())).toList();
     }
 
     @Override
@@ -195,8 +195,8 @@ public class User implements IUser {
     }
 
     @Override
-    public List<IPunishment> getActivePunishments(IPunishment.PunishmentType type) {
-        return getPunishments(type).stream().filter(IPunishment::isActive).toList();
+    public List<IPunishment> getActivePunishments(List<IPunishment.PunishmentType> types) {
+        return getPunishments(types).stream().filter(IPunishment::isActive).toList();
     }
 
 }
