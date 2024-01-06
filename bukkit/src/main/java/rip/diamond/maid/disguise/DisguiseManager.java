@@ -31,26 +31,8 @@ public class DisguiseManager extends MaidManager {
     public DisguiseManager() {
         List<String> skins = Config.DISGUISE_SKIN.toStringList();
         for (String skin : skins) {
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(skin);
-            offlinePlayer.getPlayerProfile().update().thenAcceptAsync(profile -> {
-                ProfileProperty property = profile.getProperties().stream().filter(property_ -> property_.getName().equals("textures")).findAny().orElseThrow(() -> new NoSuchElementException("Cannot find texture property for " + offlinePlayer.getName()));
-                skinProperties.put(profile.getName(), property);
-
-                Common.log(CC.GREEN + "已成功加載 " + profile.getName() + " 的皮膚");
-            });
+            cacheSkin(skin, false);
         }
-    }
-
-    public Map.Entry<String, ProfileProperty> getRandomSkin() {
-        if (skinProperties.isEmpty()) {
-            return null;
-        }
-        int index = new Random().nextInt(skinProperties.size());
-        Iterator<Map.Entry<String, ProfileProperty>> iterator = skinProperties.entrySet().iterator();
-        for (int i = 0; i < index; i++) {
-            iterator.next();
-        }
-        return iterator.next();
     }
 
     public void disguise(Player player, IDisguise disguise, boolean join) {
@@ -117,5 +99,36 @@ public class DisguiseManager extends MaidManager {
 
         player.displayName(Common.text(name));
         player.playerListName(Common.text(name));
+    }
+
+    public Map.Entry<String, ProfileProperty> getRandomSkin() {
+        if (skinProperties.isEmpty()) {
+            return null;
+        }
+        int index = new Random().nextInt(skinProperties.size());
+        Iterator<Map.Entry<String, ProfileProperty>> iterator = skinProperties.entrySet().iterator();
+        for (int i = 0; i < index; i++) {
+            iterator.next();
+        }
+        return iterator.next();
+    }
+
+    public void cacheSkin(String username, boolean async) {
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(username);
+        if (async) {
+            offlinePlayer.getPlayerProfile().update().thenAcceptAsync(profile -> {
+                ProfileProperty property = profile.getProperties().stream().filter(property_ -> property_.getName().equals("textures")).findAny().orElseThrow(() -> new NoSuchElementException("Cannot find texture property for " + offlinePlayer.getName()));
+                skinProperties.put(profile.getName(), property);
+
+                Common.log(CC.GREEN + "已成功加載 " + profile.getName() + " 的皮膚");
+            });
+        } else {
+            PlayerProfile profile = offlinePlayer.getPlayerProfile();
+            profile.complete(true);
+            ProfileProperty property = profile.getProperties().stream().filter(property_ -> property_.getName().equals("textures")).findAny().orElseThrow(() -> new NoSuchElementException("Cannot find texture property for " + offlinePlayer.getName()));
+            skinProperties.put(profile.getName(), property);
+
+            Common.log(CC.GREEN + "已成功加載 " + profile.getName() + " 的皮膚");
+        }
     }
 }
