@@ -119,6 +119,14 @@ public interface IUser {
     Set<String> getIPHistory();
 
     /**
+     * Get the player's alts according to their IP.
+     * This is a mutable set.
+     *
+     * @return The player's alts
+     */
+    Set<UUID> getAlts();
+
+    /**
      * Check if the user contain the permission.
      *
      * @param permission The permission
@@ -215,4 +223,34 @@ public interface IUser {
      * @param disguise The disguise
      */
     void setDisguise(IDisguise disguise);
+
+    /**
+     * Get all the punishments associated with this user.
+     *
+     * @return List of punishments
+     */
+    List<IPunishment> getPunishments();
+
+    /**
+     * Get all the punishments associated with this user.
+     *
+     * @param type The type of punishment to filter
+     * @return List of punishments
+     */
+    List<IPunishment> getPunishments(IPunishment.PunishmentType type);
+
+    /**
+     * Get all the active punishments associated with this user.
+     *
+     * @return List of punishments
+     */
+    List<IPunishment> getActivePunishments();
+
+    /**
+     * Get all the active punishments associated with this user.
+     *
+     * @param type The type of punishment to filter
+     * @return List of punishments
+     */
+    List<IPunishment> getActivePunishments(IPunishment.PunishmentType type);
 }

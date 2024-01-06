@@ -13,6 +13,7 @@ import rip.diamond.maid.permission.PermissionManager;
 import rip.diamond.maid.platform.BukkitPlatform;
 import rip.diamond.maid.player.UserListener;
 import rip.diamond.maid.player.UserManager;
+import rip.diamond.maid.punishment.PunishmentManager;
 import rip.diamond.maid.rank.Rank;
 import rip.diamond.maid.rank.RankManager;
 import rip.diamond.maid.redis.RedisCredentials;
@@ -40,6 +41,7 @@ public class Maid extends JavaPlugin {
     private ChatManager chatManager;
     private PermissionManager permissionManager;
     private DisguiseManager disguiseManager;
+    private PunishmentManager punishmentManager;
 
     private BasicConfigFile configFile;
 
@@ -90,6 +92,7 @@ public class Maid extends JavaPlugin {
         chatManager = new ChatManager();
         permissionManager = new PermissionManager();
         disguiseManager = new DisguiseManager();
+        punishmentManager = new PunishmentManager();
     }
 
     private void loadListeners() {

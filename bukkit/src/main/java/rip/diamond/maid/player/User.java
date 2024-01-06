@@ -6,10 +6,7 @@ import lombok.Setter;
 import org.bson.Document;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
-import rip.diamond.maid.api.user.IDisguise;
-import rip.diamond.maid.api.user.IGrant;
-import rip.diamond.maid.api.user.IRank;
-import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.api.user.*;
 import rip.diamond.maid.api.user.permission.Permission;
 import rip.diamond.maid.api.user.permission.UserPermission;
 import rip.diamond.maid.disguise.Disguise;
@@ -31,6 +28,7 @@ public class User implements IUser {
     private long firstSeen = -1, lastSeen = -1;
     private String lastServer, ip = "Not Recorded";
     private final Set<String> ipHistory = new HashSet<>();
+    private final Set<UUID> alts = new HashSet<>();
     private final Set<UserPermission> permissions = new HashSet<>();
     private final List<Grant> grants = new ArrayList<>();
     private Disguise disguise;
@@ -166,6 +164,39 @@ public class User implements IUser {
     @Override
     public void setDisguise(IDisguise disguise) {
         this.disguise = (Disguise) disguise;
+    }
+
+    @Override
+    public List<IPunishment> getPunishments() {
+        List<IPunishment> toReturn = new ArrayList<>();
+        for (IPunishment punishment : Maid.INSTANCE.getPunishmentManager().getPunishments()) {
+            if (punishment.getUser().equals(uniqueID)) {
+                toReturn.add(punishment);
+            }
+            if (punishment.getType() == IPunishment.PunishmentType.IP_BAN) {
+                for (UUID alt : alts) {
+                    if (punishment.getUser().equals(uniqueID) || punishment.getUser().equals(alt)) {
+                        toReturn.add(punishment);
+                    }
+                }
+            }
+        }
+        return toReturn;
+    }
+
+    @Override
+    public List<IPunishment> getPunishments(IPunishment.PunishmentType type) {
+        return getPunishments().stream().filter(punishment -> punishment.getType() == type).toList();
+    }
+
+    @Override
+    public List<IPunishment> getActivePunishments() {
+        return getPunishments().stream().filter(IPunishment::isActive).toList();
+    }
+
+    @Override
+    public List<IPunishment> getActivePunishments(IPunishment.PunishmentType type) {
+        return getPunishments(type).stream().filter(IPunishment::isActive).toList();
     }
 
 }

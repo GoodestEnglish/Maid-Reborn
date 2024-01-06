@@ -1,6 +1,8 @@
 package rip.diamond.maid.player;
 
 import com.destroystokyo.paper.profile.ProfileProperty;
+import com.mongodb.client.model.Filters;
+import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,8 +13,10 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IDisguise;
 import rip.diamond.maid.api.user.IUser;
-import rip.diamond.maid.grant.Grant;
-import rip.diamond.maid.util.*;
+import rip.diamond.maid.util.CC;
+import rip.diamond.maid.util.Common;
+import rip.diamond.maid.util.Tasks;
+import rip.diamond.maid.util.UUIDCache;
 import rip.diamond.maid.util.extend.MaidListener;
 
 import java.util.UUID;
@@ -38,6 +42,10 @@ public class UserListener extends MaidListener {
         user.updateSeen();
         user.updateLastServer();
         user.setIP(event.getAddress().getHostAddress());
+
+        for (Document document : plugin.getMongoManager().getUsers().find(Filters.eq("ip", user.getIP()))) {
+            user.getAlts().add(UUID.fromString(document.getString("_id")));
+        }
 
         plugin.getUserManager().saveUser(user);
     }

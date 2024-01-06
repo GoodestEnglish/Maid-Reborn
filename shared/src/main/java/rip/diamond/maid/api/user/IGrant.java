@@ -92,6 +92,14 @@ public interface IGrant {
     long getRevokedAt();
 
     /**
+     * Revoke the grant.
+     *
+     * @param revoker The user which cause the revoke
+     * @param revokedReason The reason why this grant was revoked
+     */
+    void revoke(IUser revoker, String revokedReason);
+
+    /**
      * Check if the grant is active or not.
      *
      * @return True if the grant is active

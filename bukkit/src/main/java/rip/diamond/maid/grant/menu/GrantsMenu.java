@@ -98,8 +98,7 @@ public class GrantsMenu extends PaginatedMenu {
             return (cc, reason) -> {
                 User user = (User) Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join();
 
-                Grant g = (Grant) grant;
-                g.revoke(user, reason);
+                grant.revoke(user, reason);
                 Maid.INSTANCE.getUserManager().saveUser(target);
                 PacketHandler.send(new PermissionUpdatePacket(target.getUniqueID()));
 
