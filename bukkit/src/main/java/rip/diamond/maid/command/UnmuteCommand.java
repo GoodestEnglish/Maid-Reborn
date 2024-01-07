@@ -1,8 +1,10 @@
 package rip.diamond.maid.command;
 
+import com.google.common.collect.ImmutableList;
 import org.bukkit.command.CommandSender;
 import rip.diamond.maid.MaidPermission;
 import rip.diamond.maid.api.user.IPunishment;
+import rip.diamond.maid.player.User;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.UUIDCache;
@@ -23,6 +25,12 @@ public class UnmuteCommand extends MaidCommand {
 
         if (!plugin.getUserManager().hasUser(targetUUID).join()) {
             Common.sendMessage(sender, CC.RED + "未能找到玩家 '" + targetName + "' 的資料");
+            return;
+        }
+
+        User targetUser = (User) plugin.getUserManager().getUser(targetUUID).join();
+        if (targetUser.getActivePunishments(ImmutableList.of(IPunishment.PunishmentType.MUTE)).isEmpty()) {
+            Common.sendMessage(sender, CC.RED + "該玩家沒有任何活躍的禁言懲罰紀錄");
             return;
         }
 

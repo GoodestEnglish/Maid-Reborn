@@ -22,7 +22,10 @@ public enum Config {
     MONGO_CONNECTION_STRING("mongo.connection-string", "mongodb://127.0.0.1:27017/MaidReborn"),
     MONGO_DATABASE("mongo.database", "Maid"),
     /* Disguises */
-    DISGUISE_SKIN("disguise.skin", ImmutableList.of("XiaoNiu_TW", "BedlessNoob", "YuseiFudo", "DULINTW", "Fauzh"))
+    DISGUISE_SKIN("disguise.skin", ImmutableList.of("XiaoNiu_TW", "BedlessNoob", "YuseiFudo", "DULINTW", "Fauzh")),
+    /* Chat */
+    CHAT_MUTED("chat.muted", false),
+    CHAT_DELAY("chat.delay", 0),
     ;
 
     @Getter private final String path;
@@ -58,6 +61,15 @@ public enum Config {
 
     public double toDouble() {
         return Double.parseDouble(toString());
+    }
+
+    public void setValue(Object object) {
+        BasicConfigFile configFile = Maid.INSTANCE.getConfigFile();
+
+        configFile.getConfiguration().set(path, object);
+
+        configFile.save();
+        configFile.load();
     }
 
     public static void loadDefault() {

@@ -6,6 +6,7 @@ public class MaidPermission {
             //Command Permissions
             ALTS = "maid.command.alts",
             BAN = "maid.command.ban",
+            CHAT = "maid.command.chat",
             COLOR = "maid.command.color",
             DISGUISE = "maid.command.disguise",
             GRANT = "maid.command.grant",

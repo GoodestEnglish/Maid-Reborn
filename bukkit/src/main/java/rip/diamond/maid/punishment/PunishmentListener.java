@@ -14,7 +14,6 @@ import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.BroadcastPacket;
 import rip.diamond.maid.util.Alert;
-import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.TimeUtil;
 import rip.diamond.maid.util.extend.MaidListener;
@@ -42,8 +41,8 @@ public class PunishmentListener extends MaidListener {
         PacketHandler.send(new BroadcastPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), "(" + durationReadable + ")"))));
     }
 
-    @EventHandler
-    public void onChat(AsyncChatEvent event) {
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onChatPunishment(AsyncChatEvent event) {
         Player player = event.getPlayer();
         IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
         List<IPunishment> punishments = user.getActivePunishments(List.of(IPunishment.PunishmentType.MUTE));

@@ -23,6 +23,7 @@ import rip.diamond.maid.util.json.GsonProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 public class PunishmentManager extends MaidManager {
@@ -92,7 +93,7 @@ public class PunishmentManager extends MaidManager {
                 );
             }
         }
-        throw new NullPointerException("Cannot find punishment message with type " + punishment.getType().name());
+        throw new NoSuchElementException("Cannot find punishment message with type " + punishment.getType().name());
     }
 
     /**
@@ -140,7 +141,12 @@ public class PunishmentManager extends MaidManager {
             updatePunishment(punishment);
         });
 
-        Alert alert = Alert.valueOf(type.name());
+        Alert alert;
+        switch (type) {
+            case MUTE -> alert = Alert.UNMUTE;
+            case BAN, IP_BAN -> alert = Alert.UNBAN;
+            default -> throw new NoSuchElementException("Cannot find punishment type " + type.name());
+        }
         PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), target.getSimpleDisplayName(false)))));
         Common.sendMessage(executor, CC.GREEN + "成功解除" + type.getName() + "玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
     }
@@ -160,7 +166,12 @@ public class PunishmentManager extends MaidManager {
         punishment.revoke(user, reason);
         updatePunishment(punishment);
 
-        Alert alert = Alert.valueOf(punishment.getType().name());
+        Alert alert;
+        switch (punishment.getType()) {
+            case MUTE -> alert = Alert.UNMUTE;
+            case BAN, IP_BAN -> alert = Alert.UNBAN;
+            default -> throw new NoSuchElementException("Cannot find punishment type " + punishment.getType().name());
+        }
         PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), target.getSimpleDisplayName(false)))));
         Common.sendMessage(executor, CC.GREEN + "成功解除" + punishment.getType().getName() + "玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
     }

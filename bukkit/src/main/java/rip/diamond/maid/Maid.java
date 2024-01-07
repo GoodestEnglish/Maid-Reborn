@@ -27,12 +27,14 @@ import rip.diamond.maid.util.command.Drink;
 import rip.diamond.maid.util.command.provider.custom.RankProvider;
 import rip.diamond.maid.util.menu.MenuHandler;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 @Getter
 public class Maid extends JavaPlugin {
 
     public static Maid INSTANCE;
+    public static DecimalFormat FORMAT = new DecimalFormat("#0.0");
 
     private CommandService drink;
     private MongoManager mongoManager;
@@ -110,6 +112,7 @@ public class Maid extends JavaPlugin {
 
         drink.register(new AltsCommand(), "alts");
         drink.register(new BanCommand(), "ban");
+        drink.register(new ChatCommand(), "chat");
         drink.register(new ColorCommand(), "color");
         drink.register(new DisguiseCommand(), "disguise", "nick");
         drink.register(new GrantCommand(), "grant");

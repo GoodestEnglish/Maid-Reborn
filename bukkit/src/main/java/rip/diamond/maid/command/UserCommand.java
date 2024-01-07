@@ -20,13 +20,13 @@ public class UserCommand extends MaidCommand {
 
     @Command(name = "", desc = "查看玩家資料")
     public void root(@Sender Player sender, String targetName) {
-        UUID uuid = UUIDCache.getUUID(targetName).join();
-        if (!plugin.getUserManager().hasUser(uuid).join()) {
+        UUID targetUUID = UUIDCache.getUUID(targetName).join();
+        if (!plugin.getUserManager().hasUser(targetUUID).join()) {
             Common.sendMessage(sender, CC.RED + "未能找到玩家 '" + targetName + "' 的資料");
             return;
         }
 
-        User targetUser = (User) plugin.getUserManager().getUser(uuid).join();
+        User targetUser = (User) plugin.getUserManager().getUser(targetUUID).join();
         new UserMenu(sender, targetUser).updateMenu();
     }
 

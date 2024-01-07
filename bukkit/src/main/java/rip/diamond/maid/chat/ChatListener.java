@@ -1,6 +1,5 @@
 package rip.diamond.maid.chat;
 
-import com.destroystokyo.paper.console.TerminalConsoleCommandSender;
 import io.papermc.paper.chat.ChatRenderer;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.audience.Audience;
@@ -10,7 +9,9 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.util.CC;
@@ -32,6 +33,34 @@ public class ChatListener extends MaidListener {
             }
         };
         event.renderer(renderer);
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onChatMute(AsyncChatEvent event) {
+        Player player = event.getPlayer();
+        if (plugin.getChatManager().isMuted()) {
+            event.setCancelled(true);
+            Common.sendMessage(player, CC.RED + "聊天室暫時被關閉了, 你暫時無法再聊天室說話");
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onChatDelay(AsyncChatEvent event) {
+        Player player = event.getPlayer();
+        int delay = plugin.getChatManager().getDelay();
+
+        if (delay <= 0) {
+            return;
+        }
+
+        if (player.hasMetadata("chat-delay")) {
+            long milliSecondsLeft = player.getMetadata("chat-delay").get(0).asLong() + (delay * 1000L);
+            if (milliSecondsLeft > System.currentTimeMillis()) {
+                Common.sendMessage(player, CC.RED + "請等待 " + CC.BOLD + Maid.FORMAT.format(milliSecondsLeft / 1000.0) + CC.RESET + CC.RED + " 秒後再發言");
+            }
+        }
+
+        player.setMetadata("chat-delay", new FixedMetadataValue(plugin, System.currentTimeMillis()));
     }
 
 }
