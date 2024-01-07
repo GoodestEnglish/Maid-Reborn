@@ -54,13 +54,15 @@ public class ChatListener extends MaidListener {
         }
 
         if (player.hasMetadata("chat-delay")) {
-            long milliSecondsLeft = player.getMetadata("chat-delay").get(0).asLong() + (delay * 1000L);
-            if (milliSecondsLeft > System.currentTimeMillis()) {
-                Common.sendMessage(player, CC.RED + "請等待 " + CC.BOLD + Maid.FORMAT.format(milliSecondsLeft / 1000.0) + CC.RESET + CC.RED + " 秒後再發言");
+            long cooldown = player.getMetadata("chat-delay").get(0).asLong() - System.currentTimeMillis();
+            if (cooldown > 0) {
+                event.setCancelled(true);
+                Common.sendMessage(player, CC.RED + "請等待 " + CC.BOLD + Maid.FORMAT.format(cooldown / 1000.0) + CC.RESET + CC.RED + " 秒後再發言");
+                return;
             }
         }
 
-        player.setMetadata("chat-delay", new FixedMetadataValue(plugin, System.currentTimeMillis()));
+        player.setMetadata("chat-delay", new FixedMetadataValue(plugin, System.currentTimeMillis() + (delay * 1000L)));
     }
 
 }

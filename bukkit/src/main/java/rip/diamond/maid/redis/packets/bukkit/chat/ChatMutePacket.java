@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.server.Platform;
-import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.player.User;
 import rip.diamond.maid.redis.messaging.Packet;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
@@ -14,7 +14,7 @@ import rip.diamond.maid.util.Preconditions;
 public class ChatMutePacket implements Packet {
 
     private final String from;
-    private final IUser user;
+    private final User user;
     private final boolean muted;
 
     @Override

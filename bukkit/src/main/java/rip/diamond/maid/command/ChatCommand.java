@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.MaidPermission;
 import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.player.User;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.chat.ChatClearPacket;
 import rip.diamond.maid.redis.packets.bukkit.chat.ChatMutePacket;
@@ -19,7 +20,7 @@ public class ChatCommand extends MaidCommand {
     @Command(name = "clear", desc = "清空聊天室")
     public void clear(@Sender Player sender) {
         IUser user = plugin.getUserManager().getUser(sender.getUniqueId()).join();
-        PacketHandler.send(new ChatClearPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), user));
+        PacketHandler.send(new ChatClearPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), (User) user));
     }
 
     @Command(name = "mute", desc = "切換聊天室狀態")
@@ -28,7 +29,7 @@ public class ChatCommand extends MaidCommand {
         boolean muted = plugin.getChatManager().isMuted();
 
         plugin.getChatManager().setMuted(!muted);
-        PacketHandler.send(new ChatMutePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), user, !muted));
+        PacketHandler.send(new ChatMutePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), (User) user, !muted));
     }
 
     @Command(name = "delay", desc = "切換聊天室狀態")
@@ -36,7 +37,7 @@ public class ChatCommand extends MaidCommand {
         IUser user = plugin.getUserManager().getUser(sender.getUniqueId()).join();
 
         plugin.getChatManager().setDelay(delay);
-        PacketHandler.send(new ChatSlowPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), user, delay));
+        PacketHandler.send(new ChatSlowPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), (User) user, delay));
     }
 
 }
