@@ -119,6 +119,7 @@ public class Maid extends JavaPlugin {
         drink.register(new GrantsCommand(), "grants");
         drink.register(new IPBanCommand(), "ipban");
         drink.register(new KickCommand(), "kick");
+        drink.register(new ListCommand(), "list");
         drink.register(new MuteCommand(), "mute");
         drink.register(new PacketTestCommand(), "packettest");
         drink.register(new PermissionCommand(), "permission", "perms");

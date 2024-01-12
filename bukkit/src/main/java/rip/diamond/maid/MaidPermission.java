@@ -13,6 +13,7 @@ public class MaidPermission {
             GRANTS = "maid.command.grants",
             IPBAN = "maid.command.ipban",
             KICK = "maid.command.kick",
+            LIST = "maid.command.list",
             MUTE = "maid.command.mute",
             PACKET_TEST = "maid.command.packettest",
             PERMISSION_GUI = "maid.command.permission.gui",
