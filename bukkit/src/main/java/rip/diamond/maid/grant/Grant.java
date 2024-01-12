@@ -49,12 +49,12 @@ public class Grant implements IGrant {
 
     @Override
     public String getRevokerName() {
-        return (issuedAt + duration) > System.currentTimeMillis() ? revokerName : "---";
+        return revokedAt != 0 ? revokerName : "---";
     }
 
     @Override
     public String getRevokedReason() {
-        return (issuedAt + duration) > System.currentTimeMillis() ? revokedReason : "---";
+        return revokedAt != 0 ? revokedReason : "---";
     }
 
     @Override
