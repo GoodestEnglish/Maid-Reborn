@@ -19,6 +19,7 @@ public class MaidPermission {
             PERMISSION_GUI = "maid.command.permission.gui",
             PUNISHMENT = "maid.command.punishment",
             RANK = "maid.command.rank",
+            SERVERS = "maid.command.servers",
             UNBAN = "maid.command.unban",
             UNDISGUISE = "maid.command.undisguise",
             UNMUTE = "maid.command.unmute",

@@ -20,7 +20,7 @@ public class FinishStartupTask extends TaskTicker {
     public void onRun() {
         String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
 
-        Maid.INSTANCE.getServerManager().setLoaded(true);
+        plugin.getServerManager().setLoaded(true);
 
         Alert alert = Alert.SERVER_STARTED;
         String message = alert.get(serverID);

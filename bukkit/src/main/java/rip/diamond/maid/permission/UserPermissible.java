@@ -156,7 +156,7 @@ public class UserPermissible extends PermissibleBase {
         }
 
         Common.log(
-                "Warning: Some plugin called the function addAttachment(Plugin, String, boolean), but this function shouldn't be used because Permissible is a custom Permissible.",
+                "Warning: Plugin " + plugin.getName() + " called the function addAttachment(Plugin, String, boolean), but this function shouldn't be used because Permissible is a custom Permissible.",
                 "This function will still work because it is marked as @NotNull"
         );
 
@@ -174,7 +174,7 @@ public class UserPermissible extends PermissibleBase {
         }
 
         Common.log(
-                "Warning: Some plugin called the function addAttachment(Plugin), but this function shouldn't be used because Permissible is a custom Permissible.",
+                "Warning: Plugin " + plugin.getName() + " called the function addAttachment(Plugin), but this function shouldn't be used because Permissible is a custom Permissible.",
                 "This function will still work because it is marked as @NotNull"
         );
 
@@ -184,13 +184,13 @@ public class UserPermissible extends PermissibleBase {
     @Override
     @Nullable
     public synchronized PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String name, boolean value, int ticks) {
-        Common.log("Warning: Some plugin called the function addAttachment(Plugin, String, boolean, int), but this function is no longer be used because Permissible is a custom Permissible.");
+        Common.log("Warning: Plugin " + plugin.getName() + " called the function addAttachment(Plugin, String, boolean, int), but this function is no longer be used because Permissible is a custom Permissible.");
         return null;
     }
 
     @Override
     public synchronized PermissionAttachment addAttachment(@NotNull Plugin plugin, int ticks) {
-        Common.log("Warning: Some plugin called the function addAttachment(Plugin, int), but this function is no longer be used because Permissible is a custom Permissible.");
+        Common.log("Warning: Plugin " + plugin.getName() + " called the function addAttachment(Plugin, int), but this function is no longer be used because Permissible is a custom Permissible.");
         return null;
     }
 

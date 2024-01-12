@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Require(MaidPermission.LIST)
 public class ListCommand {
 
-    @Command(name = "", desc = "")
+    @Command(name = "", desc = "查看在線玩家")
     public void root(@Sender Player player) {
         String ranks = Maid.INSTANCE.getRankManager().getRanks().values().stream().sorted(Comparator.comparingInt(IRank::getPriority).reversed()).map(rank -> rank.getDisplayName(true)).collect(Collectors.joining(CC.WHITE + ", "));
         String amount = CC.WHITE + "(" + Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers() + ")";

@@ -7,14 +7,16 @@ import rip.diamond.maid.Maid;
 
 public abstract class TaskTicker extends BukkitRunnable {
 
+    protected final Maid plugin = Maid.INSTANCE;
+
     public int tick;
     @Getter @Setter private boolean finishPreRun = false;
 
     public TaskTicker(int delay, int period, boolean async) {
         if (async) {
-            this.runTaskTimerAsynchronously(Maid.INSTANCE, delay, period);
+            this.runTaskTimerAsynchronously(plugin, delay, period);
         } else {
-            this.runTaskTimer(Maid.INSTANCE, delay, period);
+            this.runTaskTimer(plugin, delay, period);
         }
     }
 

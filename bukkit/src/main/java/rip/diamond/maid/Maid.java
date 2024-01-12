@@ -34,7 +34,7 @@ import java.util.Arrays;
 public class Maid extends JavaPlugin {
 
     public static Maid INSTANCE;
-    public static DecimalFormat FORMAT = new DecimalFormat("#0.0");
+    public static DecimalFormat FORMAT = new DecimalFormat("#0.00");
 
     private CommandService drink;
     private MongoManager mongoManager;
@@ -125,6 +125,7 @@ public class Maid extends JavaPlugin {
         drink.register(new PermissionCommand(), "permission", "perms");
         drink.register(new PunishmentCommand(), "punishment");
         drink.register(new RankCommand(), "rank");
+        drink.register(new ServersCommand(), "servers");
         drink.register(new TestCommand(), "test");
         drink.register(new UnbanCommand(), "unban");
         drink.register(new UndisguiseCommand(), "undisguise", "unnick");

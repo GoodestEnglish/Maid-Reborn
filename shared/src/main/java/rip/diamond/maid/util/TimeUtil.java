@@ -33,23 +33,23 @@ public class TimeUtil {
         StringBuilder formattedDuration = new StringBuilder();
 
         if (years > 0) {
-            formattedDuration.append(years).append("年 ");
+            formattedDuration.append(years).append("年");
         }
 
         if (months > 0) {
-            formattedDuration.append(months).append("月 ");
+            formattedDuration.append(months).append("月");
         }
 
         if (days > 0) {
-            formattedDuration.append(days).append("日 ");
+            formattedDuration.append(days).append("日");
         }
 
         if (hours > 0) {
-            formattedDuration.append(hours).append("小時 ");
+            formattedDuration.append(hours).append("小時");
         }
 
         if (minutes > 0) {
-            formattedDuration.append(minutes).append("分鐘 ");
+            formattedDuration.append(minutes).append("分鐘");
         }
 
         if (seconds > 0 || durationInMillis == 0) {
