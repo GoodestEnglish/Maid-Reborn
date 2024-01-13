@@ -2,6 +2,7 @@ package rip.diamond.maid.chat;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.config.Config;
@@ -36,6 +37,8 @@ public class ChatManager extends MaidManager {
         GlobalUser sender = GlobalUser.of(user);
 
         user.getChatRoom().setMessageTo(receiver.getUniqueID());
+        Maid.INSTANCE.getUserManager().saveUser(user);
+
         PacketHandler.send(new DirectMessagePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), sender, receiver, message));
         Common.sendMessage(Bukkit.getPlayer(sender.getUniqueID()), CC.PINK + "➥ 給 " + receiver.getSimpleDisplayName() + CC.WHITE + ": " + CC.GRAY + message);
     }

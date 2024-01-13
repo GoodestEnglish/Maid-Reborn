@@ -32,7 +32,7 @@ public class StaffMessagePacket implements Packet {
     public void onReceive() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.hasPermission(MaidPermission.CHANNEL_STAFF)) {
-                Common.sendMessage(player, CC.DARK_GRAY + "[" + CC.ORANGE_RED + "SC" + CC.DARK_GRAY + "] [" + CC.BLUE + from + CC.GRAY + "] " + CC.RESET + sender.getDisplayName() + CC.WHITE + ": " + CC.GRAY + message);
+                Common.sendMessage(player, CC.DARK_GRAY + "[" + CC.ORANGE_RED + "SC" + CC.DARK_GRAY + "] (" + CC.BLUE + from + CC.DARK_GRAY + ") " + CC.RESET + sender.getDisplayName() + CC.WHITE + ": " + CC.GRAY + message);
             }
         }
     }
