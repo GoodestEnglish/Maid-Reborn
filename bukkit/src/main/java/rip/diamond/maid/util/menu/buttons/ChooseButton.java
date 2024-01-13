@@ -1,5 +1,6 @@
 package rip.diamond.maid.util.menu.buttons;
 
+import com.google.common.collect.ImmutableList;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,9 +30,14 @@ public abstract class ChooseButton<T> extends Button {
 
     public abstract List<String> getOptions();
 
+    public List<String> getLore() {
+        return ImmutableList.of("");
+    }
+
     @Override
     public ItemStack getButtonItem(Player player) {
-        ItemBuilder builder = new ItemBuilder(getIcon()).name(getName()).lore("");
+        ItemBuilder builder = new ItemBuilder(getIcon()).name(getName());
+        builder.lore(getLore());
         builder.lore(getOptions().stream().map(option -> (matches(option) ? CC.GREEN + " » " : CC.GRAY + "   ") + option).toList());
         builder.lore("", CC.YELLOW + "點擊循環選項");
 

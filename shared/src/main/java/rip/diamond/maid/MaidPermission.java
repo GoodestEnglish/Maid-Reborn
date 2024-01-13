@@ -3,8 +3,20 @@ package rip.diamond.maid;
 public class MaidPermission {
 
     public static final String
-            //Channel Permissions,
+            //Channel Permissions
             CHANNEL_STAFF = "maid.channel.staff",
+
+            //Alert permissions
+            ALERT_SERVER = "maid.alert.server",
+            ALERT_UPDATE = "maid.alert.update",
+            ALERT_DISGUISE = "maid.alert.disguise",
+            ALERT_PUNISHMENT = "maid.alert.punishment",
+
+            //Settings Permissions
+            SETTINGS_SERVER_ALERT = "maid.settings.server",
+            SETTINGS_UPDATE_ALERT = "maid.settings.update",
+            SETTINGS_DISGUISE_ALERT = "maid.settings.disguise",
+            SETTINGS_PUNISHMENT_ALERT = "maid.settings.punishment",
 
             //Command Permissions
             ALTS = "maid.command.alts",
@@ -25,6 +37,7 @@ public class MaidPermission {
             PUNISHMENT = "maid.command.punishment",
             RANK = "maid.command.rank",
             SERVERS = "maid.command.servers",
+            SETTINGS = "maid.command.settings",
             STAFFCHAT = "maid.command.staffchat",
             UNBAN = "maid.command.unban",
             UNDISGUISE = "maid.command.undisguise",

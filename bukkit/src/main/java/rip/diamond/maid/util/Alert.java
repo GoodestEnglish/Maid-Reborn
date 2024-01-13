@@ -2,6 +2,7 @@ package rip.diamond.maid.util;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import rip.diamond.maid.MaidPermission;
 
 @RequiredArgsConstructor
 public enum Alert {
@@ -34,10 +35,10 @@ public enum Alert {
     @RequiredArgsConstructor
     public enum AlertType {
 
-        SERVER("maid.alert.server"),
-        UPDATE("maid.alert.update"),
-        DISGUISE("maid.alert.disguise"),
-        PUNISHMENT("maid.alert.punishment"),
+        SERVER(MaidPermission.ALERT_SERVER),
+        UPDATE(MaidPermission.ALERT_UPDATE),
+        DISGUISE(MaidPermission.ALERT_DISGUISE),
+        PUNISHMENT(MaidPermission.ALERT_PUNISHMENT),
         ;
 
         private final String permission;

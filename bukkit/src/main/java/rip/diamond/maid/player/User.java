@@ -34,6 +34,7 @@ public class User implements IUser {
     private final List<Grant> grants = new ArrayList<>();
     private Disguise disguise;
     private ChatRoom chatRoom = new ChatRoom();
+    private Map<UserSettings, String> settings = new HashMap<>();
 
     public User(UUID uniqueID) {
         this.uniqueID = uniqueID;

@@ -6,6 +6,7 @@ import rip.diamond.maid.api.user.permission.Permission;
 import rip.diamond.maid.api.user.permission.UserPermission;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -240,6 +241,11 @@ public interface IUser {
      * @return The chat room
      */
     IChatRoom getChatRoom();
+
+    /**
+     * Get the player settings, as a Map
+     */
+    Map<UserSettings, String> getSettings();
 
     /**
      * Get all the punishments associated with this user.

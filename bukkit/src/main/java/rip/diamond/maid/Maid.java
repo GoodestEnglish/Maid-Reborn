@@ -128,6 +128,7 @@ public class Maid extends JavaPlugin {
         drink.register(new PunishmentCommand(), "punishment");
         drink.register(new RankCommand(), "rank");
         drink.register(new ServersCommand(), "servers");
+        drink.register(new SettingsCommand(), "settings", "setting", "option");
         drink.register(new StaffChatCommand(), "staffchat", "sc");
         drink.register(new TestCommand(), "test");
         drink.register(new UnbanCommand(), "unban");

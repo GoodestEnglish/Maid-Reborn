@@ -39,6 +39,10 @@ public abstract class Menu {
         this.registerMenu();
     }
 
+    public int getSize() {
+        return Math.min(54, size == -1 ? (getButtons().size() - 1) / 9 * 9 + 9 : size);
+    }
+
     /**
      * Updates the buttons
      */
@@ -98,16 +102,6 @@ public abstract class Menu {
      */
     public void registerMenu() {
         MenuHandler.getInstance().register(this.player, this);
-    }
-
-    /**
-     * Redirect the player's menu to a new menu
-     *
-     * @param menu the menu to redirect it to
-     */
-    public void redirect(Menu menu) {
-        menu.updateMenu();
-        this.registerMenu();
     }
 
     public Optional<Button> getButton(int slot) {
