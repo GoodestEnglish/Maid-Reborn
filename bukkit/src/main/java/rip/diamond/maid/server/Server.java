@@ -12,7 +12,6 @@ import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.ServerUpdatePacket;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -26,7 +25,7 @@ public class Server implements IServer {
     private boolean loaded;
     private boolean whiteListed;
 
-    private List<UUID> onlinePlayers;
+    private List<GlobalUser> onlinePlayers;
     private int maxPlayers;
 
     private boolean chatMuted;
@@ -44,7 +43,7 @@ public class Server implements IServer {
         tps = new double[]{Bukkit.getTPS()[0], Bukkit.getTPS()[1], Bukkit.getTPS()[2]};
         loaded = Maid.INSTANCE.getServerManager().isAllowJoin();
         whiteListed = Bukkit.hasWhitelist();
-        onlinePlayers = Bukkit.getOnlinePlayers().stream().map(Player::getUniqueId).toList();
+        onlinePlayers = Bukkit.getOnlinePlayers().stream().map(player -> GlobalUser.of(Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join())).toList();
         maxPlayers = Bukkit.getMaxPlayers();
         chatMuted = Maid.INSTANCE.getChatManager().isMuted();
         chatDelay = Maid.INSTANCE.getChatManager().getDelay();

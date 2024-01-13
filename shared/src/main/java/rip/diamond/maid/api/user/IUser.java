@@ -1,12 +1,12 @@
 package rip.diamond.maid.api.user;
 
 import com.google.gson.annotations.SerializedName;
+import rip.diamond.maid.api.user.chat.IChatRoom;
 import rip.diamond.maid.api.user.permission.Permission;
 import rip.diamond.maid.api.user.permission.UserPermission;
 
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
 
 public interface IUser {
@@ -232,6 +232,14 @@ public interface IUser {
      * @param disguise The disguise
      */
     void setDisguise(IDisguise disguise);
+
+    /**
+     * Get the user's chat room.
+     * Chat room stores which channel should the user send the message to.
+     *
+     * @return The chat room
+     */
+    IChatRoom getChatRoom();
 
     /**
      * Get all the punishments associated with this user.

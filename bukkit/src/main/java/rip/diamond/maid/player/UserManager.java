@@ -19,6 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class UserManager extends MaidManager {
 
+    /**
+     * This HashMap stores every logged-in users in this server session. Logout will not remove specific user from this map
+     */
     @Getter private final ConcurrentHashMap<UUID, IUser> users = new ConcurrentHashMap<>();
 
     public CompletableFuture<Boolean> hasUser(UUID uniqueID) {

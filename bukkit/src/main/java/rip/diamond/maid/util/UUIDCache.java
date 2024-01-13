@@ -10,8 +10,8 @@ import java.util.concurrent.CompletableFuture;
 
 public final class UUIDCache {
 
-    public static final Map<UUID, String> UUID_USERNAME = new HashMap<>();
-    public static final Map<String, UUID> USERNAME_UUID = new HashMap<>();
+    private static final Map<UUID, String> UUID_USERNAME = new HashMap<>();
+    private static final Map<String, UUID> USERNAME_UUID = new HashMap<>();
 
     public static void insert(UUID uuid, String username) {
         UUID_USERNAME.put(uuid, username);

@@ -9,6 +9,7 @@ import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.*;
 import rip.diamond.maid.api.user.permission.Permission;
 import rip.diamond.maid.api.user.permission.UserPermission;
+import rip.diamond.maid.chat.ChatRoom;
 import rip.diamond.maid.disguise.Disguise;
 import rip.diamond.maid.grant.Grant;
 import rip.diamond.maid.util.json.GsonProvider;
@@ -32,6 +33,7 @@ public class User implements IUser {
     private final Set<UserPermission> permissions = new HashSet<>();
     private final List<Grant> grants = new ArrayList<>();
     private Disguise disguise;
+    private ChatRoom chatRoom = new ChatRoom();
 
     public User(UUID uniqueID) {
         this.uniqueID = uniqueID;

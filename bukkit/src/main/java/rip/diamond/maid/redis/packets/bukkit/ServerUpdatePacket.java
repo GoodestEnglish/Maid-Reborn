@@ -6,8 +6,11 @@ import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.server.Platform;
 import rip.diamond.maid.redis.messaging.Packet;
+import rip.diamond.maid.server.GlobalUser;
 import rip.diamond.maid.server.Server;
 import rip.diamond.maid.util.Preconditions;
+
+import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
@@ -36,5 +39,6 @@ public class ServerUpdatePacket implements Packet {
         }
 
         Maid.INSTANCE.getServerManager().getServers().put(server.getID(), server);
+        Maid.INSTANCE.getServerManager().getGlobalUsers().putAll(server.getOnlinePlayers().stream().collect(Collectors.toUnmodifiableMap(GlobalUser::getUniqueID, globalUser -> globalUser)));
     }
 }

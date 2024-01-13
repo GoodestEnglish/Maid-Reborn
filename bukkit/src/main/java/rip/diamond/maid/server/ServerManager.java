@@ -2,17 +2,20 @@ package rip.diamond.maid.server;
 
 import lombok.Getter;
 import lombok.Setter;
+import rip.diamond.maid.api.server.IGlobalUser;
 import rip.diamond.maid.api.server.IServer;
 import rip.diamond.maid.config.Config;
 import rip.diamond.maid.task.ServerUpdateTask;
 import rip.diamond.maid.util.extend.MaidManager;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public class ServerManager extends MaidManager {
 
+    private final Map<UUID, IGlobalUser> globalUsers = new ConcurrentHashMap<>();
     private final Map<String, IServer> servers = new ConcurrentHashMap<>();
     private final IServer currentServer;
     @Setter private boolean loaded = false;

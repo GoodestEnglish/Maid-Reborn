@@ -5,6 +5,7 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,8 +13,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import rip.diamond.maid.Maid;
+import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.api.user.chat.ChatRoomType;
+import rip.diamond.maid.redis.messaging.PacketHandler;
+import rip.diamond.maid.redis.packets.bukkit.chat.StaffMessagePacket;
+import rip.diamond.maid.server.GlobalUser;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.extend.MaidListener;
@@ -44,7 +50,7 @@ public class ChatListener extends MaidListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onChatDelay(AsyncChatEvent event) {
         Player player = event.getPlayer();
         int delay = plugin.getChatManager().getDelay();
@@ -63,6 +69,20 @@ public class ChatListener extends MaidListener {
         }
 
         player.setMetadata("chat-delay", new FixedMetadataValue(plugin, System.currentTimeMillis() + (delay * 1000L)));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onChatMessaging(AsyncChatEvent event) {
+        Player player = event.getPlayer();
+        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
+        GlobalUser sender = GlobalUser.of(user);
+        ChatRoom room = (ChatRoom) user.getChatRoom();
+
+        if (room.getType() == ChatRoomType.STAFF) {
+            event.setCancelled(true);
+
+            PacketHandler.send(new StaffMessagePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), sender, MiniMessage.miniMessage().serialize(event.message())));
+        }
     }
 
 }

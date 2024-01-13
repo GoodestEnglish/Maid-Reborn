@@ -10,7 +10,8 @@ public class ServerUpdateTask extends TaskTicker {
 
     @Override
     public void onRun() {
-        //Remove every server which isn't alive for 5 seconds
+        //Remove every server and user which isn't alive for 5 seconds
+        plugin.getServerManager().getGlobalUsers().values().removeIf(server -> System.currentTimeMillis() - server.getLastTick() >= 5000L);
         plugin.getServerManager().getServers().values().removeIf(server -> System.currentTimeMillis() - server.getLastTick() >= 5000L);
 
         //Update the current server

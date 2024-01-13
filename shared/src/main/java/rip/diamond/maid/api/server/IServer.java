@@ -1,7 +1,6 @@
 package rip.diamond.maid.api.server;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface IServer {
 
@@ -52,7 +51,7 @@ public interface IServer {
      *
      * @return Online players
      */
-    List<UUID> getOnlinePlayers();
+    List<? extends IGlobalUser> getOnlinePlayers();
 
     /**
      * Get the max players amount.
