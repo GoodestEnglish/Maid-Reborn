@@ -41,46 +41,48 @@ public class UserSettingsMenu extends Menu {
     public Map<Integer, Button> getButtons() {
         Map<Integer, Button> buttons = new HashMap<>();
         for (UserSettings settings : UserSettings.values()) {
-            buttons.put(buttons.size(), new ChooseButton<>(user) {
-                @Override
-                public String getName() {
-                    return CC.AQUA + settings.getName();
-                }
+            if (settings.getPermission() == null || player.hasPermission(settings.getPermission())) {
+                buttons.put(buttons.size(), new ChooseButton<>(user) {
+                    @Override
+                    public String getName() {
+                        return CC.AQUA + settings.getName();
+                    }
 
-                @Override
-                public Material getIcon() {
-                    return Material.valueOf(settings.getIcon());
-                }
+                    @Override
+                    public Material getIcon() {
+                        return Material.valueOf(settings.getIcon());
+                    }
 
-                @Override
-                public Function<IUser, String> read() {
-                    return u -> {
-                        String value = u.getSettings().get(settings);
-                        if (value == null) {
-                            return settings.getDefaultOption();
-                        }
-                        return value;
-                    };
-                }
+                    @Override
+                    public Function<IUser, String> read() {
+                        return u -> {
+                            String value = u.getSettings().get(settings);
+                            if (value == null) {
+                                return settings.getDefaultOption();
+                            }
+                            return value;
+                        };
+                    }
 
-                @Override
-                public BiConsumer<IUser, String> write() {
-                    return (u, option) -> {
-                        u.getSettings().put(settings, option);
-                        updateMenu();
-                    };
-                }
+                    @Override
+                    public BiConsumer<IUser, String> write() {
+                        return (u, option) -> {
+                            u.getSettings().put(settings, option);
+                            updateMenu();
+                        };
+                    }
 
-                @Override
-                public List<String> getOptions() {
-                    return settings.getOptions();
-                }
+                    @Override
+                    public List<String> getOptions() {
+                        return settings.getOptions();
+                    }
 
-                @Override
-                public List<String> getLore() {
-                    return settings.getDescription().stream().map(str -> CC.GRAY + str).toList();
-                }
-            });
+                    @Override
+                    public List<String> getLore() {
+                        return settings.getDescription().stream().map(str -> CC.GRAY + str).toList();
+                    }
+                });
+            }
         }
         return buttons;
     }
