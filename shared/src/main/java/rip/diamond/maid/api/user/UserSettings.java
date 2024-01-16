@@ -36,11 +36,4 @@ public enum UserSettings {
     private final List<String> options;
     private final String defaultOption;
 
-    public boolean isToggled(IUser user) {
-        String value = user.getSettings().get(this);
-        if (value == null) {
-            return false;
-        }
-        return value.equals("開啟");
-    }
 }

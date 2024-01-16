@@ -4,9 +4,11 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import lombok.Getter;
 import org.bson.Document;
+import org.bukkit.entity.Player;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.api.user.UserSettings;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.ProfileUpdatePacket;
 import rip.diamond.maid.util.Tasks;
@@ -57,5 +59,17 @@ public class UserManager extends MaidManager {
             plugin.getMongoManager().getUsers().replaceOne(Filters.eq("_id", user.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(user)), new ReplaceOptions().upsert(true));
             PacketHandler.send(new ProfileUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), (User) user));
         });
+    }
+
+    public boolean isOn(UUID uuid, UserSettings settings) {
+        if (!users.containsKey(uuid)) {
+            throw new RuntimeException("Cannot find user with uuid " + uuid.toString() + " when checking for settings " + settings.name());
+        }
+        IUser user = users.get(uuid);
+        String value = user.getSettings().get(settings);
+        if (value == null) {
+            return false;
+        }
+        return value.equals("開啟");
     }
 }

@@ -16,6 +16,7 @@ import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.api.user.UserSettings;
 import rip.diamond.maid.api.user.chat.ChatRoomType;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.chat.StaffMessagePacket;
@@ -83,6 +84,19 @@ public class ChatListener extends MaidListener {
 
             PacketHandler.send(new StaffMessagePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), sender, MiniMessage.miniMessage().serialize(event.message())));
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onChatSettings(AsyncChatEvent event) {
+        Player player = event.getPlayer();
+
+        if (!plugin.getUserManager().isOn(player.getUniqueId(), UserSettings.GLOBAL_MESSAGE)) {
+            event.setCancelled(true);
+            Common.sendMessage(player, CC.RED + "你必須要在設定開啟聊天室才能發送訊息");
+            return;
+        }
+
+        event.viewers().removeIf(audience -> audience instanceof Player target && !plugin.getUserManager().isOn(target.getUniqueId(), UserSettings.GLOBAL_MESSAGE));
     }
 
 }
