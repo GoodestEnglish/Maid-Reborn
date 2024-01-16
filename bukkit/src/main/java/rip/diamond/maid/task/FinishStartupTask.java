@@ -1,7 +1,6 @@
 package rip.diamond.maid.task;
 
 import com.google.common.collect.ImmutableList;
-import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.BroadcastPacket;

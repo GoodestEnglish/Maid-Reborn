@@ -13,10 +13,8 @@ public class MaidPermission {
             ALERT_PUNISHMENT = "maid.alert.punishment",
 
             //Settings Permissions
-            SETTINGS_SERVER_ALERT = "maid.settings.server",
-            SETTINGS_UPDATE_ALERT = "maid.settings.update",
-            SETTINGS_DISGUISE_ALERT = "maid.settings.disguise",
-            SETTINGS_PUNISHMENT_ALERT = "maid.settings.punishment",
+            SETTINGS_GLOBAL_MESSAGE = "maid.settings.global-message",
+            SETTINGS_PRIVATE_MESSAGE = "maid.settings.private-message",
 
             //Command Permissions
             ALTS = "maid.command.alts",
