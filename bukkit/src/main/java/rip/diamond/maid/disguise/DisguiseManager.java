@@ -13,6 +13,8 @@ import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IDisguise;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.config.Config;
+import rip.diamond.maid.event.PlayerDisguiseEvent;
+import rip.diamond.maid.event.PlayerUndisguiseEvent;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.BroadcastPacket;
 import rip.diamond.maid.util.Alert;
@@ -58,6 +60,9 @@ public class DisguiseManager extends MaidManager {
             Alert alert = Alert.DISGUISED;
             PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getRealName(), serverID, user.getName()))));
         }
+
+        PlayerDisguiseEvent event = new PlayerDisguiseEvent(player, disguise);
+        event.callEvent();
     }
 
     public void unDisguise(Player player) {
@@ -72,6 +77,9 @@ public class DisguiseManager extends MaidManager {
 
         //Output message
         Common.sendMessage(player, CC.GREEN + "成功解除當前的偽裝");
+
+        PlayerUndisguiseEvent event = new PlayerUndisguiseEvent(player);
+        event.callEvent();
     }
 
     /**
@@ -96,9 +104,6 @@ public class DisguiseManager extends MaidManager {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
-
-        player.displayName(Common.text(name));
-        player.playerListName(Common.text(name));
     }
 
     public Map.Entry<String, ProfileProperty> getRandomSkin() {

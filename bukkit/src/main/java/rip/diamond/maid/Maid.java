@@ -9,6 +9,7 @@ import rip.diamond.maid.command.*;
 import rip.diamond.maid.config.Config;
 import rip.diamond.maid.disguise.DisguiseManager;
 import rip.diamond.maid.mongo.MongoManager;
+import rip.diamond.maid.nametag.NameTagManager;
 import rip.diamond.maid.permission.PermissionManager;
 import rip.diamond.maid.platform.BukkitPlatform;
 import rip.diamond.maid.player.UserListener;
@@ -45,6 +46,7 @@ public class Maid extends JavaPlugin {
     private PermissionManager permissionManager;
     private DisguiseManager disguiseManager;
     private PunishmentManager punishmentManager;
+    private NameTagManager nameTagManager;
 
     private BasicConfigFile configFile;
 
@@ -96,6 +98,7 @@ public class Maid extends JavaPlugin {
         permissionManager = new PermissionManager();
         disguiseManager = new DisguiseManager();
         punishmentManager = new PunishmentManager();
+        nameTagManager = new NameTagManager();
     }
 
     private void loadListeners() {

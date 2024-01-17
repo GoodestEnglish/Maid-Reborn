@@ -56,6 +56,14 @@ public class UserManager extends MaidManager {
         });
     }
 
+    public IUser getUserNow(UUID uniqueID) {
+        if (users.containsKey(uniqueID)) {
+            return users.get(uniqueID);
+        }
+
+        throw new NullPointerException("Cannot find user with uuid " + uniqueID.toString() + " in cache");
+    }
+
     public void saveUser(IUser user) {
         Tasks.runAsync(() -> {
             plugin.getMongoManager().getUsers().replaceOne(Filters.eq("_id", user.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(user)), new ReplaceOptions().upsert(true));
