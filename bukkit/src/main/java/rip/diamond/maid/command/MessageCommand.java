@@ -6,6 +6,7 @@ import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidPermission;
 import rip.diamond.maid.api.user.IPunishment;
 import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.api.user.UserSettings;
 import rip.diamond.maid.server.GlobalUser;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
@@ -29,6 +30,11 @@ public class MessageCommand {
             return;
         }
 
+        if (!Maid.INSTANCE.getUserManager().isOn(user, UserSettings.PRIVATE_MESSAGE)) {
+            Common.sendMessage(player, CC.RED + "你必須要在設定開啟私人信息才能發送私人信息");
+            return;
+        }
+
         if (player.getName().equalsIgnoreCase(targetName)) {
             Common.sendMessage(player, CC.RED + "你無法傳送訊息給自己");
             return;
@@ -37,6 +43,10 @@ public class MessageCommand {
         GlobalUser target = (GlobalUser) Maid.INSTANCE.getServerManager().getGlobalUsers().values().stream().filter(globalUser -> globalUser.getName().equalsIgnoreCase(targetName)).findAny().orElse(null);
         if (target == null) {
             Common.sendMessage(player, CC.RED + "玩家 '" + targetName + "' 不在線上");
+            return;
+        }
+        if (!Maid.INSTANCE.getUserManager().isOn(target, UserSettings.PRIVATE_MESSAGE) && !player.hasPermission(MaidPermission.BYPASS_PRIVATE_MESSAGE)) {
+            Common.sendMessage(player, CC.RED + target.getSimpleDisplayName() + CC.RED + " 已關閉私人訊息功能, 無法傳送私人訊息給對方");
             return;
         }
 

@@ -27,6 +27,14 @@ public enum UserSettings {
             List.of("開啟", "關閉"),
             "開啟"
     ),
+    STAFF_CHAT(
+            "CHEST",
+            "工作人員聊天室",
+            List.of("", " 如果開啟, 你將會看到:", "  • 工作人員聊天室的訊息", ""),
+            MaidPermission.SETTINGS_STAFF_CHAT,
+            List.of("開啟", "關閉"),
+            "開啟"
+    ),
     ;
 
     private final String icon;

@@ -27,7 +27,7 @@ public interface IGlobalUser {
     String getSimpleDisplayName();
 
     /**
-     * Get the name, with color.
+     * Get the name, with color, prefix and suffix.
      *
      * @return The display name
      */

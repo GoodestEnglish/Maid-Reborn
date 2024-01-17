@@ -13,6 +13,8 @@ import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.extend.MaidManager;
 
+import java.util.UUID;
+
 @Getter
 public class ChatManager extends MaidManager {
     private boolean muted;
@@ -36,8 +38,11 @@ public class ChatManager extends MaidManager {
     public void sendDirectMessage(IUser user, GlobalUser receiver, String message) {
         GlobalUser sender = GlobalUser.of(user);
 
-        user.getChatRoom().setMessageTo(receiver.getUniqueID());
-        Maid.INSTANCE.getUserManager().saveUser(user);
+        UUID messageTo = user.getChatRoom().getMessageTo();
+        if (messageTo == null || !messageTo.equals(receiver.getUniqueID())) {
+            user.getChatRoom().setMessageTo(receiver.getUniqueID());
+            Maid.INSTANCE.getUserManager().saveUser(user);
+        }
 
         PacketHandler.send(new DirectMessagePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), sender, receiver, message));
         Common.sendMessage(Bukkit.getPlayer(sender.getUniqueID()), CC.PINK + "➥ 給 " + receiver.getSimpleDisplayName() + CC.WHITE + ": " + CC.GRAY + message);

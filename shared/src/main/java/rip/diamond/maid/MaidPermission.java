@@ -3,8 +3,8 @@ package rip.diamond.maid;
 public class MaidPermission {
 
     public static final String
-            //Channel Permissions
-            CHANNEL_STAFF = "maid.channel.staff",
+            //Bypass Permissions
+            BYPASS_PRIVATE_MESSAGE = "maid.bypass.private-message",
 
             //Alert permissions
             ALERT_SERVER = "maid.alert.server",
@@ -15,6 +15,7 @@ public class MaidPermission {
             //Settings Permissions
             SETTINGS_GLOBAL_MESSAGE = "maid.settings.global-message",
             SETTINGS_PRIVATE_MESSAGE = "maid.settings.private-message",
+            SETTINGS_STAFF_CHAT = "maid.settings.staff-chat",
 
             //Command Permissions
             ALTS = "maid.command.alts",

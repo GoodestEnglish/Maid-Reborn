@@ -11,6 +11,7 @@ import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.UserSettings;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.ProfileUpdatePacket;
+import rip.diamond.maid.server.GlobalUser;
 import rip.diamond.maid.util.Tasks;
 import rip.diamond.maid.util.extend.MaidManager;
 import rip.diamond.maid.util.json.GsonProvider;
@@ -66,7 +67,16 @@ public class UserManager extends MaidManager {
             throw new RuntimeException("Cannot find user with uuid " + uuid.toString() + " when checking for settings " + settings.name());
         }
         IUser user = users.get(uuid);
-        String value = user.getSettings().get(settings);
+        return isOn(user, settings);
+    }
+
+    public boolean isOn(IUser user, UserSettings settings) {
+        GlobalUser globalUser = GlobalUser.of(user);
+        return isOn(globalUser, settings);
+    }
+
+    public boolean isOn(GlobalUser globalUser, UserSettings settings) {
+        String value = globalUser.getSettings().get(settings);
         if (value == null) {
             return false;
         }

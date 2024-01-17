@@ -14,6 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
+import rip.diamond.maid.MaidPermission;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.UserSettings;
@@ -79,7 +80,7 @@ public class ChatListener extends MaidListener {
         GlobalUser sender = GlobalUser.of(user);
         ChatRoom room = (ChatRoom) user.getChatRoom();
 
-        if (room.getType() == ChatRoomType.STAFF) {
+        if (room.getType() == ChatRoomType.STAFF && player.hasPermission(MaidPermission.SETTINGS_STAFF_CHAT)) {
             event.setCancelled(true);
 
             PacketHandler.send(new StaffMessagePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), sender, MiniMessage.miniMessage().serialize(event.message())));
