@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
+import rip.diamond.maid.api.server.IGlobalUser;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.config.Config;
 import rip.diamond.maid.redis.messaging.PacketHandler;
@@ -35,7 +36,7 @@ public class ChatManager extends MaidManager {
         Config.CHAT_DELAY.setValue(delay);
     }
 
-    public void sendDirectMessage(IUser user, GlobalUser receiver, String message) {
+    public void sendDirectMessage(IUser user, IGlobalUser receiver, String message) {
         GlobalUser sender = GlobalUser.of(user);
 
         UUID messageTo = user.getChatRoom().getMessageTo();
@@ -44,7 +45,7 @@ public class ChatManager extends MaidManager {
             Maid.INSTANCE.getUserManager().saveUser(user);
         }
 
-        PacketHandler.send(new DirectMessagePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), sender, receiver, message));
+        PacketHandler.send(new DirectMessagePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), sender, (GlobalUser) receiver, message));
         Common.sendMessage(Bukkit.getPlayer(sender.getUniqueID()), CC.PINK + "➥ 給 " + receiver.getSimpleDisplayName() + CC.WHITE + ": " + CC.GRAY + message);
     }
 

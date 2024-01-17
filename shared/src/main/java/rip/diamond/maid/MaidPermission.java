@@ -34,6 +34,7 @@ public class MaidPermission {
             PERMISSION_GUI = "maid.command.permission.gui",
             PLAYERS = "maid.command.players",
             PUNISHMENT = "maid.command.punishment",
+            REPLY = "maid.command.reply",
             RANK = "maid.command.rank",
             SERVERS = "maid.command.servers",
             SETTINGS = "maid.command.settings",

@@ -7,6 +7,7 @@ import org.bson.Document;
 import org.bukkit.entity.Player;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
+import rip.diamond.maid.api.server.IGlobalUser;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.UserSettings;
 import rip.diamond.maid.redis.messaging.PacketHandler;
@@ -75,7 +76,7 @@ public class UserManager extends MaidManager {
         return isOn(globalUser, settings);
     }
 
-    public boolean isOn(GlobalUser globalUser, UserSettings settings) {
+    public boolean isOn(IGlobalUser globalUser, UserSettings settings) {
         String value = globalUser.getSettings().get(settings);
         if (value == null) {
             return false;

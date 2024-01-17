@@ -1,5 +1,8 @@
 package rip.diamond.maid.api.server;
 
+import rip.diamond.maid.api.user.UserSettings;
+
+import java.util.Map;
 import java.util.UUID;
 
 public interface IGlobalUser {
@@ -46,6 +49,13 @@ public interface IGlobalUser {
      * @return The server ID
      */
     String getCurrentServer();
+
+    /**
+     * Get the player settings.
+     *
+     * @return The settings
+     */
+    Map<UserSettings, String> getSettings();
 
     /**
      * Get the last tick received by the server the player is in.
