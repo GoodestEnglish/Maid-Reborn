@@ -6,7 +6,6 @@ import rip.diamond.maid.MaidPermission;
 
 import java.util.List;
 
-// TODO: 13/1/2024 Make these option actually works
 // TODO: 15/1/2024 Add social spy
 @Getter
 @RequiredArgsConstructor
@@ -35,6 +34,14 @@ public enum UserSettings {
             List.of("開啟", "關閉"),
             "開啟"
     ),
+    SOCIAL_SPY(
+            "LEATHER_HELMET",
+            "私訊監聽",
+            List.of("", " 如果開啟, 你將會看到:", "  • 玩家私訊對方的訊息", ""),
+            MaidPermission.SETTINGS_SOCIAL_SPY,
+            List.of("開啟", "關閉"),
+            "開啟"
+    )
     ;
 
     private final String icon;

@@ -16,6 +16,7 @@ public class MaidPermission {
             SETTINGS_GLOBAL_MESSAGE = "maid.settings.global-message",
             SETTINGS_PRIVATE_MESSAGE = "maid.settings.private-message",
             SETTINGS_STAFF_CHAT = "maid.settings.staff-chat",
+            SETTINGS_SOCIAL_SPY = "maid.settings.social-spy",
 
             //Command Permissions
             ALTS = "maid.command.alts",
