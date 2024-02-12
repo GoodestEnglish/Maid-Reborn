@@ -20,8 +20,7 @@ public interface IChatRoom {
     void setType(ChatRoomType type);
 
     /**
-     * Get who should receive the message in this chat room.
-     * This option only available when {@link IChatRoom#getType()} returns {@link ChatRoomType#DIRECT_MESSAGE}.
+     * Get who should receive the message when reply to someone.
      *
      * @return The user UUID
      */

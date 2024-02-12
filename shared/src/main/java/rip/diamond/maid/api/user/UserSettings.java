@@ -6,7 +6,6 @@ import rip.diamond.maid.MaidPermission;
 
 import java.util.List;
 
-// TODO: 15/1/2024 Add social spy
 @Getter
 @RequiredArgsConstructor
 public enum UserSettings {

@@ -1,5 +1,6 @@
 package rip.diamond.maid.command;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import rip.diamond.maid.player.User;
 import rip.diamond.maid.util.Common;
@@ -13,11 +14,11 @@ import rip.diamond.maid.util.extend.MaidCommand;
 public class TestCommand extends MaidCommand {
 
     @Command(name = "1", desc = "測試")
-    public void root(@Sender Player player, String duration_) {
+    public void root(@Sender Player player, String text) {
         User user = (User) plugin.getUserManager().getUser(player.getUniqueId()).join();
 
-        long duration = TimeUtil.getDuration(duration_);
-        Common.sendMessage(player, duration + "");
+        String s = ChatColor.translateAlternateColorCodes('&', text);
+        player.sendMessage(s);
 
         Common.sendMessage(player, "<green>done");
     }

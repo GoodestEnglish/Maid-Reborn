@@ -27,14 +27,12 @@ public class Common {
     public static void broadcastMessage(String... str) {
         for (String string : str) {
             Bukkit.broadcast(Common.text(string));
-            Bukkit.getConsoleSender().sendMessage(Common.text(string));
         }
     }
 
     public static void broadcastMessage(List<String> str) {
         for (String string : str) {
             Bukkit.broadcast(Common.text(string));
-            Bukkit.getConsoleSender().sendMessage(Common.text(string));
         }
     }
 
