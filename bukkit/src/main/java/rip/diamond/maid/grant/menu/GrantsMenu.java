@@ -9,9 +9,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
-import rip.diamond.maid.MaidPermission;
+import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.api.user.IGrant;
-import rip.diamond.maid.grant.Grant;
 import rip.diamond.maid.player.User;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.PermissionUpdatePacket;
@@ -97,11 +96,11 @@ public class GrantsMenu extends PaginatedMenu {
         @Override
         public BiConsumer<ConversationContext, String> getAction() {
             return (cc, reason) -> {
-                User user = (User) Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join();
+                User user = (User) Maid.INSTANCE.getUserManager().getUserNow(player.getUniqueId());
 
                 grant.revoke(user, reason);
                 Maid.INSTANCE.getUserManager().saveUser(target);
-                PacketHandler.send(new PermissionUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), target.getUniqueID()));
+                PacketHandler.send(new PermissionUpdatePacket(Maid.API.getPlatform().getServerID(), target.getUniqueID()));
 
                 updateMenu();
             };

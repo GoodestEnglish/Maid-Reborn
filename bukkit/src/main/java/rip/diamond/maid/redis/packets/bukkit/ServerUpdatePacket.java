@@ -31,7 +31,7 @@ public class ServerUpdatePacket implements Packet {
 
     @Override
     public void onReceive() {
-        Preconditions.checkArgument(MaidAPI.INSTANCE.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
+        Preconditions.checkArgument(Maid.API.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
 
         //Only update the target server data when the server is loaded
         if (!Maid.INSTANCE.getServerManager().isLoaded()) {

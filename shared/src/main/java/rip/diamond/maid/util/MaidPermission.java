@@ -1,4 +1,4 @@
-package rip.diamond.maid;
+package rip.diamond.maid.util;
 
 public class MaidPermission {
 

@@ -1,7 +1,7 @@
 package rip.diamond.maid.command;
 
 import org.bukkit.command.CommandSender;
-import rip.diamond.maid.MaidPermission;
+import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.api.user.IPunishment;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
@@ -19,6 +19,7 @@ public class MuteCommand extends MaidCommand {
 
     @Command(name = "", desc = "禁言一位玩家")
     public void root(@Sender CommandSender sender, String targetName, String duration, @Text String reason) {
+        // TODO: 1/3/2024
         UUID targetUUID = UUIDCache.getUUID(targetName).join();
 
         if (!plugin.getUserManager().hasUser(targetUUID).join()) {

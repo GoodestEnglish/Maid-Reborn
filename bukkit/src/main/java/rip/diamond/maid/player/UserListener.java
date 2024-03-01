@@ -38,6 +38,7 @@ public class UserListener extends MaidListener {
     @EventHandler(priority = EventPriority.LOW)
     public void onPreLoginCreateUser(AsyncPlayerPreLoginEvent event) {
         UUID uniqueID = event.getUniqueId();
+        // TODO: 1/3/2024
         IUser user = plugin.getUserManager().getUser(uniqueID).join();
 
         user.setRealName(event.getName());
@@ -68,6 +69,7 @@ public class UserListener extends MaidListener {
     public void onLoginInjectPermission(PlayerLoginEvent event) {
         //At this point, user data should be present and loaded
         Player player = event.getPlayer();
+        // TODO: 1/3/2024
         IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
 
         try {
@@ -82,7 +84,7 @@ public class UserListener extends MaidListener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoinCache(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
+        IUser user = plugin.getUserManager().getUserNow(player.getUniqueId());
 
         //Cache UUID and username
         UUIDCache.insert(player.getUniqueId(), player.getName());
@@ -99,7 +101,7 @@ public class UserListener extends MaidListener {
     @EventHandler(priority = EventPriority.LOW)
     public void onJoinDisguise(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
+        IUser user = plugin.getUserManager().getUserNow(player.getUniqueId());
         IDisguise disguise = user.getDisguise();
         if (disguise != null) {
             Maid.INSTANCE.getDisguiseManager().disguise(player, disguise, true);

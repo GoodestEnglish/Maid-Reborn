@@ -27,10 +27,10 @@ public class PunishmentUpdatePacket implements Packet {
 
     @Override
     public void onReceive() {
-        Preconditions.checkArgument(MaidAPI.INSTANCE.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
+        Preconditions.checkArgument(Maid.API.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
 
         //Exclude from the server which sent this packet. Because punishment is already updated in local.
-        if (MaidAPI.INSTANCE.getPlatform().getServerID().equals(getFrom())) {
+        if (Maid.API.getPlatform().getServerID().equals(getFrom())) {
             return;
         }
 

@@ -43,12 +43,12 @@ public class Server implements IServer {
         tps = new double[]{Bukkit.getTPS()[0], Bukkit.getTPS()[1], Bukkit.getTPS()[2]};
         loaded = Maid.INSTANCE.getServerManager().isAllowJoin();
         whiteListed = Bukkit.hasWhitelist();
-        onlinePlayers = Bukkit.getOnlinePlayers().stream().map(player -> GlobalUser.of(Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join())).toList();
+        onlinePlayers = Bukkit.getOnlinePlayers().stream().map(player -> GlobalUser.of(Maid.INSTANCE.getUserManager().getUserNow(player.getUniqueId()))).toList();
         maxPlayers = Bukkit.getMaxPlayers();
         chatMuted = Maid.INSTANCE.getChatManager().isMuted();
         chatDelay = Maid.INSTANCE.getChatManager().getDelay();
         lastTick = System.currentTimeMillis();
 
-        PacketHandler.send(new ServerUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), this));
+        PacketHandler.send(new ServerUpdatePacket(Maid.API.getPlatform().getServerID(), this));
     }
 }

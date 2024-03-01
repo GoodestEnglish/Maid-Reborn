@@ -1,8 +1,9 @@
 package rip.diamond.maid.command;
 
 import org.bukkit.entity.Player;
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
-import rip.diamond.maid.MaidPermission;
+import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.player.User;
 import rip.diamond.maid.redis.messaging.PacketHandler;
@@ -19,25 +20,25 @@ public class ChatCommand extends MaidCommand {
 
     @Command(name = "clear", desc = "清空聊天室")
     public void clear(@Sender Player sender) {
-        IUser user = plugin.getUserManager().getUser(sender.getUniqueId()).join();
-        PacketHandler.send(new ChatClearPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), (User) user));
+        IUser user = plugin.getUserManager().getUserNow(sender.getUniqueId());
+        PacketHandler.send(new ChatClearPacket(Maid.API.getPlatform().getServerID(), (User) user));
     }
 
     @Command(name = "mute", desc = "切換聊天室狀態")
     public void mute(@Sender Player sender) {
-        IUser user = plugin.getUserManager().getUser(sender.getUniqueId()).join();
+        IUser user = plugin.getUserManager().getUserNow(sender.getUniqueId());
         boolean muted = plugin.getChatManager().isMuted();
 
         plugin.getChatManager().setMuted(!muted);
-        PacketHandler.send(new ChatMutePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), (User) user, !muted));
+        PacketHandler.send(new ChatMutePacket(Maid.API.getPlatform().getServerID(), (User) user, !muted));
     }
 
     @Command(name = "delay", desc = "切換聊天室狀態")
     public void delay(@Sender Player sender, int delay) {
-        IUser user = plugin.getUserManager().getUser(sender.getUniqueId()).join();
+        IUser user = plugin.getUserManager().getUserNow(sender.getUniqueId());
 
         plugin.getChatManager().setDelay(delay);
-        PacketHandler.send(new ChatSlowPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), (User) user, delay));
+        PacketHandler.send(new ChatSlowPacket(Maid.API.getPlatform().getServerID(), (User) user, delay));
     }
 
 }

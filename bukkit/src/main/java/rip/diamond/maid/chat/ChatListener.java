@@ -14,7 +14,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
-import rip.diamond.maid.MaidPermission;
+import rip.diamond.maid.api.user.chat.IChatRoom;
+import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.UserSettings;
@@ -31,7 +32,7 @@ public class ChatListener extends MaidListener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChatFormat(AsyncChatEvent event) {
         Player player = event.getPlayer();
-        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
+        IUser user = plugin.getUserManager().getUserNow(player.getUniqueId());
         IRank rank = user.getRank();
 
         ChatRenderer renderer = new ChatRenderer() {
@@ -76,14 +77,14 @@ public class ChatListener extends MaidListener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onChatMessaging(AsyncChatEvent event) {
         Player player = event.getPlayer();
-        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
+        IUser user = plugin.getUserManager().getUserNow(player.getUniqueId());
         GlobalUser sender = GlobalUser.of(user);
-        ChatRoom room = (ChatRoom) user.getChatRoom();
+        IChatRoom room = user.getChatRoom();
 
         if (room.getType() == ChatRoomType.STAFF && player.hasPermission(MaidPermission.SETTINGS_STAFF_CHAT)) {
             event.setCancelled(true);
 
-            PacketHandler.send(new StaffMessagePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), sender, MiniMessage.miniMessage().serialize(event.message())));
+            PacketHandler.send(new StaffMessagePacket(Maid.API.getPlatform().getServerID(), sender, MiniMessage.miniMessage().serialize(event.message())));
         }
     }
 

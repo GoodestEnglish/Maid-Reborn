@@ -1,6 +1,7 @@
 package rip.diamond.maid.util.recorder;
 
 import lombok.RequiredArgsConstructor;
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.redis.messaging.PacketHandler;
@@ -32,7 +33,7 @@ public class RankChangesRecorder {
             return;
         }
 
-        PacketHandler.send(new MessagePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), playerUUID, List.of(CC.GREEN + "你已從 " + oldRank.getDisplayName(true) + CC.RESET + CC.GREEN + " 升級到 " + newRank.getDisplayName(true))));
+        PacketHandler.send(new MessagePacket(Maid.API.getPlatform().getServerID(), playerUUID, List.of(CC.GREEN + "你已從 " + oldRank.getDisplayName(true) + CC.RESET + CC.GREEN + " 升級到 " + newRank.getDisplayName(true))));
     }
 
     public boolean canOutput() {

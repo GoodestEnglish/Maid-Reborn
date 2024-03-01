@@ -3,7 +3,7 @@ package rip.diamond.maid.command;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import rip.diamond.maid.MaidPermission;
+import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.disguise.Disguise;
 import rip.diamond.maid.util.CC;
@@ -20,7 +20,7 @@ public class DisguiseCommand extends MaidCommand {
 
     @Command(name = "", desc = "解除一個偽裝")
     public void root(@Sender Player sender, String username) {
-        IUser user = plugin.getUserManager().getUser(sender.getUniqueId()).join();
+        IUser user = plugin.getUserManager().getUserNow(sender.getUniqueId());
         if (user.getDisguise() != null) {
             Common.sendMessage(sender, CC.RED + "錯誤: 請先解除當前的偽裝");
             return;

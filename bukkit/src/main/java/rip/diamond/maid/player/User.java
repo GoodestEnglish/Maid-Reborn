@@ -98,7 +98,7 @@ public class User implements IUser {
     }
     @Override
     public void updateLastServer() {
-        this.lastServer = MaidAPI.INSTANCE.getPlatform().getServerID();
+        this.lastServer = Maid.API.getPlatform().getServerID();
     }
 
     @Override

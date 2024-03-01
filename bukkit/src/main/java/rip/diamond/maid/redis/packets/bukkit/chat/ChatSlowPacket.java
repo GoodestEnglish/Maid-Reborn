@@ -29,7 +29,7 @@ public class ChatSlowPacket implements Packet {
 
     @Override
     public void onReceive() {
-        Preconditions.checkArgument(MaidAPI.INSTANCE.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
+        Preconditions.checkArgument(Maid.API.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
 
         Maid.INSTANCE.getChatManager().setDelay(delay);
         Common.broadcastMessage(CC.GREEN + "聊天室冷卻時間已被 " + user.getSimpleDisplayName(false) + CC.GREEN + " 設定為: " + delay + "秒");

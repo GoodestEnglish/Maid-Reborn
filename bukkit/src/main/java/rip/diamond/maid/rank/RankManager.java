@@ -5,6 +5,7 @@ import com.mongodb.client.model.ReplaceOptions;
 import lombok.Getter;
 import org.bson.Document;
 import org.bukkit.Bukkit;
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.redis.messaging.PacketHandler;
@@ -44,13 +45,13 @@ public class RankManager extends MaidManager {
     public void saveRank(IRank rank) {
         plugin.getMongoManager().getRanks().replaceOne(Filters.eq("_id", rank.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(rank)), new ReplaceOptions().upsert(true));
         ranks.put(rank.getUniqueID(), rank);
-        PacketHandler.send(new RankUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), (Rank) rank, false));
+        PacketHandler.send(new RankUpdatePacket(Maid.API.getPlatform().getServerID(), (Rank) rank, false));
     }
 
     public void deleteRank(IRank rank) {
         plugin.getMongoManager().getRanks().deleteOne(Filters.eq("_id", rank.getUniqueID().toString()));
         ranks.remove(rank.getUniqueID());
-        PacketHandler.send(new RankUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), (Rank) rank, true));
+        PacketHandler.send(new RankUpdatePacket(Maid.API.getPlatform().getServerID(), (Rank) rank, true));
     }
 
     public IRank getDefaultRank() {

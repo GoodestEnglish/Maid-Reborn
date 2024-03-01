@@ -2,7 +2,7 @@ package rip.diamond.maid.command;
 
 import com.google.common.collect.ImmutableList;
 import org.bukkit.command.CommandSender;
-import rip.diamond.maid.MaidPermission;
+import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.api.user.IPunishment;
 import rip.diamond.maid.player.User;
 import rip.diamond.maid.util.CC;
@@ -21,6 +21,7 @@ public class UnbanCommand extends MaidCommand {
 
     @Command(name = "", desc = "解除封鎖一位玩家")
     public void root(@Sender CommandSender sender, String targetName, @Text String reason) {
+        // TODO: 1/3/2024
         UUID targetUUID = UUIDCache.getUUID(targetName).join();
 
         if (!plugin.getUserManager().hasUser(targetUUID).join()) {

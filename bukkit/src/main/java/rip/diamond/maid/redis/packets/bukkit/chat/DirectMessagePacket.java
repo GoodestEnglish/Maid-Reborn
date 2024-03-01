@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidPermission;
+import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.api.user.UserSettings;
 import rip.diamond.maid.redis.messaging.Packet;
 import rip.diamond.maid.server.GlobalUser;

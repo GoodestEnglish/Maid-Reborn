@@ -1,8 +1,7 @@
 package rip.diamond.maid.command;
 
 import org.bukkit.entity.Player;
-import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidPermission;
+import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.grant.menu.GrantsMenu;
 import rip.diamond.maid.player.User;
 import rip.diamond.maid.util.CC;
@@ -20,6 +19,7 @@ public class GrantsCommand extends MaidCommand {
 
     @Command(name = "", desc = "查看/移除職階升級紀錄")
     public void root(@Sender Player sender, String targetName) {
+        // TODO: 1/3/2024
         UUID uuid = UUIDCache.getUUID(targetName).join();
         if (!plugin.getUserManager().hasUser(uuid).join()) {
             Common.sendMessage(sender, CC.RED + "未能找到玩家 '" + targetName + "' 的資料");

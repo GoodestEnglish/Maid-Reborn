@@ -1,7 +1,7 @@
 package rip.diamond.maid.command;
 
 import org.bukkit.entity.Player;
-import rip.diamond.maid.MaidPermission;
+import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.rank.menu.RanksMenu;
 import rip.diamond.maid.util.command.annotation.Command;
 import rip.diamond.maid.util.command.annotation.Require;

@@ -15,8 +15,6 @@ public class TestCommand extends MaidCommand {
 
     @Command(name = "1", desc = "測試")
     public void root(@Sender Player player, String text) {
-        User user = (User) plugin.getUserManager().getUser(player.getUniqueId()).join();
-
         String s = ChatColor.translateAlternateColorCodes('&', text);
         player.sendMessage(s);
 

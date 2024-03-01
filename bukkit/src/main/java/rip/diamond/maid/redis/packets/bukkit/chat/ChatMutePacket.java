@@ -29,7 +29,7 @@ public class ChatMutePacket implements Packet {
 
     @Override
     public void onReceive() {
-        Preconditions.checkArgument(MaidAPI.INSTANCE.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
+        Preconditions.checkArgument(Maid.API.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
 
         Maid.INSTANCE.getChatManager().setMuted(muted);
         Common.broadcastMessage(CC.GREEN + "聊天室狀態已被 " + user.getSimpleDisplayName(false) + CC.GREEN + " 切換到: " + (muted ? "關閉" : "開啟"));

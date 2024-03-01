@@ -49,7 +49,7 @@ public class UserPermissible extends PermissibleBase {
     public PermissionState checkPermission(@NotNull String name) {
         String permission = name.toLowerCase();
 
-        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
+        IUser user = plugin.getUserManager().getUserNow(player.getUniqueId());
 
         //Check if the user is null or not
         if (user == null) {

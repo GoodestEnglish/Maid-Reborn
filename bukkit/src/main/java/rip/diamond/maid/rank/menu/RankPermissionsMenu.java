@@ -72,7 +72,7 @@ public class RankPermissionsMenu extends PaginatedMenu {
                             permission.setEnabled(!permission.isEnabled());
                         }
                         Maid.INSTANCE.getRankManager().saveRank(rank);
-                        PacketHandler.send(new PermissionUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID()));
+                        PacketHandler.send(new PermissionUpdatePacket(Maid.API.getPlatform().getServerID()));
 
                         updateMenu();
                     }
@@ -100,7 +100,7 @@ public class RankPermissionsMenu extends PaginatedMenu {
                     }
                     rank.addPermission(permission);
                     Maid.INSTANCE.getRankManager().saveRank(rank);
-                    PacketHandler.send(new PermissionUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID()));
+                    PacketHandler.send(new PermissionUpdatePacket(Maid.API.getPlatform().getServerID()));
 
                     Common.sendMessage(player, CC.GREEN + "成功新增權限 " + CC.AQUA + permission);
                     updateMenu();

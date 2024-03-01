@@ -1,5 +1,6 @@
 package rip.diamond.maid.redis.packets.bukkit;
 
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.server.Platform;
 import rip.diamond.maid.redis.messaging.Packet;
@@ -37,7 +38,7 @@ public class BroadcastPacket implements Packet {
 
     @Override
     public void onReceive() {
-        Preconditions.checkArgument(MaidAPI.INSTANCE.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
+        Preconditions.checkArgument(Maid.API.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
 
         Common.broadcastPermissionMessage(permission, message);
     }

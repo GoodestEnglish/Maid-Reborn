@@ -68,7 +68,7 @@ public class PermissionsMenu extends PaginatedMenu {
                             permission.setEnabled(!permission.isEnabled());
                         }
                         Maid.INSTANCE.getUserManager().saveUser(target);
-                        PacketHandler.send(new PermissionUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), target.getUniqueID()));
+                        PacketHandler.send(new PermissionUpdatePacket(Maid.API.getPlatform().getServerID(), target.getUniqueID()));
                         updateMenu();
                     }
                 });
@@ -113,7 +113,7 @@ public class PermissionsMenu extends PaginatedMenu {
                     }
                     target.addPermission(permission);
                     Maid.INSTANCE.getUserManager().saveUser(target);
-                    PacketHandler.send(new PermissionUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), target.getUniqueID()));
+                    PacketHandler.send(new PermissionUpdatePacket(Maid.API.getPlatform().getServerID(), target.getUniqueID()));
 
                     Common.sendMessage(player, CC.GREEN + "成功新增權限 " + CC.AQUA + permission);
                     updateMenu();

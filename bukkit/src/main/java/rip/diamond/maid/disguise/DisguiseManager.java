@@ -3,10 +3,8 @@ package rip.diamond.maid.disguise;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.common.collect.ImmutableList;
-import com.mojang.authlib.GameProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
@@ -22,7 +20,6 @@ import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.extend.MaidManager;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 public class DisguiseManager extends MaidManager {
@@ -50,13 +47,13 @@ public class DisguiseManager extends MaidManager {
         setSkin(player, skinProperty);
 
         //Save the disguise data
-        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
-        Maid.INSTANCE.getUserManager().saveUser(user);
+        IUser user = plugin.getUserManager().getUserNow(player.getUniqueId());
+        plugin.getUserManager().saveUser(user);
 
         //Output message
         Common.sendMessage(player, CC.GREEN + "成功偽裝成為: " + disguise.getName());
         if (!join) {
-            String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
+            String serverID = Maid.API.getPlatform().getServerID();
             Alert alert = Alert.DISGUISED;
             PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getRealName(), serverID, user.getName()))));
         }
@@ -73,7 +70,7 @@ public class DisguiseManager extends MaidManager {
         setSkin(player, playerProperties.get(user.getUniqueID()));
 
         //Save the disguise data
-        Maid.INSTANCE.getUserManager().saveUser(user);
+        plugin.getUserManager().saveUser(user);
 
         //Output message
         Common.sendMessage(player, CC.GREEN + "成功解除當前的偽裝");
@@ -93,7 +90,8 @@ public class DisguiseManager extends MaidManager {
     }
 
     private void setName(Player player, String name) {
-        GameProfile profile = ((CraftPlayer) player).getProfile();
+        // TODO: 1/3/2024 Use reflection for this 
+        /*GameProfile profile = ((CraftPlayer) player).getProfile();
 
         try {
             Field field = GameProfile.class.getDeclaredField("name");
@@ -103,7 +101,7 @@ public class DisguiseManager extends MaidManager {
             field.set(profile, name);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public Map.Entry<String, ProfileProperty> getRandomSkin() {

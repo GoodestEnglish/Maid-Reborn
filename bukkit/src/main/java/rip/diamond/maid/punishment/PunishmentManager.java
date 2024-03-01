@@ -7,6 +7,7 @@ import lombok.Getter;
 import net.kyori.adventure.audience.Audience;
 import org.bson.Document;
 import org.bukkit.entity.Player;
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IPunishment;
 import rip.diamond.maid.api.user.IUser;
@@ -49,7 +50,7 @@ public class PunishmentManager extends MaidManager {
 
         Tasks.runAsync(() -> {
             plugin.getMongoManager().getPunishments().replaceOne(Filters.eq("_id", punishment.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(punishment)), new ReplaceOptions().upsert(true));
-            PacketHandler.send(new PunishmentUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), (Punishment) punishment));
+            PacketHandler.send(new PunishmentUpdatePacket(Maid.API.getPlatform().getServerID(), (Punishment) punishment));
         });
     }
 
@@ -105,9 +106,10 @@ public class PunishmentManager extends MaidManager {
      * @param reason The reason why this punishment is created
      */
     public void punish(Audience executor, UUID targetUUID, IPunishment.PunishmentType type, String duration, String reason) {
-        IUser user = executor instanceof Player player ? plugin.getUserManager().getUser(player.getUniqueId()).join() : User.CONSOLE;
+        IUser user = executor instanceof Player player ? plugin.getUserManager().getUserNow(player.getUniqueId()) : User.CONSOLE;
+        // TODO: 1/3/2024
         IUser target = plugin.getUserManager().getUser(targetUUID).join();
-        String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
+        String serverID = Maid.API.getPlatform().getServerID();
         long duration_ = TimeUtil.getDuration(duration);
 
         //Build the punishment and save it to the database
@@ -130,9 +132,10 @@ public class PunishmentManager extends MaidManager {
      * @param reason The reason why this punishment is revoked
      */
     public void unpunish(Audience executor, UUID targetUUID, IPunishment.PunishmentType type, String reason) {
-        IUser user = executor instanceof Player player ? plugin.getUserManager().getUser(player.getUniqueId()).join() : User.CONSOLE;
+        IUser user = executor instanceof Player player ? plugin.getUserManager().getUserNow(player.getUniqueId()) : User.CONSOLE;
+        // TODO: 1/3/2024
         IUser target = plugin.getUserManager().getUser(targetUUID).join();
-        String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
+        String serverID = Maid.API.getPlatform().getServerID();
 
         //If the PunishmentType is BAN or IP_BAN, we will get both BAN and IP_BAN data because they are all "bans"
         List<IPunishment> punishments = type == IPunishment.PunishmentType.BAN || type == IPunishment.PunishmentType.IP_BAN ? target.getActivePunishments(ImmutableList.of(IPunishment.PunishmentType.BAN, IPunishment.PunishmentType.IP_BAN)) : target.getActivePunishments(ImmutableList.of(type));
@@ -159,9 +162,10 @@ public class PunishmentManager extends MaidManager {
      * @param reason The reason why this punishment is revoked
      */
     public void unpunish(Audience executor, IPunishment punishment, String reason) {
-        IUser user = executor instanceof Player player ? plugin.getUserManager().getUser(player.getUniqueId()).join() : User.CONSOLE;
+        IUser user = executor instanceof Player player ? plugin.getUserManager().getUserNow(player.getUniqueId()) : User.CONSOLE;
+        // TODO: 1/3/2024
         IUser target = plugin.getUserManager().getUser(punishment.getUser()).join();
-        String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
+        String serverID = Maid.API.getPlatform().getServerID();
 
         punishment.revoke(user, reason);
         updatePunishment(punishment);

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.server.IGlobalUser;
 import rip.diamond.maid.api.user.IUser;
@@ -29,7 +30,7 @@ public class GlobalUser implements IGlobalUser {
                 .simpleDisplayName(user.getSimpleDisplayName(false))
                 .displayName(user.getDisplayName(false))
                 .texture(user.getTexture())
-                .currentServer(MaidAPI.INSTANCE.getPlatform().getServerID())
+                .currentServer(Maid.API.getPlatform().getServerID())
                 .settings(ImmutableMap.copyOf(user.getSettings()))
                 .lastTick(System.currentTimeMillis())
                 .build();

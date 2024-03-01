@@ -24,7 +24,7 @@ public class UserSettingsMenu extends Menu {
 
     public UserSettingsMenu(Player player) {
         super(player, -1);
-        this.user = Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join();
+        this.user = Maid.INSTANCE.getUserManager().getUserNow(player.getUniqueId());;
     }
 
     @Override

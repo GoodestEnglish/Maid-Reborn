@@ -23,15 +23,13 @@ public class MaidAPI {
     private JedisPool jedis;
     private Executor jedisExecutor;
 
-    public MaidAPI(RedisCredentials redisCredentials, IPlatform platform) {
+    public MaidAPI(IPlatform platform) {
         INSTANCE = this;
 
         this.platform = platform;
-
-        start(redisCredentials);
     }
 
-    private void start(RedisCredentials redisCredentials) {
+    public void start(RedisCredentials redisCredentials) {
         this.redisCredentials = redisCredentials;
         this.jedis = redisCredentials.isAuth() ?
                 new JedisPool(new JedisPoolConfig(), redisCredentials.getHostname(), redisCredentials.getPort(), 20_000, redisCredentials.getPassword()) :

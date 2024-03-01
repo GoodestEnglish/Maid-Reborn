@@ -1,19 +1,16 @@
 package rip.diamond.maid.util.packetwrapper.wrappers.data;
 
-import rip.diamond.maid.util.packetwrapper.wrappers.play.serverbound.WrapperPlayClientChatCommand;
 import com.comphenix.protocol.reflect.EquivalentConverter;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.reflect.accessors.Accessors;
 import com.comphenix.protocol.reflect.accessors.ConstructorAccessor;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.AutoWrapper;
-import com.comphenix.protocol.wrappers.BukkitConverters;
 import com.comphenix.protocol.wrappers.Converters;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import java.util.BitSet;
-import java.util.List;
 import java.util.Objects;
 
 /**

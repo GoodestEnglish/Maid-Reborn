@@ -2,7 +2,7 @@ package rip.diamond.maid.api.user;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import rip.diamond.maid.MaidPermission;
+import rip.diamond.maid.util.MaidPermission;
 
 import java.util.List;
 

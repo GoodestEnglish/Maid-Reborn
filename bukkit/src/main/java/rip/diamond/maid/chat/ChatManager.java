@@ -45,7 +45,7 @@ public class ChatManager extends MaidManager {
             Maid.INSTANCE.getUserManager().saveUser(user);
         }
 
-        PacketHandler.send(new DirectMessagePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), sender, (GlobalUser) receiver, message));
+        PacketHandler.send(new DirectMessagePacket(Maid.API.getPlatform().getServerID(), sender, (GlobalUser) receiver, message));
         Common.sendMessage(Bukkit.getPlayer(sender.getUniqueID()), CC.PINK + "➥ 給 " + receiver.getSimpleDisplayName() + CC.WHITE + ": " + CC.GRAY + message);
     }
 

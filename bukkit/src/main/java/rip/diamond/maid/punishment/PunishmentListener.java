@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerLoginEvent;
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IPunishment;
 import rip.diamond.maid.api.user.IUser;
@@ -25,6 +26,7 @@ public class PunishmentListener extends MaidListener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLoginPunishment(PlayerLoginEvent event) {
         Player player = event.getPlayer();
+        // TODO: 1/3/2024
         IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
         List<IPunishment> punishments = user.getActivePunishments(List.of(IPunishment.PunishmentType.BAN, IPunishment.PunishmentType.IP_BAN));
 
@@ -38,13 +40,13 @@ public class PunishmentListener extends MaidListener {
 
         String durationReadable = punishment.getDuration() == -1 ? "永久" : TimeUtil.formatDuration(punishment.getIssuedAt() + punishment.getDuration() - System.currentTimeMillis());
         Alert alert = Alert.LOGIN_FAILED_BANNED;
-        PacketHandler.send(new BroadcastPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), "(" + durationReadable + ")"))));
+        PacketHandler.send(new BroadcastPacket(Maid.API.getPlatform().getServerID(), alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), "(" + durationReadable + ")"))));
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChatPunishment(AsyncChatEvent event) {
         Player player = event.getPlayer();
-        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
+        IUser user = plugin.getUserManager().getUserNow(player.getUniqueId());
         List<IPunishment> punishments = user.getActivePunishments(List.of(IPunishment.PunishmentType.MUTE));
 
         if (punishments.isEmpty()) {
@@ -58,7 +60,7 @@ public class PunishmentListener extends MaidListener {
         Common.sendMessage(player, messages);
 
         Alert alert = Alert.CHAT_FAILED_MUTED;
-        PacketHandler.send(new BroadcastPacket(MaidAPI.INSTANCE.getPlatform().getServerID(), alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), "(" + GsonComponentSerializer.gson().serialize(event.message()) + ")"))));
+        PacketHandler.send(new BroadcastPacket(Maid.API.getPlatform().getServerID(), alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), "(" + GsonComponentSerializer.gson().serialize(event.message()) + ")"))));
     }
 
 }

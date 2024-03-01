@@ -187,13 +187,13 @@ public class GrantMenu extends Menu {
             @Override
             public void clicked(InventoryClickEvent event, Player player, ClickType clickType) {
                 player.closeInventory();
-                IUser user = Maid.INSTANCE.getUserManager().getUser(player.getUniqueId()).join();
+                IUser user = Maid.INSTANCE.getUserManager().getUserNow(player.getUniqueId());
 
                 RankChangesRecorder recorder = new RankChangesRecorder(target.getRealRank());
 
                 target.addGrant(new Grant(target, rank, user, reason, System.currentTimeMillis(), TimeUtil.getDuration(duration)));
                 Maid.INSTANCE.getUserManager().saveUser(target);
-                PacketHandler.send(new PermissionUpdatePacket(MaidAPI.INSTANCE.getPlatform().getServerID(), target.getUniqueID()));
+                PacketHandler.send(new PermissionUpdatePacket(Maid.API.getPlatform().getServerID(), target.getUniqueID()));
 
                 Common.sendMessage(player, CC.GREEN + "成功替 " + target.getRealName() + " 升級到 " + rank.getName());
 

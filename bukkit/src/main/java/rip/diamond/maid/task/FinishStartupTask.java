@@ -1,6 +1,7 @@
 package rip.diamond.maid.task;
 
 import com.google.common.collect.ImmutableList;
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.BroadcastPacket;
@@ -17,7 +18,7 @@ public class FinishStartupTask extends TaskTicker {
 
     @Override
     public void onRun() {
-        String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
+        String serverID = Maid.API.getPlatform().getServerID();
 
         plugin.getServerManager().setLoaded(true);
 

@@ -1,7 +1,7 @@
 package rip.diamond.maid.command;
 
 import org.bukkit.entity.Player;
-import rip.diamond.maid.MaidPermission;
+import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.permission.PermissionManager;
 import rip.diamond.maid.permission.UserPermissible;
 import rip.diamond.maid.permission.menu.PermissionInspectMenu;

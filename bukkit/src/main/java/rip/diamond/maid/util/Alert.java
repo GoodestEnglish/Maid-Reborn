@@ -2,7 +2,6 @@ package rip.diamond.maid.util;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import rip.diamond.maid.MaidPermission;
 
 @RequiredArgsConstructor
 public enum Alert {

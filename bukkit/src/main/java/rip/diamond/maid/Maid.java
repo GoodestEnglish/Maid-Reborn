@@ -31,11 +31,17 @@ import rip.diamond.maid.util.menu.MenuHandler;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
+/**
+ * TODO List
+ * - Use getUserNow instead of join for IUser
+ */
 @Getter
 public class Maid extends JavaPlugin {
 
     public static Maid INSTANCE;
+    public static MaidAPI API;
     public static DecimalFormat FORMAT = new DecimalFormat("#0.00");
+    public static boolean MOCKING = false;
 
     private CommandService drink;
     private MongoManager mongoManager;
@@ -53,6 +59,10 @@ public class Maid extends JavaPlugin {
     @Override
     public void onEnable() {
         INSTANCE = this;
+
+        if (getClassLoader().getClass().getPackageName().startsWith("be.seeseemelk.mockbukkit")) {
+            MOCKING = true;
+        }
 
         loadFile();
         loadAPI();
@@ -74,7 +84,10 @@ public class Maid extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        MaidAPI.INSTANCE.stop();
+        if (MOCKING) {
+            return;
+        }
+        API.stop();
     }
 
     private void loadFile() {
@@ -86,7 +99,13 @@ public class Maid extends JavaPlugin {
     private void loadAPI() {
         drink = Drink.get(this);
         new MenuHandler(this); //Register MenuAPI instance
-        new MaidAPI(new RedisCredentials(Config.REDIS_HOST.toString(), Config.REDIS_PORT.toInteger(), Config.REDIS_AUTH.toBoolean(), Config.REDIS_PASSWORD.toString()), new BukkitPlatform());
+        API = new MaidAPI(new BukkitPlatform());
+
+        if (MOCKING) {
+            return;
+        }
+
+        API.start(new RedisCredentials(Config.REDIS_HOST.toString(), Config.REDIS_PORT.toInteger(), Config.REDIS_AUTH.toBoolean(), Config.REDIS_PASSWORD.toString()));
     }
 
     private void loadManagers() {
@@ -142,4 +161,6 @@ public class Maid extends JavaPlugin {
         drink.register(new WarnCommand(), "warn");
         drink.registerCommands();
     }
+
+
 }

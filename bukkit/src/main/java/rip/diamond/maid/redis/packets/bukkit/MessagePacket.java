@@ -2,6 +2,7 @@ package rip.diamond.maid.redis.packets.bukkit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.server.Platform;
 import rip.diamond.maid.redis.messaging.Packet;
@@ -38,7 +39,7 @@ public class MessagePacket implements Packet {
 
     @Override
     public void onReceive() {
-        Preconditions.checkArgument(MaidAPI.INSTANCE.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
+        Preconditions.checkArgument(Maid.API.getPlatform().getPlatform() == Platform.BUKKIT, getClass().getSimpleName() + " can only run in bukkit platform");
 
         Player player = Bukkit.getPlayer(playerUUID);
         if (player != null && player.isOnline()) {
