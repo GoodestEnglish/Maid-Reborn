@@ -1,6 +1,7 @@
 package rip.diamond.maid.server;
 
 import com.google.common.collect.ImmutableMap;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import rip.diamond.maid.MaidAPI;
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 public class GlobalUser implements IGlobalUser {
 
     private UUID uniqueID;
@@ -21,16 +23,16 @@ public class GlobalUser implements IGlobalUser {
     private long lastTick;
 
     public static GlobalUser of(IUser user) {
-        GlobalUser globalUser = new GlobalUser();
-        globalUser.setUniqueID(user.getUniqueID());
-        globalUser.setName(user.getName());
-        globalUser.setSimpleDisplayName(user.getSimpleDisplayName(false));
-        globalUser.setDisplayName(user.getDisplayName(false));
-        globalUser.setTexture(user.getTexture());
-        globalUser.setCurrentServer(MaidAPI.INSTANCE.getPlatform().getServerID());
-        globalUser.setSettings(ImmutableMap.copyOf(user.getSettings()));
-        globalUser.setLastTick(System.currentTimeMillis());
-        return globalUser;
+        return GlobalUser.builder()
+                .uniqueID(user.getUniqueID())
+                .name(user.getName())
+                .simpleDisplayName(user.getSimpleDisplayName(false))
+                .displayName(user.getDisplayName(false))
+                .texture(user.getTexture())
+                .currentServer(MaidAPI.INSTANCE.getPlatform().getServerID())
+                .settings(ImmutableMap.copyOf(user.getSettings()))
+                .lastTick(System.currentTimeMillis())
+                .build();
     }
 
 }
