@@ -1,7 +1,6 @@
 plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    //id("io.papermc.paperweight.userdev") version "1.5.10" // Check for new versions at https://plugins.gradle.org/plugin/io.papermc.paperweight.userdev
 }
 
 group = "rip.diamond"
@@ -11,15 +10,13 @@ repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.dmulloy2.net/repository/public/")
-    maven("https://jitpack.io")
 }
 
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("com.github.MockBukkit:MockBukkit:v1.20-SNAPSHOT")
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.78.0")
 
-    //paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 
     implementation(project(":shared"))

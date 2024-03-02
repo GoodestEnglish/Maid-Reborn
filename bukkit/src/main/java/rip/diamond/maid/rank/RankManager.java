@@ -24,9 +24,11 @@ public class RankManager extends MaidManager {
 
     public RankManager() {
         //Load all the rank from database
-        for (Document document : plugin.getMongoManager().getRanks().find()) {
-            Rank rank = Rank.of(document);
-            ranks.put(rank.getUniqueID(), rank);
+        if (!Maid.MOCKING) {
+            for (Document document : plugin.getMongoManager().getRanks().find()) {
+                Rank rank = Rank.of(document);
+                ranks.put(rank.getUniqueID(), rank);
+            }
         }
 
         //Check how many default rank is in the cache
@@ -43,12 +45,18 @@ public class RankManager extends MaidManager {
     }
 
     public void saveRank(IRank rank) {
+        if (Maid.MOCKING) {
+            return;
+        }
         plugin.getMongoManager().getRanks().replaceOne(Filters.eq("_id", rank.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(rank)), new ReplaceOptions().upsert(true));
         ranks.put(rank.getUniqueID(), rank);
         PacketHandler.send(new RankUpdatePacket(Maid.API.getPlatform().getServerID(), (Rank) rank, false));
     }
 
     public void deleteRank(IRank rank) {
+        if (Maid.MOCKING) {
+            return;
+        }
         plugin.getMongoManager().getRanks().deleteOne(Filters.eq("_id", rank.getUniqueID().toString()));
         ranks.remove(rank.getUniqueID());
         PacketHandler.send(new RankUpdatePacket(Maid.API.getPlatform().getServerID(), (Rank) rank, true));

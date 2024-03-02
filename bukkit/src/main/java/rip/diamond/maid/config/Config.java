@@ -22,7 +22,7 @@ public enum Config {
     MONGO_CONNECTION_STRING("mongo.connection-string", "mongodb://127.0.0.1:27017/MaidReborn"),
     MONGO_DATABASE("mongo.database", "Maid"),
     /* Disguises */
-    DISGUISE_SKIN("disguise.skin", ImmutableList.of("XiaoNiu_TW", "BedlessNoob", "YuseiFudo", "DULINTW", "Fauzh")),
+    DISGUISE_SKIN("disguise.skin", ImmutableList.of("XiaoNiu_TW", "BedlessNoob", "YuseiFudo", "DULINTW", "Fauzh", "LU__LU", "DragonL")),
     /* Chat */
     CHAT_MUTED("chat.muted", false),
     CHAT_DELAY("chat.delay", 0),
@@ -87,7 +87,7 @@ public enum Config {
         configFile.save();
         configFile.load();
 
-        if (SERVER_ID.toString().equals(SERVER_ID.getDefaultValue())) {
+        if (SERVER_ID.toString().equals(SERVER_ID.getDefaultValue()) && !Maid.MOCKING) {
             Common.log("請在 config.yml 更改 " + SERVER_ID.getPath());
             Bukkit.shutdown();
         }

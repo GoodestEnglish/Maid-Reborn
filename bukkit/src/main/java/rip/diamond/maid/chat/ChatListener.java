@@ -13,18 +13,17 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
-import rip.diamond.maid.api.user.chat.IChatRoom;
-import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.UserSettings;
 import rip.diamond.maid.api.user.chat.ChatRoomType;
+import rip.diamond.maid.api.user.chat.IChatRoom;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.chat.StaffMessagePacket;
 import rip.diamond.maid.server.GlobalUser;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
+import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.util.extend.MaidListener;
 
 public class ChatListener extends MaidListener {

@@ -65,6 +65,9 @@ public class UserManager extends MaidManager {
     }
 
     public void saveUser(IUser user) {
+        if (Maid.MOCKING) {
+            return;
+        }
         Tasks.runAsync(() -> {
             plugin.getMongoManager().getUsers().replaceOne(Filters.eq("_id", user.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(user)), new ReplaceOptions().upsert(true));
             PacketHandler.send(new ProfileUpdatePacket(Maid.API.getPlatform().getServerID(), (User) user));

@@ -36,6 +36,9 @@ public class PunishmentManager extends MaidManager {
     }
 
     private void loadPunishments() {
+        if (Maid.MOCKING) {
+            return;
+        }
         for (Document document : plugin.getMongoManager().getPunishments().find()) {
             IPunishment punishment = Punishment.of(document);
             punishments.add(punishment);

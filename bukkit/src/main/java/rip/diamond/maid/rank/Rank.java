@@ -7,8 +7,6 @@ import org.bson.Document;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.permission.RankPermission;
-import rip.diamond.maid.redis.messaging.PacketHandler;
-import rip.diamond.maid.redis.packets.bukkit.PermissionUpdatePacket;
 import rip.diamond.maid.util.HexColorUtil;
 import rip.diamond.maid.util.json.GsonProvider;
 

@@ -1,8 +1,10 @@
-package rip.diamond.maid;
+package rip.diamond.maid.test;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import org.junit.jupiter.api.*;
+import rip.diamond.maid.Maid;
+import rip.diamond.maid.MaidAPI;
 
 public class MaidTest {
 
@@ -21,14 +23,14 @@ public class MaidTest {
     }
 
     @Test
-    @DisplayName("Check if Maid is initialized")
-    void testMaidInitialization() {
+    @DisplayName("Test if Maid is initialized")
+    public void testMaidInitialization() {
         Assertions.assertNotNull(Maid.INSTANCE);
     }
 
     @Test
-    @DisplayName("Check if MaidAPI is initialized")
-    void testMaidAPIInitialization() {
+    @DisplayName("Test if MaidAPI is initialized")
+    public void testMaidAPIInitialization() {
         Assertions.assertNotNull(MaidAPI.INSTANCE);
     }
 

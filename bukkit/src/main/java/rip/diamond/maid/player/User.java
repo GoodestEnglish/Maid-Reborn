@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.*;
 import rip.diamond.maid.api.user.permission.Permission;
 import rip.diamond.maid.api.user.permission.UserPermission;

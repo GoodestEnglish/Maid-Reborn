@@ -3,6 +3,7 @@ package rip.diamond.maid;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.plugin.java.JavaPlugin;
+import rip.diamond.maid.config.adapter.ConfigAdapter;
 import rip.diamond.maid.chat.ChatListener;
 import rip.diamond.maid.chat.ChatManager;
 import rip.diamond.maid.command.*;
@@ -55,6 +56,7 @@ public class Maid extends JavaPlugin {
     private NameTagManager nameTagManager;
 
     private BasicConfigFile configFile;
+    private ConfigAdapter configAdapter;
 
     @Override
     public void onEnable() {
@@ -92,6 +94,7 @@ public class Maid extends JavaPlugin {
 
     private void loadFile() {
         this.configFile = new BasicConfigFile(this, "config.yml");
+        this.configAdapter = new ConfigAdapter();
 
         Config.loadDefault();
     }
@@ -109,12 +112,12 @@ public class Maid extends JavaPlugin {
     }
 
     private void loadManagers() {
-        mongoManager = new MongoManager();
+        mongoManager = MOCKING ? null : new MongoManager(configAdapter);
         userManager = new UserManager();
         rankManager = new RankManager();
         serverManager = new ServerManager();
-        chatManager = new ChatManager();
-        permissionManager = new PermissionManager();
+        chatManager = new ChatManager(configAdapter);
+        permissionManager = MOCKING ? null : new PermissionManager();
         disguiseManager = new DisguiseManager();
         punishmentManager = new PunishmentManager();
         nameTagManager = new NameTagManager();

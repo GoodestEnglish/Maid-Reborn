@@ -1,12 +1,12 @@
 package rip.diamond.maid.chat;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.server.IGlobalUser;
 import rip.diamond.maid.api.user.IUser;
-import rip.diamond.maid.config.Config;
+import rip.diamond.maid.config.ChatConfig;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.chat.DirectMessagePacket;
 import rip.diamond.maid.server.GlobalUser;
@@ -17,24 +17,27 @@ import rip.diamond.maid.util.extend.MaidManager;
 import java.util.UUID;
 
 @Getter
+@RequiredArgsConstructor
 public class ChatManager extends MaidManager {
-    private boolean muted;
-    private int delay;
 
-    public ChatManager() {
-        this.muted = Config.CHAT_MUTED.toBoolean();
-        this.delay = Config.CHAT_DELAY.toInteger();
-    }
+    private final ChatConfig chatConfig;
 
     public void setMuted(boolean muted) {
-        this.muted = muted;
-        Config.CHAT_MUTED.setValue(muted);
+        this.chatConfig.setChatMuted(muted);
+    }
+
+    public boolean isMuted() {
+        return this.chatConfig.isChatMuted();
     }
 
     public void setDelay(int delay) {
-        this.delay = delay;
-        Config.CHAT_DELAY.setValue(delay);
+        this.chatConfig.setChatDelay(delay);
     }
+
+    public int getDelay() {
+        return this.chatConfig.getChatDelay();
+    }
+
 
     public void sendDirectMessage(IUser user, IGlobalUser receiver, String message) {
         GlobalUser sender = GlobalUser.of(user);
@@ -42,7 +45,7 @@ public class ChatManager extends MaidManager {
         UUID messageTo = user.getChatRoom().getMessageTo();
         if (messageTo == null || !messageTo.equals(receiver.getUniqueID())) {
             user.getChatRoom().setMessageTo(receiver.getUniqueID());
-            Maid.INSTANCE.getUserManager().saveUser(user);
+            plugin.getUserManager().saveUser(user);
         }
 
         PacketHandler.send(new DirectMessagePacket(Maid.API.getPlatform().getServerID(), sender, (GlobalUser) receiver, message));
