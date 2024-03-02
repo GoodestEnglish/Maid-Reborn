@@ -2,11 +2,13 @@ package rip.diamond.maid.player;
 
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.mongodb.client.model.Filters;
+import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -14,16 +16,22 @@ import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IDisguise;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.UserSettings;
+import rip.diamond.maid.mongo.MongoManager;
+import rip.diamond.maid.server.ServerManager;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.Tasks;
 import rip.diamond.maid.util.UUIDCache;
-import rip.diamond.maid.util.extend.MaidListener;
 
 import java.util.Arrays;
 import java.util.UUID;
 
-public class UserListener extends MaidListener {
+@RequiredArgsConstructor
+public class UserListener implements Listener {
+
+    private final UserManager userManager;
+    private final MongoManager mongoManager;
+    private final ServerManager serverManager;
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPreLoginDoubleLogin(AsyncPlayerPreLoginEvent event) {
@@ -38,8 +46,7 @@ public class UserListener extends MaidListener {
     @EventHandler(priority = EventPriority.LOW)
     public void onPreLoginCreateUser(AsyncPlayerPreLoginEvent event) {
         UUID uniqueID = event.getUniqueId();
-        // TODO: 1/3/2024
-        IUser user = plugin.getUserManager().getUser(uniqueID).join();
+        IUser user = userManager.getUser(uniqueID).join(); //join in here is allowed since this event is running async
 
         user.setRealName(event.getName());
         user.updateSeen();
@@ -47,7 +54,7 @@ public class UserListener extends MaidListener {
         user.setIP(event.getAddress().getHostAddress());
         Arrays.stream(UserSettings.values()).forEach(settings -> user.getSettings().putIfAbsent(settings, settings.getDefaultOption()));
 
-        for (Document document : plugin.getMongoManager().getUsers().find(Filters.eq("ip", user.getIP()))) {
+        for (Document document : mongoManager.getUsers().find(Filters.eq("ip", user.getIP()))) {
             UUID uuid = UUID.fromString(document.getString("_id"));
             //Only add alts if the uuid is not the same
             if (!uniqueID.equals(uuid)) {
@@ -55,12 +62,12 @@ public class UserListener extends MaidListener {
             }
         }
 
-        plugin.getUserManager().saveUser(user);
+        userManager.saveUser(user);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLoginStartupCheck(PlayerLoginEvent event) {
-        if (!plugin.getServerManager().isAllowJoin()) {
+        if (!serverManager.isAllowJoin()) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, Common.text(CC.RED + "伺服器暫時不允許玩家進入, 請稍後再試"));
         }
     }
@@ -69,8 +76,7 @@ public class UserListener extends MaidListener {
     public void onLoginInjectPermission(PlayerLoginEvent event) {
         //At this point, user data should be present and loaded
         Player player = event.getPlayer();
-        // TODO: 1/3/2024
-        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
+        IUser user = userManager.getUserNow(player.getUniqueId());
 
         try {
             Maid.INSTANCE.getPermissionManager().initPlayer(player);
@@ -84,7 +90,7 @@ public class UserListener extends MaidListener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoinCache(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        IUser user = plugin.getUserManager().getUserNow(player.getUniqueId());
+        IUser user = userManager.getUserNow(player.getUniqueId());
 
         //Cache UUID and username
         UUIDCache.insert(player.getUniqueId(), player.getName());
@@ -101,7 +107,7 @@ public class UserListener extends MaidListener {
     @EventHandler(priority = EventPriority.LOW)
     public void onJoinDisguise(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        IUser user = plugin.getUserManager().getUserNow(player.getUniqueId());
+        IUser user = userManager.getUserNow(player.getUniqueId());
         IDisguise disguise = user.getDisguise();
         if (disguise != null) {
             Maid.INSTANCE.getDisguiseManager().disguise(player, disguise, true);

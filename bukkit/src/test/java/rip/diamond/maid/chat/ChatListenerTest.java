@@ -1,23 +1,15 @@
 package rip.diamond.maid.chat;
 
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import io.papermc.paper.chat.ChatRenderer;
 import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.api.user.chat.ChatRoomType;
 import rip.diamond.maid.user.UserMock;
-import rip.diamond.maid.util.CC;
-import rip.diamond.maid.util.Common;
-import rip.diamond.maid.util.EventUtil;
-import rip.diamond.maid.util.MaidTestEnvironment;
+import rip.diamond.maid.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,6 +61,18 @@ class ChatListenerTest extends MaidTestEnvironment {
 
             assertTrue(event.isCancelled());
             assertEquals(player.nextMessage(), Common.legacy(CC.RED + "聊天室暫時被關閉了, 你暫時無法再聊天室說話"));
+        }
+
+        @Test
+        @DisplayName("Test where is the chat message goes when player is in staff chat")
+        void testChatMessagingStaffChat() {
+            user.getChatRoom().setType(ChatRoomType.STAFF);
+            player.addAttachment(plugin, MaidPermission.SETTINGS_STAFF_CHAT, true);
+
+            chatListener.onChatMessaging(event);
+
+            assertTrue(event.isCancelled());
+            // TODO: 2/3/2024 Check if redis received the packet or not
         }
 
     }

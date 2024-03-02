@@ -20,15 +20,19 @@ public class KickCommand extends MaidCommand {
 
     @Command(name = "", desc = "踢除一位玩家")
     public void root(@Sender CommandSender sender, String targetName, @Text String reason) {
-        // TODO: 1/3/2024
-        UUID targetUUID = UUIDCache.getUUID(targetName).join();
+        UUIDCache.getUUID(targetName).whenComplete((uuid, throwable) -> {
+            if (throwable != null) {
+                Common.sendMessage(sender, CC.RED + "執行這個動作時發生了錯誤, 請查看後台請查看後台觀看詳細錯誤 (" + throwable.getMessage() + ")");
+                return;
+            }
 
-        if (!plugin.getUserManager().hasUser(targetUUID).join()) {
-            Common.sendMessage(sender, CC.RED + "未能找到玩家 '" + targetName + "' 的資料");
-            return;
-        }
+            if (!plugin.getUserManager().hasUser(uuid).join()) {
+                Common.sendMessage(sender, CC.RED + "未能找到玩家 '" + targetName + "' 的資料");
+                return;
+            }
 
-        plugin.getPunishmentManager().punish(sender, targetUUID, IPunishment.PunishmentType.KICK, String.valueOf(TimeUtil.PERMANENT), reason);
+            plugin.getPunishmentManager().punish(sender, uuid, IPunishment.PunishmentType.KICK, String.valueOf(TimeUtil.PERMANENT), reason);
+        });
     }
 
 }

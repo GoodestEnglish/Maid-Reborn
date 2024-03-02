@@ -4,12 +4,10 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import lombok.Getter;
 import org.bson.Document;
-import org.bukkit.Bukkit;
+import rip.diamond.maid.IMaidAPI;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.mongo.MongoManager;
-import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.RankUpdatePacket;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.extend.MaidManager;
@@ -18,15 +16,16 @@ import rip.diamond.maid.util.json.GsonProvider;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class RankManager extends MaidManager {
 
+    private final IMaidAPI api;
     private final MongoManager mongoManager;
 
     @Getter private final Map<UUID, IRank> ranks = new ConcurrentHashMap<>();
 
-    public RankManager(MongoManager mongoManager) {
+    public RankManager(IMaidAPI api, MongoManager mongoManager) {
+        this.api = api;
         this.mongoManager = mongoManager;
 
         //Load all the rank from database
@@ -51,13 +50,13 @@ public class RankManager extends MaidManager {
     public void saveRank(IRank rank) {
         plugin.getMongoManager().getRanks().replaceOne(Filters.eq("_id", rank.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(rank)), new ReplaceOptions().upsert(true));
         ranks.put(rank.getUniqueID(), rank);
-        PacketHandler.send(new RankUpdatePacket(Maid.API.getPlatform().getServerID(), (Rank) rank, false));
+        api.getPacketHandler().send(new RankUpdatePacket(Maid.API.getPlatform().getServerID(), (Rank) rank, false));
     }
 
     public void deleteRank(IRank rank) {
         plugin.getMongoManager().getRanks().deleteOne(Filters.eq("_id", rank.getUniqueID().toString()));
         ranks.remove(rank.getUniqueID());
-        PacketHandler.send(new RankUpdatePacket(Maid.API.getPlatform().getServerID(), (Rank) rank, true));
+        api.getPacketHandler().send(new RankUpdatePacket(Maid.API.getPlatform().getServerID(), (Rank) rank, true));
     }
 
     public IRank getDefaultRank() {

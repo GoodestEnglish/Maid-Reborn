@@ -7,14 +7,13 @@ import lombok.Getter;
 import net.kyori.adventure.audience.Audience;
 import org.bson.Document;
 import org.bukkit.entity.Player;
+import rip.diamond.maid.IMaidAPI;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IPunishment;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.mongo.MongoManager;
 import rip.diamond.maid.player.User;
 import rip.diamond.maid.player.UserManager;
-import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.BroadcastPacket;
 import rip.diamond.maid.redis.packets.bukkit.PunishmentExecutePacket;
 import rip.diamond.maid.redis.packets.bukkit.PunishmentUpdatePacket;
@@ -28,12 +27,14 @@ import java.util.UUID;
 
 public class PunishmentManager {
 
+    private final IMaidAPI api;
     private final MongoManager mongoManager;
     private final UserManager userManager;
 
     @Getter private final List<IPunishment> punishments = new ArrayList<>();
 
-    public PunishmentManager(MongoManager mongoManager, UserManager userManager) {
+    public PunishmentManager(IMaidAPI api, MongoManager mongoManager, UserManager userManager) {
+        this.api = api;
         this.mongoManager = mongoManager;
         this.userManager = userManager;
 
@@ -55,7 +56,7 @@ public class PunishmentManager {
 
         Tasks.runAsync(() -> {
             mongoManager.getPunishments().replaceOne(Filters.eq("_id", punishment.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(punishment)), new ReplaceOptions().upsert(true));
-            PacketHandler.send(new PunishmentUpdatePacket(Maid.API.getPlatform().getServerID(), (Punishment) punishment));
+            api.getPacketHandler().send(new PunishmentUpdatePacket(Maid.API.getPlatform().getServerID(), (Punishment) punishment));
         });
     }
 
@@ -112,21 +113,26 @@ public class PunishmentManager {
      */
     public void punish(Audience executor, UUID targetUUID, IPunishment.PunishmentType type, String duration, String reason) {
         IUser user = executor instanceof Player player ? userManager.getUserNow(player.getUniqueId()) : User.CONSOLE;
-        // TODO: 1/3/2024
-        IUser target = userManager.getUser(targetUUID).join();
-        String serverID = Maid.API.getPlatform().getServerID();
-        long duration_ = TimeUtil.getDuration(duration);
 
-        //Build the punishment and save it to the database
-        Punishment punishment = new Punishment(target, type, user, reason, System.currentTimeMillis(), duration_);
-        updatePunishment(punishment);
-        PacketHandler.send(new PunishmentExecutePacket(serverID, punishment));
+        userManager.getUser(targetUUID).whenComplete((target, throwable) -> {
+            if (throwable != null) {
+                Common.sendMessage(executor, CC.RED + "執行這個動作時發生了錯誤, 請查看後台請查看後台觀看詳細錯誤 (" + throwable.getMessage() + ")");
+                return;
+            }
+            String serverID = Maid.API.getPlatform().getServerID();
+            long duration_ = TimeUtil.getDuration(duration);
 
-        //Broadcast to all staff members
-        Alert alert = Alert.valueOf(type.name());
-        String durationReadable = duration_ == -1 ? "永久" : TimeUtil.formatDuration(punishment.getIssuedAt() + punishment.getDuration() - System.currentTimeMillis());
-        PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(target.getSimpleDisplayName(false), user.getSimpleDisplayName(false), "(" + durationReadable + ")"))));
-        Common.sendMessage(executor, CC.GREEN + "成功" + type.getName() + "玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
+            //Build the punishment and save it to the database
+            Punishment punishment = new Punishment(target, type, user, reason, System.currentTimeMillis(), duration_);
+            updatePunishment(punishment);
+            api.getPacketHandler().send(new PunishmentExecutePacket(serverID, punishment));
+
+            //Broadcast to all staff members
+            Alert alert = Alert.valueOf(type.name());
+            String durationReadable = duration_ == -1 ? "永久" : TimeUtil.formatDuration(punishment.getIssuedAt() + punishment.getDuration() - System.currentTimeMillis());
+            api.getPacketHandler().send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(target.getSimpleDisplayName(false), user.getSimpleDisplayName(false), "(" + durationReadable + ")"))));
+            Common.sendMessage(executor, CC.GREEN + "成功" + type.getName() + "玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
+        });
     }
 
     /**
@@ -138,25 +144,30 @@ public class PunishmentManager {
      */
     public void unpunish(Audience executor, UUID targetUUID, IPunishment.PunishmentType type, String reason) {
         IUser user = executor instanceof Player player ? userManager.getUserNow(player.getUniqueId()) : User.CONSOLE;
-        // TODO: 1/3/2024
-        IUser target = userManager.getUser(targetUUID).join();
-        String serverID = Maid.API.getPlatform().getServerID();
 
-        //If the PunishmentType is BAN or IP_BAN, we will get both BAN and IP_BAN data because they are all "bans"
-        List<IPunishment> punishments = type == IPunishment.PunishmentType.BAN || type == IPunishment.PunishmentType.IP_BAN ? target.getActivePunishments(ImmutableList.of(IPunishment.PunishmentType.BAN, IPunishment.PunishmentType.IP_BAN)) : target.getActivePunishments(ImmutableList.of(type));
-        punishments.forEach(punishment -> {
-            punishment.revoke(user, reason);
-            updatePunishment(punishment);
+        userManager.getUser(targetUUID).whenComplete((target, throwable) -> {
+            if (throwable != null) {
+                Common.sendMessage(executor, CC.RED + "執行這個動作時發生了錯誤, 請查看後台請查看後台觀看詳細錯誤 (" + throwable.getMessage() + ")");
+                return;
+            }
+            String serverID = Maid.API.getPlatform().getServerID();
+
+            //If the PunishmentType is BAN or IP_BAN, we will get both BAN and IP_BAN data because they are all "bans"
+            List<IPunishment> punishments = type == IPunishment.PunishmentType.BAN || type == IPunishment.PunishmentType.IP_BAN ? target.getActivePunishments(ImmutableList.of(IPunishment.PunishmentType.BAN, IPunishment.PunishmentType.IP_BAN)) : target.getActivePunishments(ImmutableList.of(type));
+            punishments.forEach(punishment -> {
+                punishment.revoke(user, reason);
+                updatePunishment(punishment);
+            });
+
+            Alert alert;
+            switch (type) {
+                case MUTE -> alert = Alert.UNMUTE;
+                case BAN, IP_BAN -> alert = Alert.UNBAN;
+                default -> throw new NoSuchElementException("Cannot find punishment type " + type.name());
+            }
+            api.getPacketHandler().send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), target.getSimpleDisplayName(false)))));
+            Common.sendMessage(executor, CC.GREEN + "成功解除" + type.getName() + "玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
         });
-
-        Alert alert;
-        switch (type) {
-            case MUTE -> alert = Alert.UNMUTE;
-            case BAN, IP_BAN -> alert = Alert.UNBAN;
-            default -> throw new NoSuchElementException("Cannot find punishment type " + type.name());
-        }
-        PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), target.getSimpleDisplayName(false)))));
-        Common.sendMessage(executor, CC.GREEN + "成功解除" + type.getName() + "玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
     }
 
     /**
@@ -168,21 +179,26 @@ public class PunishmentManager {
      */
     public void unpunish(Audience executor, IPunishment punishment, String reason) {
         IUser user = executor instanceof Player player ? userManager.getUserNow(player.getUniqueId()) : User.CONSOLE;
-        // TODO: 1/3/2024
-        IUser target = userManager.getUser(punishment.getUser()).join();
-        String serverID = Maid.API.getPlatform().getServerID();
 
-        punishment.revoke(user, reason);
-        updatePunishment(punishment);
+        userManager.getUser(punishment.getUser()).whenComplete((target, throwable) -> {
+            if (throwable != null) {
+                Common.sendMessage(executor, CC.RED + "執行這個動作時發生了錯誤, 請查看後台請查看後台觀看詳細錯誤 (" + throwable.getMessage() + ")");
+                return;
+            }
+            String serverID = Maid.API.getPlatform().getServerID();
 
-        Alert alert;
-        switch (punishment.getType()) {
-            case MUTE -> alert = Alert.UNMUTE;
-            case BAN, IP_BAN -> alert = Alert.UNBAN;
-            default -> throw new NoSuchElementException("Cannot find punishment type " + punishment.getType().name());
-        }
-        PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), target.getSimpleDisplayName(false)))));
-        Common.sendMessage(executor, CC.GREEN + "成功解除" + punishment.getType().getName() + "玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
+            punishment.revoke(user, reason);
+            updatePunishment(punishment);
+
+            Alert alert;
+            switch (punishment.getType()) {
+                case MUTE -> alert = Alert.UNMUTE;
+                case BAN, IP_BAN -> alert = Alert.UNBAN;
+                default -> throw new NoSuchElementException("Cannot find punishment type " + punishment.getType().name());
+            }
+            api.getPacketHandler().send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getSimpleDisplayName(false), target.getSimpleDisplayName(false)))));
+            Common.sendMessage(executor, CC.GREEN + "成功解除" + punishment.getType().getName() + "玩家 " + CC.AQUA + target.getSimpleDisplayName(false));
+        });
     }
 
 }

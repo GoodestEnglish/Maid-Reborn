@@ -2,12 +2,10 @@ package rip.diamond.maid.util.recorder;
 
 import lombok.RequiredArgsConstructor;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IRank;
-import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.MessagePacket;
 import rip.diamond.maid.util.CC;
-import rip.diamond.maid.util.Common;
+import rip.diamond.maid.util.PacketUtil;
 import rip.diamond.maid.util.Preconditions;
 
 import java.util.List;
@@ -33,7 +31,7 @@ public class RankChangesRecorder {
             return;
         }
 
-        PacketHandler.send(new MessagePacket(Maid.API.getPlatform().getServerID(), playerUUID, List.of(CC.GREEN + "你已從 " + oldRank.getDisplayName(true) + CC.RESET + CC.GREEN + " 升級到 " + newRank.getDisplayName(true))));
+        PacketUtil.send(new MessagePacket(Maid.API.getPlatform().getServerID(), playerUUID, List.of(CC.GREEN + "你已從 " + oldRank.getDisplayName(true) + CC.RESET + CC.GREEN + " 升級到 " + newRank.getDisplayName(true))));
     }
 
     public boolean canOutput() {

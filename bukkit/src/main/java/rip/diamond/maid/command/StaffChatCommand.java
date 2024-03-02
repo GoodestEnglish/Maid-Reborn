@@ -1,12 +1,12 @@
 package rip.diamond.maid.command;
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
+import rip.diamond.maid.IMaidAPI;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.chat.ChatRoomType;
-import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.chat.StaffMessagePacket;
 import rip.diamond.maid.server.GlobalUser;
 import rip.diamond.maid.util.CC;
@@ -17,15 +17,18 @@ import rip.diamond.maid.util.command.annotation.Sender;
 import rip.diamond.maid.util.command.annotation.Text;
 import rip.diamond.maid.util.extend.MaidCommand;
 
+@RequiredArgsConstructor
 @Require(MaidPermission.STAFFCHAT)
 public class StaffChatCommand extends MaidCommand {
+
+    private final IMaidAPI api;
 
     @Command(name = "", desc = "發送訊息到工作人員聊天室")
     public void root(@Sender Player sender, @Text String message) {
         IUser user = plugin.getUserManager().getUserNow(sender.getUniqueId());
         GlobalUser globalSender = GlobalUser.of(user);
 
-        PacketHandler.send(new StaffMessagePacket(Maid.API.getPlatform().getServerID(), globalSender, message));
+        api.getPacketHandler().send(new StaffMessagePacket(Maid.API.getPlatform().getServerID(), globalSender, message));
     }
 
     @Command(name = "toggle", desc = "切換工作人員聊天室狀態")

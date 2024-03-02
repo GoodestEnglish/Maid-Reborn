@@ -3,14 +3,13 @@ package rip.diamond.maid.player;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bson.Document;
-import org.bukkit.entity.Player;
+import rip.diamond.maid.IMaidAPI;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.server.IGlobalUser;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.UserSettings;
-import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.ProfileUpdatePacket;
 import rip.diamond.maid.server.GlobalUser;
 import rip.diamond.maid.util.Tasks;
@@ -21,7 +20,10 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+@RequiredArgsConstructor
 public class UserManager extends MaidManager {
+
+    private final IMaidAPI api;
 
     /**
      * This HashMap stores every logged-in users in this server session. Logout will not remove specific user from this map
@@ -67,7 +69,7 @@ public class UserManager extends MaidManager {
     public void saveUser(IUser user) {
         Tasks.runAsync(() -> {
             plugin.getMongoManager().getUsers().replaceOne(Filters.eq("_id", user.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(user)), new ReplaceOptions().upsert(true));
-            PacketHandler.send(new ProfileUpdatePacket(Maid.API.getPlatform().getServerID(), (User) user));
+            api.getPacketHandler().send(new ProfileUpdatePacket(Maid.API.getPlatform().getServerID(), (User) user));
         });
     }
 

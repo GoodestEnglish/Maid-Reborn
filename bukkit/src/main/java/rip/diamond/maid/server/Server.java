@@ -4,12 +4,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.server.IServer;
-import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.ServerUpdatePacket;
+import rip.diamond.maid.util.PacketUtil;
 
 import java.util.List;
 
@@ -49,6 +47,6 @@ public class Server implements IServer {
         chatDelay = Maid.INSTANCE.getChatManager().getDelay();
         lastTick = System.currentTimeMillis();
 
-        PacketHandler.send(new ServerUpdatePacket(Maid.API.getPlatform().getServerID(), this));
+        PacketUtil.send(new ServerUpdatePacket(Maid.API.getPlatform().getServerID(), this));
     }
 }

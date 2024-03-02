@@ -3,6 +3,7 @@ package rip.diamond.maid;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.checkerframework.checker.units.qual.A;
 import rip.diamond.maid.config.adapter.ConfigAdapter;
 import rip.diamond.maid.chat.ChatListener;
 import rip.diamond.maid.chat.ChatManager;
@@ -32,10 +33,6 @@ import rip.diamond.maid.util.menu.MenuHandler;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
-/**
- * TODO List
- * - Use getUserNow instead of join for IUser
- */
 @Getter
 public class Maid extends JavaPlugin {
 
@@ -101,22 +98,22 @@ public class Maid extends JavaPlugin {
 
     private void loadManagers() {
         mongoManager = new MongoManager(configAdapter);
-        userManager = new UserManager();
-        rankManager = new RankManager(mongoManager);
+        userManager = new UserManager(API);
+        rankManager = new RankManager(API, mongoManager);
         serverManager = new ServerManager();
-        chatManager = new ChatManager(configAdapter);
+        chatManager = new ChatManager(API, userManager, configAdapter);
         permissionManager = new PermissionManager();
-        disguiseManager = new DisguiseManager();
-        punishmentManager = new PunishmentManager(mongoManager, userManager);
+        disguiseManager = new DisguiseManager(API);
+        punishmentManager = new PunishmentManager(API, mongoManager, userManager);
         nameTagManager = new NameTagManager();
     }
 
     private void loadListeners() {
         Arrays.asList(
-                new ChatListener(chatManager, userManager),
-                new UserListener(),
-                new PunishmentListener(),
-                new ServerListener()
+                new ChatListener(this, API, chatManager, userManager),
+                new UserListener(userManager, mongoManager, serverManager),
+                new PunishmentListener(API, userManager, punishmentManager),
+                new ServerListener(API)
         ).forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));
     }
 
@@ -125,7 +122,7 @@ public class Maid extends JavaPlugin {
 
         drink.register(new AltsCommand(), "alts");
         drink.register(new BanCommand(), "ban");
-        drink.register(new ChatCommand(), "chat");
+        drink.register(new ChatCommand(API), "chat");
         drink.register(new ColorCommand(), "color");
         drink.register(new DisguiseCommand(), "disguise", "nick");
         drink.register(new GrantCommand(), "grant");
@@ -135,7 +132,7 @@ public class Maid extends JavaPlugin {
         drink.register(new ListCommand(), "list");
         drink.register(new MessageCommand(), "message", "msg", "tell", "dm", "m");
         drink.register(new MuteCommand(), "mute");
-        drink.register(new PacketTestCommand(), "packettest");
+        drink.register(new PacketTestCommand(API), "packettest");
         drink.register(new PlayersCommand(), "players");
         drink.register(new PermissionCommand(), "permission", "perms");
         drink.register(new PunishmentCommand(), "punishment");
@@ -143,7 +140,7 @@ public class Maid extends JavaPlugin {
         drink.register(new ReplyCommand(), "reply", "r");
         drink.register(new ServersCommand(), "servers");
         drink.register(new SettingsCommand(), "settings", "setting", "option");
-        drink.register(new StaffChatCommand(), "staffchat", "sc");
+        drink.register(new StaffChatCommand(API), "staffchat", "sc");
         drink.register(new TestCommand(), "test");
         drink.register(new UnbanCommand(), "unban");
         drink.register(new UndisguiseCommand(), "undisguise", "unnick");

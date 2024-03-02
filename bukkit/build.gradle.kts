@@ -15,8 +15,9 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.projectlombok:lombok:1.18.26")
     testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.78.0")
+    testImplementation("com.github.fppt:jedis-mock:1.1.0")
+    testImplementation("org.projectlombok:lombok:1.18.26")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.26")
 
     implementation(project(":shared"))

@@ -4,21 +4,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import rip.diamond.maid.chat.ChatManager;
-import rip.diamond.maid.config.ChatConfig;
-import rip.diamond.maid.config.ChatConfigMock;
+import rip.diamond.maid.util.MaidTestEnvironment;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ChatManagerTest {
-
-    private ChatManager chatManager;
-    private ChatConfig chatConfig;
+class ChatManagerTest extends MaidTestEnvironment {
 
     @BeforeEach
     void setUp() {
-        chatConfig = new ChatConfigMock();
-        chatManager = new ChatManager(chatConfig);
+        loadManagersAndListeners();
     }
 
     @Nested

@@ -7,11 +7,9 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.permission.RankPermission;
 import rip.diamond.maid.rank.Rank;
-import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.PermissionUpdatePacket;
 import rip.diamond.maid.util.*;
 import rip.diamond.maid.util.menu.Menu;
@@ -72,7 +70,7 @@ public class RankPermissionsMenu extends PaginatedMenu {
                             permission.setEnabled(!permission.isEnabled());
                         }
                         Maid.INSTANCE.getRankManager().saveRank(rank);
-                        PacketHandler.send(new PermissionUpdatePacket(Maid.API.getPlatform().getServerID()));
+                        PacketUtil.send(new PermissionUpdatePacket(Maid.API.getPlatform().getServerID()));
 
                         updateMenu();
                     }
@@ -100,7 +98,7 @@ public class RankPermissionsMenu extends PaginatedMenu {
                     }
                     rank.addPermission(permission);
                     Maid.INSTANCE.getRankManager().saveRank(rank);
-                    PacketHandler.send(new PermissionUpdatePacket(Maid.API.getPlatform().getServerID()));
+                    PacketUtil.send(new PermissionUpdatePacket(Maid.API.getPlatform().getServerID()));
 
                     Common.sendMessage(player, CC.GREEN + "成功新增權限 " + CC.AQUA + permission);
                     updateMenu();

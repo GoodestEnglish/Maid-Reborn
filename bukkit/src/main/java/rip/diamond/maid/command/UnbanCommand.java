@@ -21,21 +21,27 @@ public class UnbanCommand extends MaidCommand {
 
     @Command(name = "", desc = "解除封鎖一位玩家")
     public void root(@Sender CommandSender sender, String targetName, @Text String reason) {
-        // TODO: 1/3/2024
-        UUID targetUUID = UUIDCache.getUUID(targetName).join();
+        UUIDCache.getUUID(targetName).whenComplete((uuid, throwable) -> {
+            if (throwable != null) {
+                Common.sendMessage(sender, CC.RED + "執行這個動作時發生了錯誤, 請查看後台請查看後台觀看詳細錯誤 (" + throwable.getMessage() + ")");
+                return;
+            }
 
-        if (!plugin.getUserManager().hasUser(targetUUID).join()) {
-            Common.sendMessage(sender, CC.RED + "未能找到玩家 '" + targetName + "' 的資料");
-            return;
-        }
+            if (!plugin.getUserManager().hasUser(uuid).join()) {
+                Common.sendMessage(sender, CC.RED + "未能找到玩家 '" + targetName + "' 的資料");
+                return;
+            }
 
-        User targetUser = (User) plugin.getUserManager().getUser(targetUUID).join();
-        if (targetUser.getActivePunishments(ImmutableList.of(IPunishment.PunishmentType.BAN, IPunishment.PunishmentType.IP_BAN)).isEmpty()) {
-            Common.sendMessage(sender, CC.RED + "該玩家沒有任何活躍的封鎖懲罰紀錄");
-            return;
-        }
+            User targetUser = (User) plugin.getUserManager().getUser(uuid).join();
+            if (targetUser.getActivePunishments(ImmutableList.of(IPunishment.PunishmentType.BAN, IPunishment.PunishmentType.IP_BAN)).isEmpty()) {
+                Common.sendMessage(sender, CC.RED + "該玩家沒有任何活躍的封鎖懲罰紀錄");
+                return;
+            }
 
-        plugin.getPunishmentManager().unpunish(sender, targetUUID, IPunishment.PunishmentType.BAN, reason);
+            plugin.getPunishmentManager().unpunish(sender, uuid, IPunishment.PunishmentType.BAN, reason);
+        });
+
+
     }
 
 }

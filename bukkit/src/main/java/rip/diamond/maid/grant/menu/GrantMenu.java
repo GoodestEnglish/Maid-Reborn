@@ -7,12 +7,10 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.grant.Grant;
 import rip.diamond.maid.player.User;
-import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.PermissionUpdatePacket;
 import rip.diamond.maid.util.*;
 import rip.diamond.maid.util.menu.Menu;
@@ -193,7 +191,7 @@ public class GrantMenu extends Menu {
 
                 target.addGrant(new Grant(target, rank, user, reason, System.currentTimeMillis(), TimeUtil.getDuration(duration)));
                 Maid.INSTANCE.getUserManager().saveUser(target);
-                PacketHandler.send(new PermissionUpdatePacket(Maid.API.getPlatform().getServerID(), target.getUniqueID()));
+                PacketUtil.send(new PermissionUpdatePacket(Maid.API.getPlatform().getServerID(), target.getUniqueID()));
 
                 Common.sendMessage(player, CC.GREEN + "成功替 " + target.getRealName() + " 升級到 " + rank.getName());
 

@@ -6,14 +6,13 @@ import com.google.common.collect.ImmutableList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import rip.diamond.maid.IMaidAPI;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IDisguise;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.config.Config;
 import rip.diamond.maid.event.PlayerDisguiseEvent;
 import rip.diamond.maid.event.PlayerUndisguiseEvent;
-import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.BroadcastPacket;
 import rip.diamond.maid.util.Alert;
 import rip.diamond.maid.util.CC;
@@ -24,10 +23,14 @@ import java.util.*;
 
 public class DisguiseManager extends MaidManager {
 
+    private final IMaidAPI api;
+
     private final Map<UUID, ProfileProperty> playerProperties = new HashMap<>();
     private final Map<String, ProfileProperty> skinProperties = new HashMap<>();
 
-    public DisguiseManager() {
+    public DisguiseManager(IMaidAPI api) {
+        this.api = api;
+
         List<String> skins = Config.DISGUISE_SKIN.toStringList();
         for (String skin : skins) {
             cacheSkin(skin, false);
@@ -55,7 +58,7 @@ public class DisguiseManager extends MaidManager {
         if (!join) {
             String serverID = Maid.API.getPlatform().getServerID();
             Alert alert = Alert.DISGUISED;
-            PacketHandler.send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getRealName(), serverID, user.getName()))));
+            api.getPacketHandler().send(new BroadcastPacket(serverID, alert.getType().getPermission(), ImmutableList.of(alert.get(user.getRealName(), serverID, user.getName()))));
         }
 
         PlayerDisguiseEvent event = new PlayerDisguiseEvent(player, disguise);
