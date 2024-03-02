@@ -125,7 +125,7 @@ public class Maid extends JavaPlugin {
 
     private void loadListeners() {
         Arrays.asList(
-                new ChatListener(),
+                new ChatListener(chatManager),
                 new UserListener(),
                 new PunishmentListener(),
                 new ServerListener()
