@@ -6,18 +6,19 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import lombok.Getter;
 import org.bson.Document;
-import rip.diamond.maid.config.Config;
+import rip.diamond.maid.chat.MongoConfig;
 import rip.diamond.maid.util.extend.MaidManager;
 
 public class MongoManager extends MaidManager {
 
     private final MongoDatabase database;
     private final MongoClient client;
-    @Getter private final MongoCollection<Document> users, ranks, punishments;
+    @Getter
+    private final MongoCollection<Document> users, ranks, punishments;
 
-    public MongoManager() {
-        this.client = MongoClients.create(Config.MONGO_CONNECTION_STRING.toString());
-        this.database = client.getDatabase(Config.MONGO_DATABASE.toString());
+    public MongoManager(MongoConfig config) {
+        this.client = MongoClients.create(config.getConnectionString());
+        this.database = client.getDatabase(config.getDatabase());
 
         this.users = this.database.getCollection("users");
         this.ranks = this.database.getCollection("ranks");

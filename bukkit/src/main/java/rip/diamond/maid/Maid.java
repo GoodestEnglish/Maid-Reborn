@@ -3,6 +3,7 @@ package rip.diamond.maid;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.plugin.java.JavaPlugin;
+import rip.diamond.maid.chat.EnumConfigAdapter;
 import rip.diamond.maid.chat.ChatListener;
 import rip.diamond.maid.chat.ChatManager;
 import rip.diamond.maid.command.*;
@@ -109,11 +110,12 @@ public class Maid extends JavaPlugin {
     }
 
     private void loadManagers() {
-        mongoManager = new MongoManager();
+        EnumConfigAdapter configAdapter = new EnumConfigAdapter();
+        mongoManager = new MongoManager(configAdapter);
         userManager = new UserManager();
         rankManager = new RankManager();
         serverManager = new ServerManager();
-        chatManager = new ChatManager();
+        chatManager = new ChatManager(configAdapter);
         permissionManager = new PermissionManager();
         disguiseManager = new DisguiseManager();
         punishmentManager = new PunishmentManager();

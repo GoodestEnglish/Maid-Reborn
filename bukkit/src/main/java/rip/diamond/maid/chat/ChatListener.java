@@ -47,10 +47,10 @@ public class ChatListener extends MaidListener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onChatMute(AsyncChatEvent event) {
         Player player = event.getPlayer();
-        if (plugin.getChatManager().isMuted()) {
-            event.setCancelled(true);
-            Common.sendMessage(player, CC.RED + "聊天室暫時被關閉了, 你暫時無法再聊天室說話");
-        }
+//        if (plugin.getChatManager().isMuted()) {
+//            event.setCancelled(true);
+//            Common.sendMessage(player, CC.RED + "聊天室暫時被關閉了, 你暫時無法再聊天室說話");
+//        }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
