@@ -15,16 +15,15 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.projectlombok:lombok:1.18.26")
     testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.78.0")
-
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.26")
 
     implementation(project(":shared"))
     implementation("org.mongodb:mongodb-driver-sync:4.11.1")
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly("io.netty:netty-all:4.1.24.Final")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
-
-    //lombok
     compileOnly("org.projectlombok:lombok:1.18.26")
     annotationProcessor("org.projectlombok:lombok:1.18.26")
 }

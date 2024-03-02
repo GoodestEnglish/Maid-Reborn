@@ -87,7 +87,7 @@ public enum Config {
         configFile.save();
         configFile.load();
 
-        if (SERVER_ID.toString().equals(SERVER_ID.getDefaultValue()) && !Maid.MOCKING) {
+        if (SERVER_ID.toString().equals(SERVER_ID.getDefaultValue())) {
             Common.log("請在 config.yml 更改 " + SERVER_ID.getPath());
             Bukkit.shutdown();
         }

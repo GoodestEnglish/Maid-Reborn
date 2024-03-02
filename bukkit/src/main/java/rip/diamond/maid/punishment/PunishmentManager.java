@@ -11,15 +11,14 @@ import rip.diamond.maid.Maid;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.user.IPunishment;
 import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.mongo.MongoManager;
 import rip.diamond.maid.player.User;
+import rip.diamond.maid.player.UserManager;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.BroadcastPacket;
 import rip.diamond.maid.redis.packets.bukkit.PunishmentExecutePacket;
 import rip.diamond.maid.redis.packets.bukkit.PunishmentUpdatePacket;
 import rip.diamond.maid.util.*;
-import rip.diamond.maid.util.command.annotation.Sender;
-import rip.diamond.maid.util.command.annotation.Text;
-import rip.diamond.maid.util.extend.MaidManager;
 import rip.diamond.maid.util.json.GsonProvider;
 
 import java.util.ArrayList;
@@ -27,19 +26,22 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
-public class PunishmentManager extends MaidManager {
+public class PunishmentManager {
+
+    private final MongoManager mongoManager;
+    private final UserManager userManager;
 
     @Getter private final List<IPunishment> punishments = new ArrayList<>();
 
-    public PunishmentManager() {
+    public PunishmentManager(MongoManager mongoManager, UserManager userManager) {
+        this.mongoManager = mongoManager;
+        this.userManager = userManager;
+
         loadPunishments();
     }
 
     private void loadPunishments() {
-        if (Maid.MOCKING) {
-            return;
-        }
-        for (Document document : plugin.getMongoManager().getPunishments().find()) {
+        for (Document document : mongoManager.getPunishments().find()) {
             IPunishment punishment = Punishment.of(document);
             punishments.add(punishment);
         }
@@ -52,7 +54,7 @@ public class PunishmentManager extends MaidManager {
         punishments.add(punishment);
 
         Tasks.runAsync(() -> {
-            plugin.getMongoManager().getPunishments().replaceOne(Filters.eq("_id", punishment.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(punishment)), new ReplaceOptions().upsert(true));
+            mongoManager.getPunishments().replaceOne(Filters.eq("_id", punishment.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(punishment)), new ReplaceOptions().upsert(true));
             PacketHandler.send(new PunishmentUpdatePacket(Maid.API.getPlatform().getServerID(), (Punishment) punishment));
         });
     }
@@ -109,9 +111,9 @@ public class PunishmentManager extends MaidManager {
      * @param reason The reason why this punishment is created
      */
     public void punish(Audience executor, UUID targetUUID, IPunishment.PunishmentType type, String duration, String reason) {
-        IUser user = executor instanceof Player player ? plugin.getUserManager().getUserNow(player.getUniqueId()) : User.CONSOLE;
+        IUser user = executor instanceof Player player ? userManager.getUserNow(player.getUniqueId()) : User.CONSOLE;
         // TODO: 1/3/2024
-        IUser target = plugin.getUserManager().getUser(targetUUID).join();
+        IUser target = userManager.getUser(targetUUID).join();
         String serverID = Maid.API.getPlatform().getServerID();
         long duration_ = TimeUtil.getDuration(duration);
 
@@ -135,9 +137,9 @@ public class PunishmentManager extends MaidManager {
      * @param reason The reason why this punishment is revoked
      */
     public void unpunish(Audience executor, UUID targetUUID, IPunishment.PunishmentType type, String reason) {
-        IUser user = executor instanceof Player player ? plugin.getUserManager().getUserNow(player.getUniqueId()) : User.CONSOLE;
+        IUser user = executor instanceof Player player ? userManager.getUserNow(player.getUniqueId()) : User.CONSOLE;
         // TODO: 1/3/2024
-        IUser target = plugin.getUserManager().getUser(targetUUID).join();
+        IUser target = userManager.getUser(targetUUID).join();
         String serverID = Maid.API.getPlatform().getServerID();
 
         //If the PunishmentType is BAN or IP_BAN, we will get both BAN and IP_BAN data because they are all "bans"
@@ -165,9 +167,9 @@ public class PunishmentManager extends MaidManager {
      * @param reason The reason why this punishment is revoked
      */
     public void unpunish(Audience executor, IPunishment punishment, String reason) {
-        IUser user = executor instanceof Player player ? plugin.getUserManager().getUserNow(player.getUniqueId()) : User.CONSOLE;
+        IUser user = executor instanceof Player player ? userManager.getUserNow(player.getUniqueId()) : User.CONSOLE;
         // TODO: 1/3/2024
-        IUser target = plugin.getUserManager().getUser(punishment.getUser()).join();
+        IUser target = userManager.getUser(punishment.getUser()).join();
         String serverID = Maid.API.getPlatform().getServerID();
 
         punishment.revoke(user, reason);

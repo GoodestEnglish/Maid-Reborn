@@ -42,7 +42,6 @@ public class Maid extends JavaPlugin {
     public static Maid INSTANCE;
     public static MaidAPI API;
     public static DecimalFormat FORMAT = new DecimalFormat("#0.00");
-    public static boolean MOCKING = false;
 
     private CommandService drink;
     private MongoManager mongoManager;
@@ -61,10 +60,6 @@ public class Maid extends JavaPlugin {
     @Override
     public void onEnable() {
         INSTANCE = this;
-
-        if (getClassLoader().getClass().getPackageName().startsWith("be.seeseemelk.mockbukkit")) {
-            MOCKING = true;
-        }
 
         loadFile();
         loadAPI();
@@ -86,9 +81,6 @@ public class Maid extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (MOCKING) {
-            return;
-        }
         API.stop();
     }
 
@@ -104,28 +96,24 @@ public class Maid extends JavaPlugin {
         new MenuHandler(this); //Register MenuAPI instance
         API = new MaidAPI(new BukkitPlatform());
 
-        if (MOCKING) {
-            return;
-        }
-
         API.start(new RedisCredentials(Config.REDIS_HOST.toString(), Config.REDIS_PORT.toInteger(), Config.REDIS_AUTH.toBoolean(), Config.REDIS_PASSWORD.toString()));
     }
 
     private void loadManagers() {
-        mongoManager = MOCKING ? null : new MongoManager(configAdapter);
+        mongoManager = new MongoManager(configAdapter);
         userManager = new UserManager();
-        rankManager = new RankManager();
+        rankManager = new RankManager(mongoManager);
         serverManager = new ServerManager();
         chatManager = new ChatManager(configAdapter);
-        permissionManager = MOCKING ? null : new PermissionManager();
+        permissionManager = new PermissionManager();
         disguiseManager = new DisguiseManager();
-        punishmentManager = new PunishmentManager();
+        punishmentManager = new PunishmentManager(mongoManager, userManager);
         nameTagManager = new NameTagManager();
     }
 
     private void loadListeners() {
         Arrays.asList(
-                new ChatListener(),
+                new ChatListener(chatManager, userManager),
                 new UserListener(),
                 new PunishmentListener(),
                 new ServerListener()

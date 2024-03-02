@@ -117,9 +117,6 @@ public class DisguiseManager extends MaidManager {
     }
 
     public void cacheSkin(String username, boolean async) {
-        if (Maid.MOCKING) {
-            return;
-        }
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(username);
         if (async) {
             offlinePlayer.getPlayerProfile().update().thenAcceptAsync(profile -> {

@@ -3,6 +3,7 @@ package rip.diamond.maid.util;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
@@ -139,6 +140,10 @@ public class Common {
 
     public static Component text(String text) {
         return MiniMessage.miniMessage().deserialize(text);
+    }
+
+    public static String legacy(String text) {
+        return LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(text));
     }
 
     public static String translate(String text) {

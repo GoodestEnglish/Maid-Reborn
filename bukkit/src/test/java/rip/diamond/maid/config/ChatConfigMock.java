@@ -1,4 +1,4 @@
-package rip.diamond.maid.test.chat;
+package rip.diamond.maid.config;
 
 import rip.diamond.maid.config.ChatConfig;
 

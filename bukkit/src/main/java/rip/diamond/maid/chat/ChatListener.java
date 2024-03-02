@@ -2,6 +2,7 @@ package rip.diamond.maid.chat;
 
 import io.papermc.paper.chat.ChatRenderer;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -18,6 +19,7 @@ import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.UserSettings;
 import rip.diamond.maid.api.user.chat.ChatRoomType;
 import rip.diamond.maid.api.user.chat.IChatRoom;
+import rip.diamond.maid.player.UserManager;
 import rip.diamond.maid.redis.messaging.PacketHandler;
 import rip.diamond.maid.redis.packets.bukkit.chat.StaffMessagePacket;
 import rip.diamond.maid.server.GlobalUser;
@@ -26,12 +28,16 @@ import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.MaidPermission;
 import rip.diamond.maid.util.extend.MaidListener;
 
+@RequiredArgsConstructor
 public class ChatListener extends MaidListener {
+
+    private final ChatManager chatManager;
+    private final UserManager userManager;
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChatFormat(AsyncChatEvent event) {
         Player player = event.getPlayer();
-        IUser user = plugin.getUserManager().getUserNow(player.getUniqueId());
+        IUser user = userManager.getUserNow(player.getUniqueId());
         IRank rank = user.getRank();
 
         ChatRenderer renderer = new ChatRenderer() {
@@ -46,7 +52,7 @@ public class ChatListener extends MaidListener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onChatMute(AsyncChatEvent event) {
         Player player = event.getPlayer();
-        if (plugin.getChatManager().isMuted()) {
+        if (chatManager.isMuted()) {
             event.setCancelled(true);
             Common.sendMessage(player, CC.RED + "聊天室暫時被關閉了, 你暫時無法再聊天室說話");
         }
@@ -55,7 +61,7 @@ public class ChatListener extends MaidListener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onChatDelay(AsyncChatEvent event) {
         Player player = event.getPlayer();
-        int delay = plugin.getChatManager().getDelay();
+        int delay = chatManager.getDelay();
 
         if (delay <= 0) {
             return;
@@ -76,7 +82,7 @@ public class ChatListener extends MaidListener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onChatMessaging(AsyncChatEvent event) {
         Player player = event.getPlayer();
-        IUser user = plugin.getUserManager().getUserNow(player.getUniqueId());
+        IUser user = userManager.getUserNow(player.getUniqueId());
         GlobalUser sender = GlobalUser.of(user);
         IChatRoom room = user.getChatRoom();
 
@@ -91,7 +97,7 @@ public class ChatListener extends MaidListener {
     public void onChatSettings(AsyncChatEvent event) {
         Player player = event.getPlayer();
 
-        if (!plugin.getUserManager().isOn(player.getUniqueId(), UserSettings.GLOBAL_MESSAGE)) {
+        if (!userManager.isOn(player.getUniqueId(), UserSettings.GLOBAL_MESSAGE)) {
             event.setCancelled(true);
             Common.sendMessage(player, CC.RED + "你必須要在設定開啟聊天室才能發送訊息");
             return;
