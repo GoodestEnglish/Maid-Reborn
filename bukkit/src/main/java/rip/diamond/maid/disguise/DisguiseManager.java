@@ -17,16 +17,33 @@ import rip.diamond.maid.redis.packets.bukkit.BroadcastPacket;
 import rip.diamond.maid.util.Alert;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
+import rip.diamond.maid.util.CraftBukkitImplementation;
 import rip.diamond.maid.util.extend.MaidManager;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class DisguiseManager extends MaidManager {
+
+    public static final Class<?> CRAFT_PLAYER_CLASS;
+    public static final Class<?> GAME_PROFILE_CLASS;
+    public static final Field GAME_PROFILE_NAME_FIELD;
 
     private final IMaidAPI api;
 
     private final Map<UUID, ProfileProperty> playerProperties = new HashMap<>();
     private final Map<String, ProfileProperty> skinProperties = new HashMap<>();
+
+    static {
+        try {
+            CRAFT_PLAYER_CLASS = CraftBukkitImplementation.obcClass("entity.CraftPlayer");
+            GAME_PROFILE_CLASS = Class.forName("com.mojang.authlib.GameProfile");
+            GAME_PROFILE_NAME_FIELD = GAME_PROFILE_CLASS.getDeclaredField("name");
+            GAME_PROFILE_NAME_FIELD.setAccessible(true);
+        } catch (NoSuchFieldException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public DisguiseManager(IMaidAPI api) {
         this.api = api;
@@ -93,18 +110,14 @@ public class DisguiseManager extends MaidManager {
     }
 
     private void setName(Player player, String name) {
-        // TODO: 1/3/2024 Use reflection for this 
-        /*GameProfile profile = ((CraftPlayer) player).getProfile();
-
         try {
-            Field field = GameProfile.class.getDeclaredField("name");
+            Object craftPlayer = CRAFT_PLAYER_CLASS.cast(player);
+            Object gameProfile = CRAFT_PLAYER_CLASS.getMethod("getProfile").invoke(craftPlayer); //CRAFT_PLAYER_PROFILE_FIELD.get(craftPlayer);
 
-            // Set the field accessible and update it
-            field.setAccessible(true);
-            field.set(profile, name);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+            GAME_PROFILE_NAME_FIELD.set(gameProfile, name);
+        } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     public Map.Entry<String, ProfileProperty> getRandomSkin() {
