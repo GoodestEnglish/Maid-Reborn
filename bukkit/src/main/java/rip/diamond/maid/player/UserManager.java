@@ -84,7 +84,7 @@ public class UserManager {
     }
 
     public boolean isOn(IUser user, UserSettings settings) {
-        GlobalUser globalUser = GlobalUser.of(user);
+        GlobalUser globalUser = GlobalUser.of(user, api);
         return isOn(globalUser, settings);
     }
 

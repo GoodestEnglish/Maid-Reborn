@@ -7,6 +7,8 @@ import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class EventUtil {
@@ -18,7 +20,7 @@ public class EventUtil {
         return new AsyncChatEvent(
                 true,
                 player,
-                Set.of(viewers),
+                new HashSet<>(Set.of(viewers)),
                 ChatRenderer.defaultRenderer(),
                 text,
                 text,

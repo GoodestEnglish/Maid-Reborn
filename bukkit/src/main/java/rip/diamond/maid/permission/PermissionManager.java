@@ -2,9 +2,6 @@ package rip.diamond.maid.permission;
 
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissibleBase;
-import rip.diamond.maid.api.user.permission.Permission;
-import rip.diamond.maid.redis.messaging.PacketHandler;
-import rip.diamond.maid.redis.packets.bukkit.PermissionUpdatePacket;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.CraftBukkitImplementation;

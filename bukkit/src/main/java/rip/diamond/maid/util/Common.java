@@ -142,6 +142,10 @@ public class Common {
         return MiniMessage.miniMessage().deserialize(text);
     }
 
+    public static String legacy(Component component) {
+        return LegacyComponentSerializer.legacySection().serialize(component);
+    }
+
     public static String legacy(String text) {
         return LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(text));
     }
