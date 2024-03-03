@@ -1,10 +1,10 @@
 package rip.diamond.maid.config.adapter;
 
-import rip.diamond.maid.config.ChatConfig;
-import rip.diamond.maid.config.Config;
-import rip.diamond.maid.config.MongoConfig;
+import rip.diamond.maid.config.*;
 
-public class ConfigAdapter implements ChatConfig, MongoConfig {
+import java.util.List;
+
+public class ConfigAdapter implements ChatConfig, DisguiseConfig, MongoConfig, ServerConfig {
 
     @Override
     public int getChatDelay() {
@@ -27,6 +27,11 @@ public class ConfigAdapter implements ChatConfig, MongoConfig {
     }
 
     @Override
+    public List<String> getDisguiseSkins() {
+        return Config.DISGUISE_SKIN.toStringList();
+    }
+
+    @Override
     public String getConnectionString() {
         return Config.MONGO_CONNECTION_STRING.toString();
     }
@@ -44,5 +49,10 @@ public class ConfigAdapter implements ChatConfig, MongoConfig {
     @Override
     public void setDatabase(String database) {
         Config.MONGO_DATABASE.setValue(database);
+    }
+
+    @Override
+    public String getServerID() {
+        return Config.SERVER_ID.toString();
     }
 }

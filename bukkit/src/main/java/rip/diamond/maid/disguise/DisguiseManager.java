@@ -10,45 +10,33 @@ import rip.diamond.maid.IMaidAPI;
 import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IDisguise;
 import rip.diamond.maid.api.user.IUser;
-import rip.diamond.maid.config.Config;
+import rip.diamond.maid.config.DisguiseConfig;
 import rip.diamond.maid.event.PlayerDisguiseEvent;
 import rip.diamond.maid.event.PlayerUndisguiseEvent;
+import rip.diamond.maid.player.UserManager;
 import rip.diamond.maid.redis.packets.bukkit.BroadcastPacket;
 import rip.diamond.maid.util.Alert;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
-import rip.diamond.maid.util.CraftBukkitImplementation;
-import rip.diamond.maid.util.extend.MaidManager;
+import rip.diamond.maid.util.DisguiseUtil;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
-public class DisguiseManager extends MaidManager {
-
-    public static final Class<?> CRAFT_PLAYER_CLASS;
-    public static final Class<?> GAME_PROFILE_CLASS;
-    public static final Field GAME_PROFILE_NAME_FIELD;
+public class DisguiseManager {
 
     private final IMaidAPI api;
+    private final UserManager userManager;
+    private final DisguiseConfig config;
 
     private final Map<UUID, ProfileProperty> playerProperties = new HashMap<>();
     private final Map<String, ProfileProperty> skinProperties = new HashMap<>();
 
-    static {
-        try {
-            CRAFT_PLAYER_CLASS = CraftBukkitImplementation.obcClass("entity.CraftPlayer");
-            GAME_PROFILE_CLASS = Class.forName("com.mojang.authlib.GameProfile");
-            GAME_PROFILE_NAME_FIELD = GAME_PROFILE_CLASS.getDeclaredField("name");
-            GAME_PROFILE_NAME_FIELD.setAccessible(true);
-        } catch (NoSuchFieldException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public DisguiseManager(IMaidAPI api) {
+    public DisguiseManager(IMaidAPI api, UserManager userManager, DisguiseConfig config) {
         this.api = api;
+        this.userManager = userManager;
+        this.config = config;
 
-        List<String> skins = Config.DISGUISE_SKIN.toStringList();
+        List<String> skins = config.getDisguiseSkins();
         for (String skin : skins) {
             cacheSkin(skin, false);
         }
@@ -67,8 +55,8 @@ public class DisguiseManager extends MaidManager {
         setSkin(player, skinProperty);
 
         //Save the disguise data
-        IUser user = plugin.getUserManager().getUserNow(player.getUniqueId());
-        plugin.getUserManager().saveUser(user);
+        IUser user = userManager.getUserNow(player.getUniqueId());
+        userManager.saveUser(user);
 
         //Output message
         Common.sendMessage(player, CC.GREEN + "成功偽裝成為: " + disguise.getName());
@@ -83,14 +71,14 @@ public class DisguiseManager extends MaidManager {
     }
 
     public void unDisguise(Player player) {
-        IUser user = plugin.getUserManager().getUser(player.getUniqueId()).join();
+        IUser user = userManager.getUser(player.getUniqueId()).join();
         user.setDisguise(null);
 
         setName(player, user.getRealName());
         setSkin(player, playerProperties.get(user.getUniqueID()));
 
         //Save the disguise data
-        plugin.getUserManager().saveUser(user);
+        userManager.saveUser(user);
 
         //Output message
         Common.sendMessage(player, CC.GREEN + "成功解除當前的偽裝");
@@ -111,10 +99,10 @@ public class DisguiseManager extends MaidManager {
 
     private void setName(Player player, String name) {
         try {
-            Object craftPlayer = CRAFT_PLAYER_CLASS.cast(player);
-            Object gameProfile = CRAFT_PLAYER_CLASS.getMethod("getProfile").invoke(craftPlayer); //CRAFT_PLAYER_PROFILE_FIELD.get(craftPlayer);
+            Object craftPlayer = DisguiseUtil.CRAFT_PLAYER_CLASS.cast(player);
+            Object gameProfile = DisguiseUtil.CRAFT_PLAYER_CLASS.getMethod("getProfile").invoke(craftPlayer); //CRAFT_PLAYER_PROFILE_FIELD.get(craftPlayer);
 
-            GAME_PROFILE_NAME_FIELD.set(gameProfile, name);
+            DisguiseUtil.GAME_PROFILE_NAME_FIELD.set(gameProfile, name);
         } catch (Exception e) {
             e.printStackTrace();
         }

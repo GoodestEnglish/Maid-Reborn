@@ -35,10 +35,6 @@ import rip.diamond.maid.util.task.TaskRunnerAdapter;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
-/*
- * TODO List
- *  - Add mongodb mocking
- */
 @Getter
 public class Maid extends JavaPlugin {
 
@@ -111,10 +107,10 @@ public class Maid extends JavaPlugin {
         mongoManager = new MongoManager(configAdapter);
         userManager = new UserManager(API, TASK, mongoManager);
         rankManager = new RankManager(API, mongoManager);
-        serverManager = new ServerManager();
+        serverManager = new ServerManager(configAdapter);
         chatManager = new ChatManager(API, userManager, configAdapter);
         permissionManager = new PermissionManager();
-        disguiseManager = new DisguiseManager(API);
+        disguiseManager = new DisguiseManager(API, userManager, configAdapter);
         punishmentManager = new PunishmentManager(API, TASK, mongoManager, userManager);
         nameTagManager = new NameTagManager();
     }
