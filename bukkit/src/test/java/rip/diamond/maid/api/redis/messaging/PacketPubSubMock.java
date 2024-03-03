@@ -1,12 +1,8 @@
 package rip.diamond.maid.api.redis.messaging;
 
 import redis.clients.jedis.JedisPubSub;
-import rip.diamond.maid.MaidAPI;
-import rip.diamond.maid.api.server.Platform;
 import rip.diamond.maid.redis.messaging.Packet;
 import rip.diamond.maid.util.json.GsonProvider;
-
-import java.util.concurrent.CompletableFuture;
 
 public final class PacketPubSubMock extends JedisPubSub {
 

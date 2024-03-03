@@ -1,13 +1,11 @@
 package rip.diamond.maid.api.redis;
 
-import com.github.fppt.jedismock.RedisServer;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import redis.clients.jedis.Jedis;
 import rip.diamond.maid.MaidAPIMock;
-import rip.diamond.maid.api.redis.messaging.PacketPubSubMock;
 import rip.diamond.maid.redis.messaging.IPacketHandler;
 import rip.diamond.maid.redis.messaging.Packet;
+import rip.diamond.maid.util.PacketUtil;
 import rip.diamond.maid.util.json.GsonProvider;
 
 @RequiredArgsConstructor
@@ -17,20 +15,13 @@ public class PacketHandlerMock implements IPacketHandler {
 
     @SneakyThrows
     @Override
-    public void connectToServer() {
-        new Thread(() -> {
-            try (Jedis jedis = api.getJedis()) {
-                PacketPubSubMock pubSub = new PacketPubSubMock();
-                jedis.subscribe(pubSub, CHANNEL);
-            }
-        }, "Maid - Packet Subscribe Thread").start();
+    public IPacketHandler connectToServer() {
+        //No action is required. Subscribe should only be tested when necessary
+        return this;
     }
 
     @Override
     public void send(Packet packet) {
-        api.runRedisCommand((jedis) -> {
-            String encodedPacket = packet.getClass().getName() + "||" + GsonProvider.GSON.toJson(packet);
-            return jedis.publish(CHANNEL, encodedPacket);
-        });
+        api.runRedisCommand((jedis) -> jedis.publish(CHANNEL, PacketUtil.encode(packet)));
     }
 }

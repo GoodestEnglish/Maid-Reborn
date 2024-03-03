@@ -37,7 +37,7 @@ public class MaidAPI implements IMaidAPI {
                 new JedisPool(new JedisPoolConfig(), redisCredentials.getHostname(), redisCredentials.getPort(), 20_000, redisCredentials.getPassword()) :
                 new JedisPool(new JedisPoolConfig(), redisCredentials.getHostname(), redisCredentials.getPort(), 20_000);
         this.jedisExecutor = Executors.newSingleThreadExecutor();
-        this.packetHandler = new PacketHandlerAdapter(this);
+        this.packetHandler = new PacketHandlerAdapter(this).connectToServer();
     }
 
     public void stop() {

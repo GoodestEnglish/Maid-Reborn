@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 public record PacketHandlerAdapter(MaidAPI api) implements IPacketHandler {
 
     @Override
-    public void connectToServer() {
+    public IPacketHandler connectToServer() {
         new Thread(() -> {
             try (Jedis jedis = api.getJedisPool().getResource()) {
                 if (api.getRedisCredentials().isAuth()) {
@@ -21,6 +21,8 @@ public record PacketHandlerAdapter(MaidAPI api) implements IPacketHandler {
                 jedis.subscribe(pubSub, CHANNEL);
             }
         }, "Maid - Packet Subscribe Thread").start();
+
+        return this;
     }
 
     @Override

@@ -2,7 +2,6 @@ package rip.diamond.maid.util;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.MockPlugin;
-import com.github.fppt.jedismock.RedisServer;
 import rip.diamond.maid.MaidAPIMock;
 import rip.diamond.maid.chat.ChatListener;
 import rip.diamond.maid.chat.ChatManager;
@@ -14,10 +13,7 @@ import rip.diamond.maid.player.UserManager;
 import rip.diamond.maid.punishment.PunishmentManager;
 import rip.diamond.maid.rank.RankManager;
 import rip.diamond.maid.util.task.ITaskRunner;
-import rip.diamond.maid.util.task.TaskRunnerAdapter;
 import rip.diamond.maid.util.task.TaskRunnerMock;
-
-import static org.mockito.Mockito.mock;
 
 public class MaidTestEnvironment extends ServerTestEnvironment {
 

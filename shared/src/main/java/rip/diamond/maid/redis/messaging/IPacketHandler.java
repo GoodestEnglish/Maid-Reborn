@@ -4,7 +4,7 @@ public interface IPacketHandler {
 
     String CHANNEL = "Packet:All";
 
-    void connectToServer();
+    IPacketHandler connectToServer();
 
     void send(Packet packet);
 

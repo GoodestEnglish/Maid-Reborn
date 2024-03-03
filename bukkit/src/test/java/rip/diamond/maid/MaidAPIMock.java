@@ -14,6 +14,8 @@ import rip.diamond.maid.redis.messaging.IPacketHandler;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import static org.mockito.Mockito.mock;
+
 @Getter
 public class MaidAPIMock implements IMaidAPI {
 
@@ -21,13 +23,15 @@ public class MaidAPIMock implements IMaidAPI {
     private final RedisServer redisServer;
     private final Executor jedisExecutor;
     private final Jedis jedis;
+    private final IPacketHandler packetHandler;
 
     @SneakyThrows
     public MaidAPIMock(ServerMock server) {
         this.server = server;
         this.redisServer = RedisServer.newRedisServer().start();
         this.jedisExecutor = Executors.newSingleThreadExecutor();
-        this.jedis = new Jedis(redisServer.getHost(), redisServer.getBindPort());
+        this.jedis = mock(Jedis.class);
+        this.packetHandler = new PacketHandlerMock(this).connectToServer();
     }
 
     @Override
@@ -37,7 +41,7 @@ public class MaidAPIMock implements IMaidAPI {
 
     @Override
     public IPacketHandler getPacketHandler() {
-        return new PacketHandlerMock(this);
+        return packetHandler;
     }
 
     @Override

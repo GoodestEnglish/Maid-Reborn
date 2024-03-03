@@ -6,15 +6,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.redis.messaging.IPacketHandler;
+import rip.diamond.maid.redis.messaging.Packet;
 import rip.diamond.maid.server.GlobalUser;
 import rip.diamond.maid.user.UserMock;
-import rip.diamond.maid.util.CC;
-import rip.diamond.maid.util.Common;
-import rip.diamond.maid.util.EventUtil;
-import rip.diamond.maid.util.MaidTestEnvironment;
+import rip.diamond.maid.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 class ChatManagerTest extends MaidTestEnvironment {
 
@@ -87,14 +86,18 @@ class ChatManagerTest extends MaidTestEnvironment {
         @Test
         @DisplayName("Test if direct message is successfully sent")
         void testSendDirectMessage1() {
-            chatManager.sendDirectMessage(user1, GlobalUser.of(user2, api), EventUtil.DEFAULT_MESSAGE);
+            Packet packet = chatManager.sendDirectMessage(user1, GlobalUser.of(user2, api), EventUtil.DEFAULT_MESSAGE);
+
+            verify(api.getJedis()).publish(IPacketHandler.CHANNEL, PacketUtil.encode(packet));
             assertEquals(player1.nextMessage(), Common.legacy(CC.PINK + "➥ 給 " + user2.getSimpleDisplayName(false) + CC.WHITE + ": " + CC.GRAY + EventUtil.DEFAULT_MESSAGE));
         }
 
         @Test
         @DisplayName("Test if direct message is successfully sent")
         void testSendDirectMessage2() {
-            chatManager.sendDirectMessage(user2, GlobalUser.of(user1, api), EventUtil.DEFAULT_MESSAGE);
+            Packet packet = chatManager.sendDirectMessage(user2, GlobalUser.of(user1, api), EventUtil.DEFAULT_MESSAGE);
+
+            verify(api.getJedis()).publish(IPacketHandler.CHANNEL, PacketUtil.encode(packet));
             assertEquals(player2.nextMessage(), Common.legacy(CC.PINK + "➥ 給 " + user1.getSimpleDisplayName(false) + CC.WHITE + ": " + CC.GRAY + EventUtil.DEFAULT_MESSAGE));
         }
     }

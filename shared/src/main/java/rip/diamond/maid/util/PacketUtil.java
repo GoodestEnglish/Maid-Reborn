@@ -2,6 +2,7 @@ package rip.diamond.maid.util;
 
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.redis.messaging.Packet;
+import rip.diamond.maid.util.json.GsonProvider;
 
 public class PacketUtil {
 
@@ -13,6 +14,10 @@ public class PacketUtil {
      */
     public static void send(Packet packet) {
         MaidAPI.INSTANCE.getPacketHandler().send(packet);
+    }
+
+    public static String encode(Packet packet) {
+        return packet.getClass().getName() + "||" + GsonProvider.GSON.toJson(packet);
     }
 
 }
