@@ -20,8 +20,8 @@ import rip.diamond.maid.mongo.MongoManager;
 import rip.diamond.maid.server.ServerManager;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
-import rip.diamond.maid.util.Tasks;
 import rip.diamond.maid.util.UUIDCache;
+import rip.diamond.maid.util.task.ITaskRunner;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -29,6 +29,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserListener implements Listener {
 
+    private final ITaskRunner task;
     private final UserManager userManager;
     private final MongoManager mongoManager;
     private final ServerManager serverManager;
@@ -39,7 +40,7 @@ public class UserListener implements Listener {
         Player player = Bukkit.getPlayer(uniqueID);
         if (player != null && player.isConnected()) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, Common.text(CC.RED + "請再重新登陸前等待三秒..."));
-            Tasks.run(() -> player.kick(Common.text(CC.RED + "重複的登入!")));
+            task.run(() -> player.kick(Common.text(CC.RED + "重複的登入!")));
         }
     }
 

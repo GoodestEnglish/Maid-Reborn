@@ -1,12 +1,20 @@
 package rip.diamond.maid.chat;
 
+import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import rip.diamond.maid.api.user.IUser;
+import rip.diamond.maid.server.GlobalUser;
+import rip.diamond.maid.user.UserMock;
+import rip.diamond.maid.util.CC;
+import rip.diamond.maid.util.Common;
+import rip.diamond.maid.util.EventUtil;
 import rip.diamond.maid.util.MaidTestEnvironment;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class ChatManagerTest extends MaidTestEnvironment {
 
@@ -57,4 +65,37 @@ class ChatManagerTest extends MaidTestEnvironment {
         }
     }
 
+    @Nested
+    class DirectMessage {
+        private PlayerMock player1;
+        private PlayerMock player2;
+        private IUser user1;
+        private IUser user2;
+
+        @BeforeEach
+        void setUp() {
+            player1 = createRandomOnlinePlayer();
+            player2 = createRandomOnlinePlayer();
+
+            user1 = new UserMock(player1, rankManager, punishmentManager);
+            userManager.getUsers().put(player1.getUniqueId(), user1);
+
+            user2 = new UserMock(player2, rankManager, punishmentManager);
+            userManager.getUsers().put(player2.getUniqueId(), user2);
+        }
+
+        @Test
+        @DisplayName("Test if direct message is successfully sent")
+        void testSendDirectMessage1() {
+            chatManager.sendDirectMessage(user1, GlobalUser.of(user2, api), EventUtil.DEFAULT_MESSAGE);
+            assertEquals(player1.nextMessage(), Common.legacy(CC.PINK + "➥ 給 " + user2.getSimpleDisplayName(false) + CC.WHITE + ": " + CC.GRAY + EventUtil.DEFAULT_MESSAGE));
+        }
+
+        @Test
+        @DisplayName("Test if direct message is successfully sent")
+        void testSendDirectMessage2() {
+            chatManager.sendDirectMessage(user2, GlobalUser.of(user1, api), EventUtil.DEFAULT_MESSAGE);
+            assertEquals(player2.nextMessage(), Common.legacy(CC.PINK + "➥ 給 " + user1.getSimpleDisplayName(false) + CC.WHITE + ": " + CC.GRAY + EventUtil.DEFAULT_MESSAGE));
+        }
+    }
 }

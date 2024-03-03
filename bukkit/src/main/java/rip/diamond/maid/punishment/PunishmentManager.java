@@ -19,6 +19,7 @@ import rip.diamond.maid.redis.packets.bukkit.PunishmentExecutePacket;
 import rip.diamond.maid.redis.packets.bukkit.PunishmentUpdatePacket;
 import rip.diamond.maid.util.*;
 import rip.diamond.maid.util.json.GsonProvider;
+import rip.diamond.maid.util.task.ITaskRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +29,15 @@ import java.util.UUID;
 public class PunishmentManager {
 
     private final IMaidAPI api;
+    private final ITaskRunner task;
     private final MongoManager mongoManager;
     private final UserManager userManager;
 
     @Getter private final List<IPunishment> punishments = new ArrayList<>();
 
-    public PunishmentManager(IMaidAPI api, MongoManager mongoManager, UserManager userManager) {
+    public PunishmentManager(IMaidAPI api, ITaskRunner task, MongoManager mongoManager, UserManager userManager) {
         this.api = api;
+        this.task = task;
         this.mongoManager = mongoManager;
         this.userManager = userManager;
 
@@ -54,7 +57,7 @@ public class PunishmentManager {
         punishments.removeIf(punishment_ -> punishment_.getUniqueID().equals(punishment.getUniqueID()));
         punishments.add(punishment);
 
-        Tasks.runAsync(() -> {
+        task.runAsync(() -> {
             mongoManager.getPunishments().replaceOne(Filters.eq("_id", punishment.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(punishment)), new ReplaceOptions().upsert(true));
             api.getPacketHandler().send(new PunishmentUpdatePacket(Maid.API.getPlatform().getServerID(), (Punishment) punishment));
         });

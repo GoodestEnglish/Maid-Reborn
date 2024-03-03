@@ -13,11 +13,17 @@ import rip.diamond.maid.mongo.MongoManager;
 import rip.diamond.maid.player.UserManager;
 import rip.diamond.maid.punishment.PunishmentManager;
 import rip.diamond.maid.rank.RankManager;
+import rip.diamond.maid.util.task.ITaskRunner;
+import rip.diamond.maid.util.task.TaskRunnerAdapter;
+import rip.diamond.maid.util.task.TaskRunnerMock;
+
+import static org.mockito.Mockito.mock;
 
 public class MaidTestEnvironment extends ServerTestEnvironment {
 
     protected MockPlugin plugin;
     protected MaidAPIMock api;
+    protected ITaskRunner task;
 
     protected ChatConfig chatConfig;
 
@@ -32,14 +38,15 @@ public class MaidTestEnvironment extends ServerTestEnvironment {
     public void loadManagersAndListeners() {
         plugin = MockBukkit.createMockPlugin("MaidMock");
         api = new MaidAPIMock(server);
+        task = new TaskRunnerMock(server, plugin);
 
         chatConfig = new ChatConfigMock();
 
-        userManager = new UserManager(api);
         mongoManager = new MongoManager(new MongoConfigMock());
+        userManager = new UserManager(api, task, mongoManager);
         rankManager = new RankManager(api, mongoManager);
         chatManager = new ChatManager(api, userManager, chatConfig);
-        punishmentManager = new PunishmentManager(api, mongoManager, userManager);
+        punishmentManager = new PunishmentManager(api, task, mongoManager, userManager);
 
         chatListener = new ChatListener(plugin, api, chatManager, userManager);
     }

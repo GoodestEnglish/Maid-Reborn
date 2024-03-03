@@ -3,6 +3,7 @@ package rip.diamond.maid.util.recorder;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
+import rip.diamond.maid.Maid;
 import rip.diamond.maid.util.*;
 
 import java.util.LinkedHashSet;
@@ -25,7 +26,7 @@ public class PermissionChangesRecorder {
     public void outputChanges(Player player) {
         Preconditions.checkArgument(canOutput(), "Failed out changes in " + getClass().getSimpleName() + " for " + player.getName());
 
-        Tasks.runAsync(() -> {
+        Maid.TASK.runAsync(() -> {
             Alert alert = Alert.PERMISSION_UPDATE;
             Set<String> changes = new LinkedHashSet<>();
 

@@ -29,14 +29,21 @@ import rip.diamond.maid.util.command.CommandService;
 import rip.diamond.maid.util.command.Drink;
 import rip.diamond.maid.util.command.provider.custom.RankProvider;
 import rip.diamond.maid.util.menu.MenuHandler;
+import rip.diamond.maid.util.task.ITaskRunner;
+import rip.diamond.maid.util.task.TaskRunnerAdapter;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
+/*
+ * TODO List
+ *  - Add mongodb mocking
+ */
 @Getter
 public class Maid extends JavaPlugin {
 
     public static Maid INSTANCE;
+    public static ITaskRunner TASK;
     public static MaidAPI API;
     public static DecimalFormat FORMAT = new DecimalFormat("#0.00");
 
@@ -89,29 +96,33 @@ public class Maid extends JavaPlugin {
     }
 
     private void loadAPI() {
+        //Register command library
         drink = Drink.get(this);
-        new MenuHandler(this); //Register MenuAPI instance
-        API = new MaidAPI(new BukkitPlatform());
-
+        //Register MenuAPI instance
+        new MenuHandler(this);
+        //Register TaskRunner instance
+        TASK = new TaskRunnerAdapter();
+        //Register API instance
+        API = new MaidAPI(new BukkitPlatform(TASK));
         API.start(new RedisCredentials(Config.REDIS_HOST.toString(), Config.REDIS_PORT.toInteger(), Config.REDIS_AUTH.toBoolean(), Config.REDIS_PASSWORD.toString()));
     }
 
     private void loadManagers() {
         mongoManager = new MongoManager(configAdapter);
-        userManager = new UserManager(API);
+        userManager = new UserManager(API, TASK, mongoManager);
         rankManager = new RankManager(API, mongoManager);
         serverManager = new ServerManager();
         chatManager = new ChatManager(API, userManager, configAdapter);
         permissionManager = new PermissionManager();
         disguiseManager = new DisguiseManager(API);
-        punishmentManager = new PunishmentManager(API, mongoManager, userManager);
+        punishmentManager = new PunishmentManager(API, TASK, mongoManager, userManager);
         nameTagManager = new NameTagManager();
     }
 
     private void loadListeners() {
         Arrays.asList(
                 new ChatListener(this, API, chatManager, userManager),
-                new UserListener(userManager, mongoManager, serverManager),
+                new UserListener(TASK, userManager, mongoManager, serverManager),
                 new PunishmentListener(API, userManager, punishmentManager),
                 new ServerListener(API)
         ).forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));

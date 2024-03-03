@@ -1,13 +1,14 @@
-package rip.diamond.maid.redis.messaging;
+package rip.diamond.maid.api.redis.messaging;
 
 import redis.clients.jedis.JedisPubSub;
 import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.server.Platform;
+import rip.diamond.maid.redis.messaging.Packet;
 import rip.diamond.maid.util.json.GsonProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public final class PacketPubSub extends JedisPubSub {
+public final class PacketPubSubMock extends JedisPubSub {
 
     @Override
     public void onMessage(final String channel, final String message) {
@@ -22,18 +23,11 @@ public final class PacketPubSub extends JedisPubSub {
             return;
         }
         Packet packet = (Packet) GsonProvider.GSON.fromJson(messageJson, packetClass);
-        String serverID = MaidAPI.INSTANCE.getPlatform().getServerID();
-        Platform platform = MaidAPI.INSTANCE.getPlatform().getPlatform();
-        String toServerID = packet.getTo();
 
-        if ((platform == Platform.BUKKIT && toServerID.equalsIgnoreCase("server")) || (platform == Platform.PROXY && toServerID.equalsIgnoreCase("proxy")) || toServerID.equalsIgnoreCase("all") || toServerID.equals(serverID)) {
-            CompletableFuture.runAsync(() -> {
-                try {
-                    packet.onReceive();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+        try {
+            packet.onReceive();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

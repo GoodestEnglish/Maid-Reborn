@@ -5,13 +5,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import rip.diamond.maid.Maid;
-import rip.diamond.maid.MaidAPI;
 import rip.diamond.maid.api.server.Platform;
 import rip.diamond.maid.punishment.Punishment;
 import rip.diamond.maid.redis.messaging.Packet;
 import rip.diamond.maid.util.Common;
 import rip.diamond.maid.util.Preconditions;
-import rip.diamond.maid.util.Tasks;
 
 import java.util.List;
 
@@ -44,7 +42,7 @@ public class PunishmentExecutePacket implements Packet {
 
         switch (punishment.getType()) {
             case WARN, MUTE -> Common.sendMessage(player, message);
-            case KICK, BAN, IP_BAN -> Tasks.run(() -> player.kick(Common.text(StringUtils.join(message, "\n"))));
+            case KICK, BAN, IP_BAN -> Maid.TASK.run(() -> player.kick(Common.text(StringUtils.join(message, "\n"))));
         }
     }
 }

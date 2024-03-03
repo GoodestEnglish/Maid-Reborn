@@ -18,8 +18,7 @@ public record PacketHandlerAdapter(MaidAPI api) implements IPacketHandler {
                 }
 
                 PacketPubSub pubSub = new PacketPubSub();
-                String channel = "Packet:All";
-                jedis.subscribe(pubSub, channel);
+                jedis.subscribe(pubSub, CHANNEL);
             }
         }, "Maid - Packet Subscribe Thread").start();
     }
@@ -28,7 +27,7 @@ public record PacketHandlerAdapter(MaidAPI api) implements IPacketHandler {
     public void send(Packet packet) {
         CompletableFuture.runAsync(() -> api.runRedisCommand((jedis) -> {
             String encodedPacket = packet.getClass().getName() + "||" + GsonProvider.GSON.toJson(packet);
-            return jedis.publish("Packet:All", encodedPacket);
+            return jedis.publish(CHANNEL, encodedPacket);
         }), api.getJedisExecutor());
     }
 }

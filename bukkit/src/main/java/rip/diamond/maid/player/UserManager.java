@@ -10,20 +10,22 @@ import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.server.IGlobalUser;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.UserSettings;
+import rip.diamond.maid.mongo.MongoManager;
 import rip.diamond.maid.redis.packets.bukkit.ProfileUpdatePacket;
 import rip.diamond.maid.server.GlobalUser;
-import rip.diamond.maid.util.Tasks;
-import rip.diamond.maid.util.extend.MaidManager;
 import rip.diamond.maid.util.json.GsonProvider;
+import rip.diamond.maid.util.task.ITaskRunner;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
-public class UserManager extends MaidManager {
+public class UserManager {
 
     private final IMaidAPI api;
+    private final ITaskRunner task;
+    private final MongoManager mongoManager;
 
     /**
      * This HashMap stores every logged-in users in this server session. Logout will not remove specific user from this map
@@ -32,7 +34,7 @@ public class UserManager extends MaidManager {
 
     public CompletableFuture<Boolean> hasUser(UUID uniqueID) {
         return CompletableFuture.supplyAsync(() -> {
-            Document document = plugin.getMongoManager().getUsers().find(Filters.eq("_id", uniqueID.toString())).first();
+            Document document = mongoManager.getUsers().find(Filters.eq("_id", uniqueID.toString())).first();
             if (document == null) {
                 return false;
             }
@@ -49,7 +51,7 @@ public class UserManager extends MaidManager {
 
         //Otherwise, load the player from database and return the user
         return CompletableFuture.supplyAsync(() -> {
-            Document document = plugin.getMongoManager().getUsers().find(Filters.eq("_id", uniqueID.toString())).first();
+            Document document = mongoManager.getUsers().find(Filters.eq("_id", uniqueID.toString())).first();
             User user = document == null ? new User(uniqueID) : User.of(document);
 
             users.put(uniqueID, user);
@@ -67,8 +69,8 @@ public class UserManager extends MaidManager {
     }
 
     public void saveUser(IUser user) {
-        Tasks.runAsync(() -> {
-            plugin.getMongoManager().getUsers().replaceOne(Filters.eq("_id", user.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(user)), new ReplaceOptions().upsert(true));
+        task.runAsync(() -> {
+            mongoManager.getUsers().replaceOne(Filters.eq("_id", user.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(user)), new ReplaceOptions().upsert(true));
             api.getPacketHandler().send(new ProfileUpdatePacket(Maid.API.getPlatform().getServerID(), (User) user));
         });
     }

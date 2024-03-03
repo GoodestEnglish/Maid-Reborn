@@ -23,7 +23,7 @@ class ChatListenerTest extends MaidTestEnvironment {
         loadManagersAndListeners();
 
         //Create a random player
-        player = createRandomPlayer();
+        player = createRandomOnlinePlayer();
         
         //Create a default user profile
         user = new UserMock(player, rankManager, punishmentManager);

@@ -1,17 +1,21 @@
 package rip.diamond.maid.platform;
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import rip.diamond.maid.api.server.IPlatform;
 import rip.diamond.maid.api.server.Platform;
 import rip.diamond.maid.config.Config;
 import rip.diamond.maid.util.Common;
-import rip.diamond.maid.util.Tasks;
+import rip.diamond.maid.util.task.ITaskRunner;
 
 import java.util.List;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public class BukkitPlatform implements IPlatform {
+
+    private final ITaskRunner task;
 
     @Override
     public Platform getPlatform() {
@@ -30,32 +34,32 @@ public class BukkitPlatform implements IPlatform {
 
     @Override
     public void run(Runnable runnable) {
-        Tasks.run(runnable);
+        task.run(runnable);
     }
 
     @Override
     public void runLater(Runnable runnable, long delay) {
-        Tasks.runLater(runnable, delay);
+        task.runLater(runnable, delay);
     }
 
     @Override
     public void runTimer(Runnable runnable, long delay, long interval) {
-        Tasks.runTimer(runnable, delay, interval);
+        task.runTimer(runnable, delay, interval);
     }
 
     @Override
     public void runAsync(Runnable runnable) {
-        Tasks.runAsync(runnable);
+        task.runAsync(runnable);
     }
 
     @Override
     public void runAsyncLater(Runnable runnable, long delay) {
-        Tasks.runAsyncLater(runnable, delay);
+        task.runAsyncLater(runnable, delay);
     }
 
     @Override
     public void runAsyncTimer(Runnable runnable, long delay, long interval) {
-        Tasks.runAsyncTimer(runnable, delay, interval);
+        task.runAsyncTimer(runnable, delay, interval);
     }
 
     @Override

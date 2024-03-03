@@ -42,7 +42,7 @@ public class ChatManager {
 
 
     public void sendDirectMessage(IUser user, IGlobalUser receiver, String message) {
-        GlobalUser sender = GlobalUser.of(user);
+        GlobalUser sender = GlobalUser.of(user, api);
 
         UUID messageTo = user.getChatRoom().getMessageTo();
         if (messageTo == null || !messageTo.equals(receiver.getUniqueID())) {
@@ -50,7 +50,7 @@ public class ChatManager {
             userManager.saveUser(user);
         }
 
-        api.getPacketHandler().send(new DirectMessagePacket(Maid.API.getPlatform().getServerID(), sender, (GlobalUser) receiver, message));
+        api.getPacketHandler().send(new DirectMessagePacket(api.getPlatform().getServerID(), sender, (GlobalUser) receiver, message));
         Common.sendMessage(Bukkit.getPlayer(sender.getUniqueID()), CC.PINK + "➥ 給 " + receiver.getSimpleDisplayName() + CC.WHITE + ": " + CC.GRAY + message);
     }
 
