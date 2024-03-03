@@ -10,14 +10,13 @@ import rip.diamond.maid.api.user.IRank;
 import rip.diamond.maid.mongo.MongoManager;
 import rip.diamond.maid.redis.packets.bukkit.RankUpdatePacket;
 import rip.diamond.maid.util.CC;
-import rip.diamond.maid.util.extend.MaidManager;
 import rip.diamond.maid.util.json.GsonProvider;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class RankManager extends MaidManager {
+public class RankManager {
 
     private final IMaidAPI api;
     private final MongoManager mongoManager;
@@ -48,15 +47,15 @@ public class RankManager extends MaidManager {
     }
 
     public void saveRank(IRank rank) {
-        plugin.getMongoManager().getRanks().replaceOne(Filters.eq("_id", rank.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(rank)), new ReplaceOptions().upsert(true));
+        mongoManager.getRanks().replaceOne(Filters.eq("_id", rank.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(rank)), new ReplaceOptions().upsert(true));
         ranks.put(rank.getUniqueID(), rank);
-        api.getPacketHandler().send(new RankUpdatePacket(Maid.API.getPlatform().getServerID(), (Rank) rank, false));
+        api.getPacketHandler().send(new RankUpdatePacket(api.getPlatform().getServerID(), (Rank) rank, false));
     }
 
     public void deleteRank(IRank rank) {
-        plugin.getMongoManager().getRanks().deleteOne(Filters.eq("_id", rank.getUniqueID().toString()));
+        mongoManager.getRanks().deleteOne(Filters.eq("_id", rank.getUniqueID().toString()));
         ranks.remove(rank.getUniqueID());
-        api.getPacketHandler().send(new RankUpdatePacket(Maid.API.getPlatform().getServerID(), (Rank) rank, true));
+        api.getPacketHandler().send(new RankUpdatePacket(api.getPlatform().getServerID(), (Rank) rank, true));
     }
 
     public IRank getDefaultRank() {

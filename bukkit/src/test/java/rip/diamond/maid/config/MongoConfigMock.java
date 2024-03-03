@@ -1,14 +1,25 @@
 package rip.diamond.maid.config;
 
+import de.bwaldvogel.mongo.MongoServer;
+import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
+
 public class MongoConfigMock implements MongoConfig {
+
+    private final MongoServer server;
+
+    public MongoConfigMock() {
+        this.server = new MongoServer(new MemoryBackend());
+        this.server.bind();
+    }
+
     @Override
     public String getConnectionString() {
-        return "mongodb://uccszwhp6s9lj9pudki0:aEmPZdaHfq0StkLgLDRQ@n1-c2-mongodb-clevercloud-customers.services.clever-cloud.com:27017,n2-c2-mongodb-clevercloud-customers.services.clever-cloud.com:27017/btqygcxraiqx7yn?replicaSet=rs0";
+        return server.getConnectionString();
     }
 
     @Override
     public String getDatabase() {
-        return "btqygcxraiqx7yn";
+        return "database";
     }
 
     @Override

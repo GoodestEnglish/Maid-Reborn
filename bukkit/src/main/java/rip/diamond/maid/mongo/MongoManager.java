@@ -6,11 +6,9 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import lombok.Getter;
 import org.bson.Document;
-import rip.diamond.maid.config.Config;
 import rip.diamond.maid.config.MongoConfig;
-import rip.diamond.maid.util.extend.MaidManager;
 
-public class MongoManager extends MaidManager {
+public class MongoManager {
 
     private final MongoDatabase database;
     private final MongoClient client;
