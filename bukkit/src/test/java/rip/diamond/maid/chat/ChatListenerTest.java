@@ -8,10 +8,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.chat.ChatRoomType;
+import rip.diamond.maid.redis.messaging.IPacketHandler;
+import rip.diamond.maid.redis.messaging.Packet;
 import rip.diamond.maid.user.UserMock;
 import rip.diamond.maid.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 
 class ChatListenerTest extends MaidTestEnvironment {
 
@@ -68,14 +71,13 @@ class ChatListenerTest extends MaidTestEnvironment {
         void testChatMessagingStaffChat() {
             user.getChatRoom().setType(ChatRoomType.STAFF);
             player.addAttachment(plugin, MaidPermission.SETTINGS_STAFF_CHAT, true);
-
             chatListener.onChatMessaging(event);
 
+            Packet packet = api.getSentPackets().poll();
+
             assertTrue(event.isCancelled());
-            // TODO: 2/3/2024 Check if redis received the packet or not
+            assertNotNull(packet);
+            verify(api.getJedis()).publish(IPacketHandler.CHANNEL, PacketUtil.encode(packet));
         }
-
     }
-
-
 }

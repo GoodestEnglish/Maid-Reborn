@@ -41,7 +41,7 @@ public class ChatManager {
         return this.chatConfig.getChatDelay();
     }
 
-    public Packet sendDirectMessage(IUser user, IGlobalUser receiver, String message) {
+    public void sendDirectMessage(IUser user, IGlobalUser receiver, String message) {
         GlobalUser sender = GlobalUser.of(user, api);
 
         UUID messageTo = user.getChatRoom().getMessageTo();
@@ -50,12 +50,8 @@ public class ChatManager {
             userManager.saveUser(user);
         }
 
-        Packet packet = new DirectMessagePacket(api.getPlatform().getServerID(), sender, (GlobalUser) receiver, message);
-        api.getPacketHandler().send(packet);
-
+        api.getPacketHandler().send(new DirectMessagePacket(api.getPlatform().getServerID(), sender, (GlobalUser) receiver, message));
         Common.sendMessage(Bukkit.getPlayer(sender.getUniqueID()), CC.PINK + "➥ 給 " + receiver.getSimpleDisplayName() + CC.WHITE + ": " + CC.GRAY + message);
-
-        return packet;
     }
 
 }

@@ -86,8 +86,11 @@ class ChatManagerTest extends MaidTestEnvironment {
         @Test
         @DisplayName("Test if direct message is successfully sent")
         void testSendDirectMessage1() {
-            Packet packet = chatManager.sendDirectMessage(user1, GlobalUser.of(user2, api), EventUtil.DEFAULT_MESSAGE);
+            chatManager.sendDirectMessage(user1, GlobalUser.of(user2, api), EventUtil.DEFAULT_MESSAGE);
 
+            Packet packet = api.getSentPackets().poll();
+
+            assertNotNull(packet);
             verify(api.getJedis()).publish(IPacketHandler.CHANNEL, PacketUtil.encode(packet));
             assertEquals(player1.nextMessage(), Common.legacy(CC.PINK + "➥ 給 " + user2.getSimpleDisplayName(false) + CC.WHITE + ": " + CC.GRAY + EventUtil.DEFAULT_MESSAGE));
         }
@@ -95,8 +98,11 @@ class ChatManagerTest extends MaidTestEnvironment {
         @Test
         @DisplayName("Test if direct message is successfully sent")
         void testSendDirectMessage2() {
-            Packet packet = chatManager.sendDirectMessage(user2, GlobalUser.of(user1, api), EventUtil.DEFAULT_MESSAGE);
+            chatManager.sendDirectMessage(user2, GlobalUser.of(user1, api), EventUtil.DEFAULT_MESSAGE);
 
+            Packet packet = api.getSentPackets().poll();
+
+            assertNotNull(packet);
             verify(api.getJedis()).publish(IPacketHandler.CHANNEL, PacketUtil.encode(packet));
             assertEquals(player2.nextMessage(), Common.legacy(CC.PINK + "➥ 給 " + user1.getSimpleDisplayName(false) + CC.WHITE + ": " + CC.GRAY + EventUtil.DEFAULT_MESSAGE));
         }

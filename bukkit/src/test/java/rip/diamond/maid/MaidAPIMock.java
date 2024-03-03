@@ -10,7 +10,9 @@ import rip.diamond.maid.api.server.BukkitPlatformMock;
 import rip.diamond.maid.api.server.IPlatform;
 import rip.diamond.maid.redis.RedisCommand;
 import rip.diamond.maid.redis.messaging.IPacketHandler;
+import rip.diamond.maid.redis.messaging.Packet;
 
+import java.util.Queue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -57,5 +59,9 @@ public class MaidAPIMock implements IMaidAPI {
             jedis.close();
         }
         return result;
+    }
+
+    public Queue<Packet> getSentPackets() {
+        return ((PacketHandlerMock) packetHandler).getPackets();
     }
 }
