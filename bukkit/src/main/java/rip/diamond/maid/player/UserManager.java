@@ -10,7 +10,10 @@ import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.server.IGlobalUser;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.UserSettings;
+import rip.diamond.maid.environment.IEnvironment;
 import rip.diamond.maid.mongo.MongoManager;
+import rip.diamond.maid.punishment.PunishmentManager;
+import rip.diamond.maid.rank.RankManager;
 import rip.diamond.maid.redis.packets.bukkit.ProfileUpdatePacket;
 import rip.diamond.maid.server.GlobalUser;
 import rip.diamond.maid.util.json.GsonProvider;
@@ -26,6 +29,7 @@ public class UserManager {
     private final IMaidAPI api;
     private final ITaskRunner task;
     private final MongoManager mongoManager;
+    private final IEnvironment environment;
 
     /**
      * This HashMap stores every logged-in users in this server session. Logout will not remove specific user from this map
@@ -43,6 +47,23 @@ public class UserManager {
         });
     }
 
+    public CompletableFuture<IUser> getUser(UUID uniqueID, RankManager rankManager, PunishmentManager punishmentManager) {
+        //If the user is found in the cache, simply get it from cache
+        if (users.containsKey(uniqueID)) {
+            return CompletableFuture.completedFuture(users.get(uniqueID));
+        }
+
+        //Otherwise, load the player from database and return the user
+        return CompletableFuture.supplyAsync(() -> {
+            Document document = mongoManager.getUsers().find(Filters.eq("_id", uniqueID.toString())).first();
+            IUser user = document == null ? environment.createUser(uniqueID, rankManager, punishmentManager) : User.of(document);
+
+            users.put(uniqueID, user);
+
+            return user;
+        });
+    }
+
     public CompletableFuture<IUser> getUser(UUID uniqueID) {
         //If the user is found in the cache, simply get it from cache
         if (users.containsKey(uniqueID)) {
@@ -52,7 +73,7 @@ public class UserManager {
         //Otherwise, load the player from database and return the user
         return CompletableFuture.supplyAsync(() -> {
             Document document = mongoManager.getUsers().find(Filters.eq("_id", uniqueID.toString())).first();
-            User user = document == null ? new User(uniqueID) : User.of(document);
+            IUser user = document == null ? new User(uniqueID) : User.of(document);
 
             users.put(uniqueID, user);
 

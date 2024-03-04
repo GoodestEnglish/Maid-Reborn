@@ -35,10 +35,10 @@ class ChatListenerTest extends MaidTestEnvironment {
         viewer = createRandomOnlinePlayer();
 
         //Create a default user profile
-        user = new UserMock(player, rankManager, punishmentManager);
+        user = new UserMock(player.getUniqueId(), rankManager, punishmentManager);
         userManager.getUsers().put(player.getUniqueId(), user);
 
-        userViewer = new UserMock(viewer, rankManager, punishmentManager);
+        userViewer = new UserMock(viewer.getUniqueId(), rankManager, punishmentManager);
         userManager.getUsers().put(viewer.getUniqueId(), userViewer);
     }
     
@@ -107,9 +107,9 @@ class ChatListenerTest extends MaidTestEnvironment {
             player.addAttachment(plugin, MaidPermission.SETTINGS_STAFF_CHAT, true);
             chatListener.onChatMessaging(event);
 
-            Packet packet = api.getSentPackets().poll();
-
             assertTrue(event.isCancelled());
+
+            Packet packet = api.getSentPackets().poll();
             assertNotNull(packet);
             verify(api.getJedis()).publish(IPacketHandler.CHANNEL, PacketUtil.encode(packet));
         }

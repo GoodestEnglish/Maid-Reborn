@@ -7,7 +7,10 @@ import rip.diamond.maid.chat.ChatListener;
 import rip.diamond.maid.chat.ChatManager;
 import rip.diamond.maid.config.*;
 import rip.diamond.maid.disguise.DisguiseManager;
+import rip.diamond.maid.environment.EnvironmentMock;
+import rip.diamond.maid.environment.IEnvironment;
 import rip.diamond.maid.mongo.MongoManager;
+import rip.diamond.maid.player.UserListener;
 import rip.diamond.maid.player.UserManager;
 import rip.diamond.maid.punishment.PunishmentManager;
 import rip.diamond.maid.rank.RankManager;
@@ -25,6 +28,7 @@ public class MaidTestEnvironment extends ServerTestEnvironment {
     protected DisguiseConfig disguiseConfig;
     protected MongoConfig mongoConfig;
     protected ServerConfig serverConfig;
+    protected IEnvironment environment;
 
     protected MongoManager mongoManager;
     protected UserManager userManager;
@@ -34,6 +38,7 @@ public class MaidTestEnvironment extends ServerTestEnvironment {
     protected PunishmentManager punishmentManager;
 
     protected ChatListener chatListener;
+    protected UserListener userListener;
 
     public void loadManagersAndListeners() {
         plugin = MockBukkit.createMockPlugin("MaidMock");
@@ -44,15 +49,17 @@ public class MaidTestEnvironment extends ServerTestEnvironment {
         disguiseConfig = new DisguiseConfigMock();
         mongoConfig = new MongoConfigMock();
         serverConfig = new ServerConfigMock(api);
+        environment = new EnvironmentMock();
 
         mongoManager = new MongoManager(mongoConfig);
-        userManager = new UserManager(api, task, mongoManager);
+        userManager = new UserManager(api, task, mongoManager, environment);
         rankManager = new RankManager(api, mongoManager);
         serverManager = new ServerManager(serverConfig);
         chatManager = new ChatManager(api, userManager, chatConfig);
         punishmentManager = new PunishmentManager(api, task, mongoManager, userManager);
 
         chatListener = new ChatListener(plugin, api, chatManager, userManager);
+        userListener = new UserListener(task, mongoManager, userManager, rankManager, serverManager, punishmentManager);
     }
 
 }

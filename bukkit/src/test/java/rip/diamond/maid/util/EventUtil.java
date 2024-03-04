@@ -6,6 +6,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,10 @@ public class EventUtil {
                 text,
                 SignedMessage.system(DEFAULT_MESSAGE, text)
         );
+    }
+
+    public static AsyncPlayerPreLoginEvent newAsyncPlayerPreLoginEvent(Player player) {
+        return new AsyncPlayerPreLoginEvent(player.getName(), player.getAddress().getAddress(), player.getUniqueId());
     }
 
 }

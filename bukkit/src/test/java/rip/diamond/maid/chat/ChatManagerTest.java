@@ -76,10 +76,10 @@ class ChatManagerTest extends MaidTestEnvironment {
             player1 = createRandomOnlinePlayer();
             player2 = createRandomOnlinePlayer();
 
-            user1 = new UserMock(player1, rankManager, punishmentManager);
+            user1 = new UserMock(player1.getUniqueId(), rankManager, punishmentManager);
             userManager.getUsers().put(player1.getUniqueId(), user1);
 
-            user2 = new UserMock(player2, rankManager, punishmentManager);
+            user2 = new UserMock(player2.getUniqueId(), rankManager, punishmentManager);
             userManager.getUsers().put(player2.getUniqueId(), user2);
         }
 
@@ -89,9 +89,9 @@ class ChatManagerTest extends MaidTestEnvironment {
             chatManager.sendDirectMessage(user1, GlobalUser.of(user2, api), EventUtil.DEFAULT_MESSAGE);
 
             Packet packet = api.getSentPackets().poll();
-
             assertNotNull(packet);
             verify(api.getJedis()).publish(IPacketHandler.CHANNEL, PacketUtil.encode(packet));
+
             assertEquals(player1.nextMessage(), Common.legacy(CC.PINK + "➥ 給 " + user2.getSimpleDisplayName(false) + CC.WHITE + ": " + CC.GRAY + EventUtil.DEFAULT_MESSAGE));
         }
 
@@ -101,9 +101,9 @@ class ChatManagerTest extends MaidTestEnvironment {
             chatManager.sendDirectMessage(user2, GlobalUser.of(user1, api), EventUtil.DEFAULT_MESSAGE);
 
             Packet packet = api.getSentPackets().poll();
-
             assertNotNull(packet);
             verify(api.getJedis()).publish(IPacketHandler.CHANNEL, PacketUtil.encode(packet));
+
             assertEquals(player2.nextMessage(), Common.legacy(CC.PINK + "➥ 給 " + user1.getSimpleDisplayName(false) + CC.WHITE + ": " + CC.GRAY + EventUtil.DEFAULT_MESSAGE));
         }
     }

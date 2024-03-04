@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+// TODO: 3/3/2024 Make a manager class to handle action
 public class GrantsMenu extends PaginatedMenu {
     private final User target;
 

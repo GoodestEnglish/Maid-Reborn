@@ -34,9 +34,8 @@ public class UserMock implements IUser {
     private RankManager rankManager;
     private PunishmentManager punishmentManager;
 
-    public UserMock(PlayerMock player, RankManager rankManager, PunishmentManager punishmentManager) {
-        this.uniqueID = player.getUniqueId();
-        this.name = player.getName();
+    public UserMock(UUID uniqueID, RankManager rankManager, PunishmentManager punishmentManager) {
+        this.uniqueID = uniqueID;
         this.rankManager = rankManager;
         this.punishmentManager = punishmentManager;
     }
@@ -89,7 +88,7 @@ public class UserMock implements IUser {
     }
     @Override
     public void updateLastServer() {
-        throw new UnsupportedOperationException("Not implemented");
+        this.lastServer = "testEnvironment";
     }
 
     @Override

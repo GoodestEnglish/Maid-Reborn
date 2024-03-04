@@ -3,13 +3,14 @@ package rip.diamond.maid;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.checkerframework.checker.units.qual.A;
-import rip.diamond.maid.config.adapter.ConfigAdapter;
 import rip.diamond.maid.chat.ChatListener;
 import rip.diamond.maid.chat.ChatManager;
 import rip.diamond.maid.command.*;
 import rip.diamond.maid.config.Config;
+import rip.diamond.maid.config.adapter.ConfigAdapter;
 import rip.diamond.maid.disguise.DisguiseManager;
+import rip.diamond.maid.environment.IEnvironment;
+import rip.diamond.maid.environment.adapter.EnvironmentAdapter;
 import rip.diamond.maid.mongo.MongoManager;
 import rip.diamond.maid.nametag.NameTagManager;
 import rip.diamond.maid.permission.PermissionManager;
@@ -56,6 +57,7 @@ public class Maid extends JavaPlugin {
 
     private BasicConfigFile configFile;
     private ConfigAdapter configAdapter;
+    private IEnvironment environment;
 
     @Override
     public void onEnable() {
@@ -93,7 +95,7 @@ public class Maid extends JavaPlugin {
 
     private void loadAPI() {
         //Register command library
-        drink = Drink.get(this);
+        this.drink = Drink.get(this);
         //Register MenuAPI instance
         new MenuHandler(this);
         //Register TaskRunner instance
@@ -101,11 +103,13 @@ public class Maid extends JavaPlugin {
         //Register API instance
         API = new MaidAPI(new BukkitPlatform(TASK));
         API.start(new RedisCredentials(Config.REDIS_HOST.toString(), Config.REDIS_PORT.toInteger(), Config.REDIS_AUTH.toBoolean(), Config.REDIS_PASSWORD.toString()));
+        //Register environment instance
+        this.environment = new EnvironmentAdapter();
     }
 
     private void loadManagers() {
         mongoManager = new MongoManager(configAdapter);
-        userManager = new UserManager(API, TASK, mongoManager);
+        userManager = new UserManager(API, TASK, mongoManager, environment);
         rankManager = new RankManager(API, mongoManager);
         serverManager = new ServerManager(configAdapter);
         chatManager = new ChatManager(API, userManager, configAdapter);
@@ -118,7 +122,7 @@ public class Maid extends JavaPlugin {
     private void loadListeners() {
         Arrays.asList(
                 new ChatListener(this, API, chatManager, userManager),
-                new UserListener(TASK, userManager, mongoManager, serverManager),
+                new UserListener(TASK, mongoManager, userManager, rankManager, serverManager, punishmentManager),
                 new PunishmentListener(API, userManager, punishmentManager),
                 new ServerListener(API)
         ).forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));

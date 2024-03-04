@@ -17,6 +17,8 @@ import rip.diamond.maid.api.user.IDisguise;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.UserSettings;
 import rip.diamond.maid.mongo.MongoManager;
+import rip.diamond.maid.punishment.PunishmentManager;
+import rip.diamond.maid.rank.RankManager;
 import rip.diamond.maid.server.ServerManager;
 import rip.diamond.maid.util.CC;
 import rip.diamond.maid.util.Common;
@@ -30,9 +32,11 @@ import java.util.UUID;
 public class UserListener implements Listener {
 
     private final ITaskRunner task;
-    private final UserManager userManager;
     private final MongoManager mongoManager;
+    private final UserManager userManager;
+    private final RankManager rankManager;
     private final ServerManager serverManager;
+    private final PunishmentManager punishmentManager;
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPreLoginDoubleLogin(AsyncPlayerPreLoginEvent event) {
@@ -47,7 +51,7 @@ public class UserListener implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void onPreLoginCreateUser(AsyncPlayerPreLoginEvent event) {
         UUID uniqueID = event.getUniqueId();
-        IUser user = userManager.getUser(uniqueID).join(); //join in here is allowed since this event is running async
+        IUser user = userManager.getUser(uniqueID, rankManager, punishmentManager).join(); //join in here is allowed since this event is running async
 
         user.setRealName(event.getName());
         user.updateSeen();
