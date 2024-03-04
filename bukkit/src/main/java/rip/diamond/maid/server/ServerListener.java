@@ -3,6 +3,7 @@ package rip.diamond.maid.server;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerLoadEvent;
 import rip.diamond.maid.IMaidAPI;
 import rip.diamond.maid.task.FinishStartupTask;
@@ -11,7 +12,7 @@ import rip.diamond.maid.util.command.annotation.Require;
 import rip.diamond.maid.util.extend.MaidListener;
 
 @RequiredArgsConstructor
-public class ServerListener extends MaidListener {
+public class ServerListener implements Listener {
 
     private final IMaidAPI api;
 

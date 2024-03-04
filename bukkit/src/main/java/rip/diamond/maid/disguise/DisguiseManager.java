@@ -24,17 +24,15 @@ import java.util.*;
 
 public class DisguiseManager {
 
-    private final IMaidAPI api;
-    private final UserManager userManager;
-    private final DisguiseConfig config;
+    protected final IMaidAPI api;
+    protected final UserManager userManager;
 
-    private final Map<UUID, ProfileProperty> playerProperties = new HashMap<>();
-    private final Map<String, ProfileProperty> skinProperties = new HashMap<>();
+    protected final Map<UUID, ProfileProperty> playerProperties = new HashMap<>();
+    protected final Map<String, ProfileProperty> skinProperties = new HashMap<>();
 
     public DisguiseManager(IMaidAPI api, UserManager userManager, DisguiseConfig config) {
         this.api = api;
         this.userManager = userManager;
-        this.config = config;
 
         List<String> skins = config.getDisguiseSkins();
         for (String skin : skins) {
@@ -43,8 +41,10 @@ public class DisguiseManager {
     }
 
     public void disguise(Player player, IDisguise disguise, boolean join) {
-        ProfileProperty property = player.getPlayerProfile().getProperties().stream().filter(property_ -> property_.getName().equals("textures")).findAny().orElseThrow(() -> new NoSuchElementException("Cannot find texture property for " + player.getName()));
-        playerProperties.put(player.getUniqueId(), property);
+        ProfileProperty property = player.getPlayerProfile().getProperties().stream().filter(property_ -> property_.getName().equals("textures")).findAny().orElse(null);
+        if (property != null) {
+            playerProperties.put(player.getUniqueId(), property);
+        }
 
         ProfileProperty skinProperty = skinProperties.get(disguise.getSkinName());
         if (skinProperty == null) {
@@ -87,27 +87,6 @@ public class DisguiseManager {
         event.callEvent();
     }
 
-    /**
-     * Set the skin of the player.
-     * {@link Player#setPlayerProfile(PlayerProfile)} will refresh all player's view, so we don't need to deal with packets.
-     */
-    private void setSkin(Player player, ProfileProperty property) {
-        PlayerProfile profile = player.getPlayerProfile();
-        profile.setProperty(property);
-        player.setPlayerProfile(profile);
-    }
-
-    private void setName(Player player, String name) {
-        try {
-            Object craftPlayer = DisguiseUtil.CRAFT_PLAYER_CLASS.cast(player);
-            Object gameProfile = DisguiseUtil.CRAFT_PLAYER_CLASS.getMethod("getProfile").invoke(craftPlayer); //CRAFT_PLAYER_PROFILE_FIELD.get(craftPlayer);
-
-            DisguiseUtil.GAME_PROFILE_NAME_FIELD.set(gameProfile, name);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public Map.Entry<String, ProfileProperty> getRandomSkin() {
         if (skinProperties.isEmpty()) {
             return null;
@@ -136,6 +115,27 @@ public class DisguiseManager {
             skinProperties.put(profile.getName(), property);
 
             Common.log(CC.GREEN + "已成功加載 " + profile.getName() + " 的皮膚");
+        }
+    }
+
+    /**
+     * Set the skin of the player.
+     * {@link Player#setPlayerProfile(PlayerProfile)} will refresh all player's view, so we don't need to deal with packets.
+     */
+    public void setSkin(Player player, ProfileProperty property) {
+        PlayerProfile profile = player.getPlayerProfile();
+        profile.setProperty(property);
+        player.setPlayerProfile(profile);
+    }
+
+    public void setName(Player player, String name) {
+        try {
+            Object craftPlayer = DisguiseUtil.CRAFT_PLAYER_CLASS.cast(player);
+            Object gameProfile = DisguiseUtil.CRAFT_PLAYER_CLASS.getMethod("getProfile").invoke(craftPlayer); //CRAFT_PLAYER_PROFILE_FIELD.get(craftPlayer);
+
+            DisguiseUtil.GAME_PROFILE_NAME_FIELD.set(gameProfile, name);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

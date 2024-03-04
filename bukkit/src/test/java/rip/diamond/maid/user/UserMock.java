@@ -27,7 +27,7 @@ public class UserMock implements IUser {
     private final Set<UUID> alts = new HashSet<>();
     private final Set<UserPermission> permissions = new HashSet<>();
     private final List<Grant> grants = new ArrayList<>();
-    private Disguise disguise;
+    private IDisguise disguise;
     private ChatRoom chatRoom = new ChatRoom();
     private Map<UserSettings, String> settings = new HashMap<>();
 

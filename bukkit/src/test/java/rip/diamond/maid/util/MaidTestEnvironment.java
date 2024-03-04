@@ -7,6 +7,7 @@ import rip.diamond.maid.chat.ChatListener;
 import rip.diamond.maid.chat.ChatManager;
 import rip.diamond.maid.config.*;
 import rip.diamond.maid.disguise.DisguiseManager;
+import rip.diamond.maid.disguise.DisguiseManagerMock;
 import rip.diamond.maid.environment.EnvironmentMock;
 import rip.diamond.maid.environment.IEnvironment;
 import rip.diamond.maid.mongo.MongoManager;
@@ -35,31 +36,38 @@ public class MaidTestEnvironment extends ServerTestEnvironment {
     protected RankManager rankManager;
     protected ServerManager serverManager;
     protected ChatManager chatManager;
+    protected DisguiseManager disguiseManager;
     protected PunishmentManager punishmentManager;
 
     protected ChatListener chatListener;
     protected UserListener userListener;
 
     public void loadManagersAndListeners() {
-        plugin = MockBukkit.createMockPlugin("MaidMock");
-        api = new MaidAPIMock(server);
-        task = new TaskRunnerMock(server, plugin);
+        try {
+            plugin = MockBukkit.createMockPlugin("MaidMock");
+            api = new MaidAPIMock(server);
+            task = new TaskRunnerMock(server, plugin);
 
-        chatConfig = new ChatConfigMock();
-        disguiseConfig = new DisguiseConfigMock();
-        mongoConfig = new MongoConfigMock();
-        serverConfig = new ServerConfigMock(api);
-        environment = new EnvironmentMock();
+            chatConfig = new ChatConfigMock();
+            disguiseConfig = new DisguiseConfigMock();
+            mongoConfig = new MongoConfigMock();
+            serverConfig = new ServerConfigMock(api);
+            environment = new EnvironmentMock();
 
-        mongoManager = new MongoManager(mongoConfig);
-        userManager = new UserManager(api, task, mongoManager, environment);
-        rankManager = new RankManager(api, mongoManager);
-        serverManager = new ServerManager(serverConfig);
-        chatManager = new ChatManager(api, userManager, chatConfig);
-        punishmentManager = new PunishmentManager(api, task, mongoManager, userManager);
+            mongoManager = new MongoManager(mongoConfig);
+            userManager = new UserManager(api, task, mongoManager, environment);
+            rankManager = new RankManager(api, mongoManager);
+            serverManager = new ServerManager(serverConfig);
+            chatManager = new ChatManager(api, userManager, chatConfig);
 
-        chatListener = new ChatListener(plugin, api, chatManager, userManager);
-        userListener = new UserListener(task, mongoManager, userManager, rankManager, serverManager, punishmentManager);
+            disguiseManager = new DisguiseManagerMock(api, userManager, disguiseConfig);
+            punishmentManager = new PunishmentManager(api, task, mongoManager, userManager);
+
+            chatListener = new ChatListener(plugin, api, chatManager, userManager);
+            userListener = new UserListener(task, mongoManager, userManager, rankManager, serverManager, disguiseManager, punishmentManager);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

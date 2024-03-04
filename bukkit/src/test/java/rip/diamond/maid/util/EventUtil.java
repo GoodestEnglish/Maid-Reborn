@@ -5,8 +5,12 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +35,14 @@ public class EventUtil {
 
     public static AsyncPlayerPreLoginEvent newAsyncPlayerPreLoginEvent(Player player) {
         return new AsyncPlayerPreLoginEvent(player.getName(), player.getAddress().getAddress(), player.getUniqueId());
+    }
+
+    public static PlayerLoginEvent newPlayerLoginEvent(Player player) {
+        return new PlayerLoginEvent(player, player.getAddress().getHostString(), player.getAddress().getAddress());
+    }
+
+    public static PlayerJoinEvent newPlayerJoinEvent(Player player) {
+        return new PlayerJoinEvent(player, MiniMessage.miniMessage().deserialize("<name> has joined the Server!", Placeholder.component("name", player.displayName())));
     }
 
 }

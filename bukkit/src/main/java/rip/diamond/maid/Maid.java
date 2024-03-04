@@ -122,7 +122,7 @@ public class Maid extends JavaPlugin {
     private void loadListeners() {
         Arrays.asList(
                 new ChatListener(this, API, chatManager, userManager),
-                new UserListener(TASK, mongoManager, userManager, rankManager, serverManager, punishmentManager),
+                new UserListener(TASK, mongoManager, userManager, rankManager, serverManager, disguiseManager, punishmentManager),
                 new PunishmentListener(API, userManager, punishmentManager),
                 new ServerListener(API)
         ).forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));

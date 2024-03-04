@@ -16,6 +16,7 @@ import rip.diamond.maid.Maid;
 import rip.diamond.maid.api.user.IDisguise;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.api.user.UserSettings;
+import rip.diamond.maid.disguise.DisguiseManager;
 import rip.diamond.maid.mongo.MongoManager;
 import rip.diamond.maid.punishment.PunishmentManager;
 import rip.diamond.maid.rank.RankManager;
@@ -36,6 +37,7 @@ public class UserListener implements Listener {
     private final UserManager userManager;
     private final RankManager rankManager;
     private final ServerManager serverManager;
+    private final DisguiseManager disguiseManager;
     private final PunishmentManager punishmentManager;
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -115,7 +117,7 @@ public class UserListener implements Listener {
         IUser user = userManager.getUserNow(player.getUniqueId());
         IDisguise disguise = user.getDisguise();
         if (disguise != null) {
-            Maid.INSTANCE.getDisguiseManager().disguise(player, disguise, true);
+            disguiseManager.disguise(player, disguise, true);
         }
     }
 }
