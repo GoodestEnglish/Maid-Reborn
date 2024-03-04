@@ -92,7 +92,7 @@ public class UserManager {
     public void saveUser(IUser user) {
         task.runAsync(() -> {
             mongoManager.getUsers().replaceOne(Filters.eq("_id", user.getUniqueID().toString()), Document.parse(GsonProvider.GSON.toJson(user)), new ReplaceOptions().upsert(true));
-            api.getPacketHandler().send(new ProfileUpdatePacket(Maid.API.getPlatform().getServerID(), (User) user));
+            api.getPacketHandler().send(new ProfileUpdatePacket(api.getPlatform().getServerID(), (User) user));
         });
     }
 

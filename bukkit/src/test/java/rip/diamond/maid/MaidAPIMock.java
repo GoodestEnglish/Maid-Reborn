@@ -61,7 +61,7 @@ public class MaidAPIMock implements IMaidAPI {
         return result;
     }
 
-    public Queue<Packet> getSentPackets() {
-        return ((PacketHandlerMock) packetHandler).getPackets();
+    public Packet getPacket(Class<?> clazz) {
+        return ((PacketHandlerMock) packetHandler).getPackets().stream().filter(packet -> packet.getClass().equals(clazz)).findAny().orElse(null);
     }
 }

@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import rip.diamond.maid.api.user.IUser;
 import rip.diamond.maid.redis.messaging.IPacketHandler;
 import rip.diamond.maid.redis.messaging.Packet;
+import rip.diamond.maid.redis.packets.bukkit.ProfileUpdatePacket;
+import rip.diamond.maid.redis.packets.bukkit.chat.DirectMessagePacket;
 import rip.diamond.maid.server.GlobalUser;
 import rip.diamond.maid.user.UserMock;
 import rip.diamond.maid.util.*;
@@ -84,11 +86,11 @@ class ChatManagerTest extends MaidTestEnvironment {
         }
 
         @Test
-        @DisplayName("Test if direct message is successfully sent")
+        @DisplayName("Test if direct message is successfully sent from player1 to player2")
         void testSendDirectMessage1() {
             chatManager.sendDirectMessage(user1, GlobalUser.of(user2, api), EventUtil.DEFAULT_MESSAGE);
 
-            Packet packet = api.getSentPackets().poll();
+            Packet packet = api.getPacket(DirectMessagePacket.class);
             assertNotNull(packet);
             verify(api.getJedis()).publish(IPacketHandler.CHANNEL, PacketUtil.encode(packet));
 
@@ -96,11 +98,11 @@ class ChatManagerTest extends MaidTestEnvironment {
         }
 
         @Test
-        @DisplayName("Test if direct message is successfully sent")
+        @DisplayName("Test if direct message is successfully sent from player2 to player1")
         void testSendDirectMessage2() {
             chatManager.sendDirectMessage(user2, GlobalUser.of(user1, api), EventUtil.DEFAULT_MESSAGE);
 
-            Packet packet = api.getSentPackets().poll();
+            Packet packet = api.getPacket(DirectMessagePacket.class);
             assertNotNull(packet);
             verify(api.getJedis()).publish(IPacketHandler.CHANNEL, PacketUtil.encode(packet));
 

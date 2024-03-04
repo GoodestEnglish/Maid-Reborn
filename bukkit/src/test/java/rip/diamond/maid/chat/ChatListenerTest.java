@@ -12,6 +12,7 @@ import rip.diamond.maid.api.user.chat.ChatRoomType;
 import rip.diamond.maid.disguise.Disguise;
 import rip.diamond.maid.redis.messaging.IPacketHandler;
 import rip.diamond.maid.redis.messaging.Packet;
+import rip.diamond.maid.redis.packets.bukkit.chat.StaffMessagePacket;
 import rip.diamond.maid.user.UserMock;
 import rip.diamond.maid.util.*;
 
@@ -85,14 +86,14 @@ class ChatListenerTest extends MaidTestEnvironment {
 
         @Test
         @DisplayName("Test chat mute event default state")
-        void testChatMuteDefault() {
+        void testChatMute1() {
             chatListener.onChatMute(event);
             assertFalse(event.isCancelled());
         }
 
         @Test
         @DisplayName("Test chat mute event is successfully cancelled")
-        void testChatMuteCancel() {
+        void testChatMute2() {
             chatManager.setMuted(true);
             chatListener.onChatMute(event);
 
@@ -102,14 +103,14 @@ class ChatListenerTest extends MaidTestEnvironment {
 
         @Test
         @DisplayName("Test where is the chat message goes when player is in staff chat")
-        void testChatMessagingStaffChat() {
+        void testChatMessaging() {
             user.getChatRoom().setType(ChatRoomType.STAFF);
             player.addAttachment(plugin, MaidPermission.SETTINGS_STAFF_CHAT, true);
             chatListener.onChatMessaging(event);
 
             assertTrue(event.isCancelled());
 
-            Packet packet = api.getSentPackets().poll();
+            Packet packet = api.getPacket(StaffMessagePacket.class);
             assertNotNull(packet);
             verify(api.getJedis()).publish(IPacketHandler.CHANNEL, PacketUtil.encode(packet));
         }

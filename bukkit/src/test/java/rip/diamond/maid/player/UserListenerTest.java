@@ -14,6 +14,8 @@ import rip.diamond.maid.disguise.Disguise;
 import rip.diamond.maid.event.PlayerDisguiseEvent;
 import rip.diamond.maid.redis.messaging.IPacketHandler;
 import rip.diamond.maid.redis.messaging.Packet;
+import rip.diamond.maid.redis.packets.bukkit.ProfileUpdatePacket;
+import rip.diamond.maid.redis.packets.bukkit.chat.StaffMessagePacket;
 import rip.diamond.maid.user.UserMock;
 import rip.diamond.maid.util.*;
 
@@ -59,16 +61,17 @@ class UserListenerTest extends MaidTestEnvironment {
             IUser user = userManager.getUserNow(player.getUniqueId());
 
             assertNotNull(user);
+            assertEquals(user.getClass(), UserMock.class);
             assertEquals(user.getRealName(), event.getName());
-            //assertEquals(user.getFirstSeen(), System.currentTimeMillis());
-            //assertEquals(user.getLastSeen(), System.currentTimeMillis());
+            assertNotEquals(user.getFirstSeen(), 0);
+            assertNotEquals(user.getLastSeen(), 0);
             assertEquals(user.getLastServer(), "testEnvironment");
             assertEquals(user.getIP(), event.getAddress().getHostAddress());
             for (UserSettings settings : UserSettings.values()) {
                 assertNotNull(user.getSettings().get(settings));
             }
 
-            Packet packet = api.getSentPackets().poll();
+            Packet packet = api.getPacket(ProfileUpdatePacket.class);
             assertNotNull(packet);
             verify(api.getJedis()).publish(IPacketHandler.CHANNEL, PacketUtil.encode(packet));
         }

@@ -17,12 +17,15 @@ public class TaskRunnerMock implements ITaskRunner {
         runnable.run();
     }
 
+    //In MockBukkit, BukkitSchedulerMock.runTask by default do runTaskLater(1L), we don't want the 1 tick delay happen
     public BukkitTask run(Runnable runnable) {
-        return server.getScheduler().runTask(plugin, runnable);
+        runnable.run();
+        return null;
     }
 
     public BukkitTask runAsync(Runnable runnable) {
-        return server.getScheduler().runTask(plugin, runnable);
+        runnable.run();
+        return null;
     }
 
     public BukkitTask runLater(Runnable runnable, long delay) {

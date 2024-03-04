@@ -23,17 +23,17 @@ public class User implements IUser {
     public static User CONSOLE = new User(UUID.fromString("00000000-0000-0000-0000-000000000000"), "控制台", new UserPermission("*"));
 
     @SerializedName("_id")
-    private final UUID uniqueID;
-    private String name = "$undefined", texture = "";
-    private long firstSeen = -1, lastSeen = -1;
-    private String lastServer, ip = "Not Recorded";
-    private final Set<String> ipHistory = new HashSet<>();
-    private final Set<UUID> alts = new HashSet<>();
-    private final Set<UserPermission> permissions = new HashSet<>();
-    private final List<Grant> grants = new ArrayList<>();
-    private IDisguise disguise;
-    private ChatRoom chatRoom = new ChatRoom();
-    private Map<UserSettings, String> settings = new HashMap<>();
+    protected final UUID uniqueID;
+    protected String name = "$undefined", texture = "";
+    protected long firstSeen = -1, lastSeen = -1;
+    protected String lastServer, ip = "Not Recorded";
+    protected final Set<String> ipHistory = new HashSet<>();
+    protected final Set<UUID> alts = new HashSet<>();
+    protected final Set<UserPermission> permissions = new HashSet<>();
+    protected final List<Grant> grants = new ArrayList<>();
+    protected IDisguise disguise;
+    protected ChatRoom chatRoom = new ChatRoom();
+    protected Map<UserSettings, String> settings = new HashMap<>();
 
     public User(UUID uniqueID) {
         this.uniqueID = uniqueID;
