@@ -1,4 +1,4 @@
-package rip.diamond.maid.chat;
+package rip.diamond.maid.test.chat;
 
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import io.papermc.paper.event.player.AsyncChatEvent;

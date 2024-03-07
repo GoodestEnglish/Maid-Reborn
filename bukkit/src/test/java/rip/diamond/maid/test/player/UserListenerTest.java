@@ -1,4 +1,4 @@
-package rip.diamond.maid.player;
+package rip.diamond.maid.test.player;
 
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
