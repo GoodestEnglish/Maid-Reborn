@@ -83,7 +83,9 @@ public class Maid extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        API.stop();
+        if (API != null) {
+            API.stop();
+        }
     }
 
     private void loadFile() {

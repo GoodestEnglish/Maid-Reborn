@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -23,10 +24,7 @@ import rip.diamond.maid.util.command.parametric.DrinkProvider;
 import rip.diamond.maid.util.command.parametric.ProviderAssigner;
 import rip.diamond.maid.util.command.parametric.binder.DrinkBinder;
 import rip.diamond.maid.util.command.provider.*;
-import rip.diamond.maid.util.command.provider.spigot.CommandSenderProvider;
-import rip.diamond.maid.util.command.provider.spigot.ConsoleCommandSenderProvider;
-import rip.diamond.maid.util.command.provider.spigot.PlayerProvider;
-import rip.diamond.maid.util.command.provider.spigot.PlayerSenderProvider;
+import rip.diamond.maid.util.command.provider.spigot.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -86,6 +84,7 @@ public class DrinkCommandService implements CommandService {
 
         bind(CommandSender.class).annotatedWith(Sender.class).toProvider(CommandSenderProvider.INSTANCE);
         bind(ConsoleCommandSender.class).annotatedWith(Sender.class).toProvider(ConsoleCommandSenderProvider.INSTANCE);
+        bind(Location.class).toProvider(LocationProvider.INSTANCE);
         bind(Player.class).annotatedWith(Sender.class).toProvider(PlayerSenderProvider.INSTANCE);
         bind(Player.class).toProvider(new PlayerProvider(plugin));
     }
