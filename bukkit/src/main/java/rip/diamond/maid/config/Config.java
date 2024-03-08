@@ -89,7 +89,7 @@ public enum Config {
 
         if (SERVER_ID.toString().equals(SERVER_ID.getDefaultValue())) {
             Common.log("請在 config.yml 更改 " + SERVER_ID.getPath());
-            Bukkit.shutdown();
+            System.exit(0);
         }
     }
 
