@@ -27,14 +27,13 @@ public final class UUIDCache {
         // UUID not found in the cache, fetch it asynchronously
         CompletableFuture<OfflinePlayer> offlinePlayerFuture = getOfflinePlayer(username);
 
-        // Use thenCompose to chain CompletableFuture
-        return offlinePlayerFuture.thenComposeAsync(offlinePlayer -> {
+        return offlinePlayerFuture.thenApplyAsync(offlinePlayer -> {
             UUID fetchedUuid = offlinePlayer.getUniqueId();
 
             // Insert into the cache to ensure consistency
             insert(fetchedUuid, offlinePlayer.getName());
 
-            return CompletableFuture.completedFuture(fetchedUuid);
+            return fetchedUuid;
         });
     }
 
@@ -47,14 +46,13 @@ public final class UUIDCache {
         // UUID not found in the cache, fetch it asynchronously
         CompletableFuture<OfflinePlayer> offlinePlayerFuture = getOfflinePlayer(uuid);
 
-        // Use thenCompose to chain CompletableFuture
-        return offlinePlayerFuture.thenComposeAsync(offlinePlayer -> {
+        return offlinePlayerFuture.thenApplyAsync(offlinePlayer -> {
             String fetchedUsername = offlinePlayer.getName();
 
             // Insert into the cache to ensure consistency
             insert(offlinePlayer.getUniqueId(), fetchedUsername);
 
-            return CompletableFuture.completedFuture(fetchedUsername);
+            return fetchedUsername;
         });
     }
 

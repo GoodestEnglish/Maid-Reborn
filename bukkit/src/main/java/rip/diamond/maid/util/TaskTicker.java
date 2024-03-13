@@ -1,6 +1,7 @@
 package rip.diamond.maid.util;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -9,20 +10,27 @@ import rip.diamond.maid.Maid;
 public abstract class TaskTicker extends BukkitRunnable {
 
     protected final Plugin plugin;
+    public final Config config;
 
     public int tick;
-    @Getter @Setter private boolean finishPreRun = false;
+    @Setter public boolean finishPreRun = false;
+    @Setter public boolean stop = false;
 
     public TaskTicker(int delay, int period, boolean async) {
         this(Maid.INSTANCE, delay, period, async);
     }
 
     public TaskTicker(Plugin plugin, int delay, int period, boolean async) {
+        this(plugin, new Config(delay, period, async));
+    }
+
+    public TaskTicker(Plugin plugin, Config config) {
         this.plugin = plugin;
-        if (async) {
-            this.runTaskTimerAsynchronously(plugin, delay, period);
+        this.config = config;
+        if (config.async) {
+            this.runTaskTimerAsynchronously(plugin, config.delay, config.period);
         } else {
-            this.runTaskTimer(plugin, delay, period);
+            this.runTaskTimer(plugin, config.delay, config.period);
         }
     }
 
@@ -33,6 +41,10 @@ public abstract class TaskTicker extends BukkitRunnable {
             preRun();
             finishPreRun = true;
         }
+        if (stop) {
+            return;
+        }
+
         onRun();
 
         if (!isCancelled()) {
@@ -70,6 +82,13 @@ public abstract class TaskTicker extends BukkitRunnable {
         COUNT_UP,
         COUNT_DOWN,
         NONE
+    }
+
+    @RequiredArgsConstructor
+    public static class Config {
+        public final int delay;
+        public final int period;
+        public final boolean async;
     }
 
 }
